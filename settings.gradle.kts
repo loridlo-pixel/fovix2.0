@@ -27,3 +27,5 @@ include(
     ":feature_settings",
     ":feature_stats"
 )
+
+include(":core")
