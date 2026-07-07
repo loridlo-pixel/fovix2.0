@@ -57,3 +57,12 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
 
+
+
+dependencies {
+
+    implementation(project(":data"))
+    implementation(project(":core"))
+
+}
+

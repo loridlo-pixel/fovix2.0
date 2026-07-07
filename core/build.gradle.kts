@@ -39,3 +39,11 @@ dependencies {
     implementation(project(":data"))
 
 }
+
+
+dependencies {
+
+    implementation(project(":domain"))
+
+}
+

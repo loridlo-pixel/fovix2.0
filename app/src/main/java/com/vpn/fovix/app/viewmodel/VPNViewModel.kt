@@ -1,72 +1,38 @@
 package com.vpn.fovix.app.viewmodel
 
+
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.vpn.fovix.domain.vpnstate.ConnectionStatus
-import com.vpn.fovix.domain.vpnstate.VPNState
-import com.vpn.fovix.vpn.VpnEngine
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.vpn.fovix.data.repository.VpnRepository
+import com.vpn.fovix.domain.vpnstate.VPNAction
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 
 class VPNViewModel(
-    private val vpnEngine: VpnEngine = VpnEngine()
-) : ViewModel() {
+    private val repository: VpnRepository
+): ViewModel(){
 
 
-    private val _state =
-        MutableStateFlow(
-            VPNState()
-        )
-
-
-    val state: StateFlow<VPNState> =
-        _state
+val state: StateFlow<com.vpn.fovix.domain.vpnstate.VPNState>
+    = repository.state
 
 
 
-    fun connect(){
+fun action(action: VPNAction){
 
-        viewModelScope.launch {
+    when(action){
 
-            _state.value =
-                _state.value.copy(
-                    status = ConnectionStatus.CONNECTING
-                )
+        VPNAction.Connect ->
+            repository.connect()
 
 
-            vpnEngine.start()
-
-
-            _state.value =
-                _state.value.copy(
-                    status = ConnectionStatus.CONNECTED,
-                    protectionEnabled = true
-                )
-
-        }
+        VPNAction.Disconnect ->
+            repository.disconnect()
 
     }
 
-
-
-    fun disconnect(){
-
-        viewModelScope.launch {
-
-
-            vpnEngine.stop()
-
-
-            _state.value =
-                VPNState(
-                    status = ConnectionStatus.DISCONNECTED
-                )
-
-        }
-
-    }
+}
 
 
 }
+
