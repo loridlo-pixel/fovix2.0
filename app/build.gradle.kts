@@ -35,6 +35,9 @@ android {
 
 dependencies {
 
+    implementation(project(":domain"))
+    implementation(project(":vpn"))
+
     // Compose BOM
     implementation(platform("androidx.compose:compose-bom:2024.06.00"))
 
@@ -53,3 +56,4 @@ dependencies {
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
 }
+
