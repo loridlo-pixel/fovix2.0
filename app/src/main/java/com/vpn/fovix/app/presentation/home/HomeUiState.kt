@@ -1,21 +1,38 @@
 package com.vpn.fovix.app.presentation.home
 
-
-import com.vpn.fovix.domain.usermode.UserMode
+import com.vpn.fovix.core.decision.UserMode
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
-
 
 
 data class HomeUiState(
 
-    val status: ConnectionStatus,
+    val mode: UserMode = UserMode.SIMPLE,
 
-    val mode: UserMode,
+    val title: String = "FOVIX",
 
-    val showServer:Boolean,
+    val status: ConnectionStatus = ConnectionStatus.DISCONNECTED,
 
-    val showMetrics:Boolean,
+    val serverName: String = "Auto",
 
-    val showExpert:Boolean
+    val ping: Int = 0,
 
-)
+    val speed: String = "0 Mbps",
+
+
+    val showServerInfo: Boolean = false,
+
+    val showMetrics: Boolean = false,
+
+    val showExpertSettings: Boolean = false
+
+
+) {
+
+    val showServer: Boolean
+        get() = showServerInfo
+
+
+    val showExpert: Boolean
+        get() = showExpertSettings
+
+}
