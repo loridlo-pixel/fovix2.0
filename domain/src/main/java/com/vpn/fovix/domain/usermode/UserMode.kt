@@ -1,5 +1,6 @@
 package com.vpn.fovix.domain.usermode
 
+
 enum class UserMode {
 
     SIMPLE,
@@ -9,4 +10,3 @@ enum class UserMode {
     EXPERT
 
 }
-
