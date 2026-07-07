@@ -1,0 +1,15 @@
+FOVIX VPN SERVICE LOCK
+
+Version: 1.4
+
+Created:
+- VpnServiceImpl
+- VpnPermissionManager
+
+Status:
+OK VPN layer skeleton
+OK Build
+OK Install
+
+Date:
+07/07/2026 13:39:33
