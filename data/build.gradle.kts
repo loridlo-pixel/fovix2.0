@@ -1,4 +1,4 @@
-﻿plugins {
+plugins {
     id("com.android.library")
     id("org.jetbrains.kotlin.android")
 }
@@ -20,3 +20,12 @@ android {
         jvmTarget = "17"
     }
 }
+
+
+dependencies {
+
+    implementation(project(":domain"))
+    implementation(project(":vpn"))
+
+}
+

@@ -1,14 +1,29 @@
 package com.vpn.fovix.vpn
 
+
 class VpnEngine {
 
 
     private var running = false
 
 
+    fun connect() {
+
+        start()
+
+    }
+
+
+    fun disconnect() {
+
+        stop()
+
+    }
+
+
     fun start() {
 
-        if(running)
+        if (running)
             return
 
 
@@ -20,7 +35,7 @@ class VpnEngine {
     }
 
 
-    fun stop(){
+    fun stop() {
 
         running = false
 
