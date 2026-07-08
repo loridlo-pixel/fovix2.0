@@ -8,9 +8,7 @@ import android.app.Application
 class FovixApplication : Application(){
 
 
-
     lateinit var container: AppContainer
-
 
 
 
@@ -23,11 +21,7 @@ class FovixApplication : Application(){
 
         container =
 
-            AppContainer(
-
-                applicationContext
-
-            )
+            AppContainer()
 
 
     }

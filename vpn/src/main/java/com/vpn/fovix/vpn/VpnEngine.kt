@@ -1,85 +1,55 @@
 package com.vpn.fovix.vpn
 
 
-import android.content.Context
-import com.vpn.fovix.vpn.singbox.SingBoxBinaryManager
-import com.vpn.fovix.vpn.singbox.SingBoxProcessManager
-
-
-
 class VpnEngine(
 
-    context: Context
+    private val runtimeManager: SingBoxRuntimeManager? = null
 
 ) {
-
-
-
-    private val binaryManager =
-
-        SingBoxBinaryManager(context)
-
-
-
-    private val singBox =
-
-        SingBoxProcessManager()
-
 
 
     private var running = false
 
 
 
-
     fun connect(){
 
 
-        if(running){
-
+        if(running)
             return
-
-        }
-
-
-
-        val binary =
-
-            binaryManager.getBinaryFile()
-
-
-
-        singBox.start(
-
-            binaryPath = binary.absolutePath,
-
-            configPath = "config.json"
-
-        )
-
 
 
         running = true
 
 
+        println(
+            "FOVIX VPN ENGINE STARTED"
+        )
+
+
     }
-
-
 
 
 
     fun disconnect(){
 
 
-        singBox.stop()
+        if(!running)
+            return
+
+
+        runtimeManager?.stop()
 
 
         running = false
 
 
+        println(
+            "FOVIX VPN ENGINE STOPPED"
+        )
+
+
     }
-
-
 
 
 
@@ -87,6 +57,7 @@ class VpnEngine(
 
 
         return running
+
 
     }
 
