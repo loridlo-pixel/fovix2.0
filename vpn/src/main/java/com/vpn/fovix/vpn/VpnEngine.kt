@@ -1,36 +1,25 @@
 package com.vpn.fovix.vpn
 
 
+import com.vpn.fovix.vpn.singbox.SingBoxProcessManager
+
+
+
 class VpnEngine {
+
+
+    private val singBox =
+
+        SingBoxProcessManager()
+
 
 
     private var running = false
 
 
 
+
     fun connect(){
-
-
-        start()
-
-
-    }
-
-
-
-
-    fun disconnect(){
-
-
-        stop()
-
-
-    }
-
-
-
-
-    fun start(){
 
 
         if(running){
@@ -40,11 +29,17 @@ class VpnEngine {
         }
 
 
+
+        singBox.start(
+
+            configPath = "config.json"
+
+        )
+
+
+
         running = true
 
-
-        // TODO:
-        // sing-box запуск добавим позже
 
     }
 
@@ -52,14 +47,23 @@ class VpnEngine {
 
 
 
-    fun stop(){
+    fun disconnect(){
+
+
+        if(!running){
+
+            return
+
+        }
+
+
+
+        singBox.stop()
+
 
 
         running = false
 
-
-        // TODO:
-        // sing-box остановка позже
 
     }
 
