@@ -3,7 +3,7 @@ package com.vpn.fovix.vpn
 
 class VpnEngine(
 
-    private val runtimeManager: SingBoxRuntimeManager? = null
+    private val runtimeManager: SingBoxRuntimeManager
 
 ) {
 
@@ -19,12 +19,32 @@ class VpnEngine(
             return
 
 
-        running = true
+
+        try {
 
 
-        println(
-            "FOVIX VPN ENGINE STARTED"
-        )
+            runtimeManager.start()
+
+
+
+            running = true
+
+
+
+            println(
+                "FOVIX VPN ENGINE STARTED"
+            )
+
+
+        } catch (e: Exception){
+
+
+            println(
+                "FOVIX START ERROR: ${e.message}"
+            )
+
+
+        }
 
 
     }
@@ -38,10 +58,13 @@ class VpnEngine(
             return
 
 
-        runtimeManager?.stop()
+
+        runtimeManager.stop()
+
 
 
         running = false
+
 
 
         println(

@@ -1,24 +1,26 @@
 package com.vpn.fovix.vpn
 
+
 import android.content.Context
 import java.io.File
+
 
 
 class SingBoxRuntimeManager(
 
     private val context: Context
 
-) {
+){
 
 
     private var process: Process? = null
 
 
 
-    fun prepareBinary(): File {
+    private fun prepareBinary(): File {
 
 
-        val target = File(
+        val binary = File(
 
             context.filesDir,
 
@@ -27,7 +29,7 @@ class SingBoxRuntimeManager(
         )
 
 
-        if (!target.exists()) {
+        if(!binary.exists()){
 
 
             context.assets
@@ -35,10 +37,12 @@ class SingBoxRuntimeManager(
                 .use { input ->
 
 
-                    target.outputStream()
+                    binary.outputStream()
                         .use { output ->
 
+
                             input.copyTo(output)
+
 
                         }
 
@@ -46,25 +50,24 @@ class SingBoxRuntimeManager(
                 }
 
 
-            target.setExecutable(true)
+            binary.setExecutable(true)
+
 
         }
 
 
-        return target
+        return binary
+
 
     }
 
 
 
-    fun start(
 
-        configPath: String
-
-    ) {
+    fun start(){
 
 
-        if (process != null)
+        if(process != null)
             return
 
 
@@ -77,11 +80,7 @@ class SingBoxRuntimeManager(
 
             binary.absolutePath,
 
-            "run",
-
-            "-c",
-
-            configPath
+            "version"
 
         )
 
@@ -90,7 +89,9 @@ class SingBoxRuntimeManager(
             .start()
 
 
+
     }
+
 
 
 
@@ -106,7 +107,8 @@ class SingBoxRuntimeManager(
 
 
 
-    fun isRunning(): Boolean {
+
+    fun isRunning(): Boolean{
 
 
         return process != null

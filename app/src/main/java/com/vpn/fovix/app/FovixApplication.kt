@@ -4,7 +4,6 @@ package com.vpn.fovix.app
 import android.app.Application
 
 
-
 class FovixApplication : Application(){
 
 
@@ -21,7 +20,9 @@ class FovixApplication : Application(){
 
         container =
 
-            AppContainer()
+            AppContainer(
+                this
+            )
 
 
     }
