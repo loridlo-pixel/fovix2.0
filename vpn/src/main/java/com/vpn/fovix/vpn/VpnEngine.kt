@@ -8,6 +8,7 @@ import com.vpn.fovix.vpn.singbox.SingBoxProcessManager
 class VpnEngine {
 
 
+
     private val singBox =
 
         SingBoxProcessManager()
@@ -15,6 +16,7 @@ class VpnEngine {
 
 
     private var running = false
+
 
 
 
@@ -29,13 +31,15 @@ class VpnEngine {
         }
 
 
+        /*
+            STEP 39
 
-        singBox.start(
+            Реальный запуск будет после передачи:
 
-            configPath = "config.json"
+            binaryPath
+            configPath
 
-        )
-
+        */
 
 
         running = true
@@ -50,16 +54,7 @@ class VpnEngine {
     fun disconnect(){
 
 
-        if(!running){
-
-            return
-
-        }
-
-
-
         singBox.stop()
-
 
 
         running = false

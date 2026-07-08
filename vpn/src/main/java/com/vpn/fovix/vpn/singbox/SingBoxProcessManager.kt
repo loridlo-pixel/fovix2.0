@@ -1,7 +1,9 @@
 package com.vpn.fovix.vpn.singbox
 
 
+
 class SingBoxProcessManager {
+
 
 
     private var process: Process? = null
@@ -10,9 +12,12 @@ class SingBoxProcessManager {
 
     fun start(
 
+        binaryPath: String,
+
         configPath: String
 
-    ) {
+    ){
+
 
 
         if(process != null){
@@ -22,18 +27,30 @@ class SingBoxProcessManager {
         }
 
 
-        /*
-            STEP 38
 
-            Здесь позже будет:
+        val command = listOf(
 
-            assets/singbox/sing-box
-            -c config.json
+            binaryPath,
 
-        */
+            "run",
+
+            "-c",
+
+            configPath
+
+        )
 
 
-        process = null
+
+        process =
+
+            ProcessBuilder(command)
+
+                .redirectErrorStream(true)
+
+                .start()
+
+
 
     }
 
@@ -44,6 +61,7 @@ class SingBoxProcessManager {
 
 
         process?.destroy()
+
 
         process = null
 
