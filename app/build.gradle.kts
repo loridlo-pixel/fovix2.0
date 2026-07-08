@@ -37,6 +37,7 @@ dependencies {
 
     implementation(project(":domain"))
     implementation(project(":vpn"))
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1")
 
     // Compose BOM
     implementation(platform("androidx.compose:compose-bom:2024.06.00"))

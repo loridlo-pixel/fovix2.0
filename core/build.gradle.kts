@@ -12,13 +12,16 @@ android {
 
 
     defaultConfig {
+
         minSdk = 26
+
     }
 
 
     compileOptions {
 
         sourceCompatibility = JavaVersion.VERSION_17
+
         targetCompatibility = JavaVersion.VERSION_17
 
     }
@@ -35,15 +38,7 @@ android {
 
 dependencies {
 
-    implementation(project(":vpn"))
-    implementation(project(":data"))
-
-}
-
-
-dependencies {
 
     implementation(project(":domain"))
 
 }
-

@@ -1,60 +1,18 @@
 package com.vpn.fovix.app.presentation.home
 
-
-import com.vpn.fovix.domain.usermode.UserMode
-
+import com.vpn.fovix.domain.vpnstate.VPNState
 
 
-object HomeStateMapper {
+fun VPNState.toHomeConnectionState(): HomeConnectionState {
 
+    return HomeConnectionState(
 
-    fun mapMode(
-        mode: UserMode
-    ): HomeVisibility {
+        status = status,
 
+        server = server ?: "AUTO",
 
-        return when(mode){
+        ping = latency?.toInt() ?: 0
 
-
-            UserMode.SIMPLE ->
-                HomeVisibility(
-                    server=false,
-                    metrics=false,
-                    expert=false
-                )
-
-
-            UserMode.ADVANCED ->
-                HomeVisibility(
-                    server=true,
-                    metrics=true,
-                    expert=false
-                )
-
-
-            UserMode.EXPERT ->
-                HomeVisibility(
-                    server=true,
-                    metrics=true,
-                    expert=true
-                )
-
-        }
-
-
-    }
-
+    )
 
 }
-
-
-
-data class HomeVisibility(
-
-    val server:Boolean,
-
-    val metrics:Boolean,
-
-    val expert:Boolean
-
-)

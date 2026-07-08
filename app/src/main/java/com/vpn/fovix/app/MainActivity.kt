@@ -1,47 +1,115 @@
 package com.vpn.fovix.app
 
+
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.vpn.fovix.app.presentation.home.HomeDashboard
+import com.vpn.fovix.app.presentation.home.HomeViewModel
+import com.vpn.fovix.app.presentation.home.HomeViewModelFactory
+import com.vpn.fovix.data.repository.VpnRepository
+import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 import com.vpn.fovix.ui.theme.FovixTheme
 
+
 class MainActivity : ComponentActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
+
+
+    override fun onCreate(
+        savedInstanceState: Bundle?
+    ) {
+
         super.onCreate(savedInstanceState)
+
+
         enableEdgeToEdge()
+
+
+        val container =
+            (application as FovixApplication)
+                .container
+
+
+
         setContent {
+
+
             FovixTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+
+
+                FovixRoot(
+
+                    repository = container.vpnRepository
+
+                )
+
+
             }
+
+
         }
+
+
     }
+
 }
 
+
+
 @Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
+fun FovixRoot(
+
+    repository: VpnRepository
+
+) {
+
+
+    val viewModel: HomeViewModel =
+
+        viewModel(
+
+            factory = HomeViewModelFactory(
+                repository
+            )
+
+        )
+
+
+
+    val state by viewModel.state.collectAsState()
+
+
+
+    HomeDashboard(
+
+        connected =
+            state.status == ConnectionStatus.CONNECTED,
+
+
+        server =
+            state.server ?: "Auto",
+
+
+        download =
+            state.download,
+
+
+        upload =
+            state.upload,
+
+
+        onConnectClick = {
+
+            viewModel.toggleConnection()
+
+        }
+
     )
-}
 
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    FovixTheme {
-        Greeting("Android")
-    }
+
 }

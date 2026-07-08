@@ -1,22 +1,22 @@
 package com.vpn.fovix.app.presentation.decision
 
+
 import com.vpn.fovix.core.decision.DecisionEngine
-import com.vpn.fovix.core.decision.DecisionResult
 import com.vpn.fovix.core.decision.UserMode
 
 
-class DecisionController {
+class DecisionController(
+
+    private val engine: DecisionEngine
+
+) {
 
 
-    private val engine = DecisionEngine()
+    fun selectServer(
 
-
-    fun calculate(
         mode: UserMode
-    ): DecisionResult {
 
-        return engine.evaluate(mode)
+    ) = engine.evaluate(mode)
 
-    }
 
 }

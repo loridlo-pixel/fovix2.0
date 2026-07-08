@@ -7,48 +7,72 @@ class VpnEngine {
     private var running = false
 
 
-    fun connect() {
+
+    fun connect(){
+
 
         start()
 
+
     }
 
 
-    fun disconnect() {
+
+
+    fun disconnect(){
+
 
         stop()
 
+
     }
 
 
-    fun start() {
 
-        if (running)
+
+    fun start(){
+
+
+        if(running){
+
             return
+
+        }
 
 
         running = true
 
+
         // TODO:
-        // start sing-box process here
+        // sing-box запуск добавим позже
 
     }
 
 
-    fun stop() {
+
+
+
+    fun stop(){
+
 
         running = false
 
+
         // TODO:
-        // stop sing-box process
+        // sing-box остановка позже
 
     }
+
+
+
 
 
     fun isRunning(): Boolean {
 
+
         return running
 
     }
+
 
 }

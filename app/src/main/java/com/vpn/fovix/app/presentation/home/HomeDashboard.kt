@@ -1,13 +1,11 @@
 package com.vpn.fovix.app.presentation.home
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
 
 @Composable
 fun HomeDashboard(
@@ -18,45 +16,71 @@ fun HomeDashboard(
 
     download: Int,
 
-    upload: Int
+    upload: Int,
+
+    onConnectClick: () -> Unit
 
 ) {
 
-    Column {
+    Box(
 
+        modifier = Modifier.fillMaxSize(),
 
-        Text(
-            text = "FOVIX"
-        )
+        contentAlignment = Alignment.Center
 
+    ) {
 
-        Spacer(
-            modifier = Modifier.height(32.dp)
-        )
+        Column(
 
+            horizontalAlignment = Alignment.CenterHorizontally,
 
-        ConnectionOrb(
-            connected = connected
-        )
+            verticalArrangement = Arrangement.Center
 
+        ) {
 
-        Spacer(
-            modifier = Modifier.height(24.dp)
-        )
+            Text(
+                text = "FOVIX"
+            )
 
+            Spacer(
+                modifier = Modifier.height(40.dp)
+            )
 
-        ServerCard(
-            server = server
-        )
+            ConnectionOrb(
 
+                connected = connected,
 
-        SpeedMetrics(
-            download = download,
-            upload = upload
-        )
+                onClick = onConnectClick
 
+            )
 
-        PremiumBadge()
+            Spacer(
+                modifier = Modifier.height(32.dp)
+            )
+
+            ServerCard(
+                server = server
+            )
+
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
+
+            SpeedMetrics(
+
+                download = download,
+
+                upload = upload
+
+            )
+
+            Spacer(
+                modifier = Modifier.height(24.dp)
+            )
+
+            PremiumBadge()
+
+        }
 
     }
 
