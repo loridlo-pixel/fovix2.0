@@ -1,47 +1,41 @@
 package com.vpn.fovix.app.presentation.home
 
 
-import com.vpn.fovix.core.decision.UserMode
+import androidx.compose.runtime.Composable
 
 
-class HomeModeRenderer {
+
+@Composable
+fun HomeModeRenderer(
+
+    mode: String
+
+) {
 
 
-    fun render(
-        mode: UserMode
-    ): HomeUiState {
+    when(mode) {
 
 
-        return when(mode){
+        "ADVANCED" -> {
 
-
-            UserMode.SIMPLE ->
-                HomeUiState(
-                    mode = mode,
-                    title = "Simple Mode",
-                    showServerInfo = false,
-                    showExpertSettings = false
-                )
-
-
-            UserMode.ADVANCED ->
-                HomeUiState(
-                    mode = mode,
-                    title = "Advanced Mode",
-                    showServerInfo = true,
-                    showExpertSettings = false
-                )
-
-
-            UserMode.EXPERT ->
-                HomeUiState(
-                    mode = mode,
-                    title = "Expert Mode",
-                    showServerInfo = true,
-                    showExpertSettings = true
-                )
+            AdvancedView()
 
         }
+
+
+        "EXPERT" -> {
+
+            ExpertView()
+
+        }
+
+
+        else -> {
+
+            SimpleView()
+
+        }
+
 
     }
 

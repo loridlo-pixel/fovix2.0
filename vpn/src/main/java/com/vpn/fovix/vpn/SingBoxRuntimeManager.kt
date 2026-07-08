@@ -2,8 +2,8 @@ package com.vpn.fovix.vpn
 
 
 import android.content.Context
+import android.util.Log
 import java.io.File
-
 
 
 class SingBoxRuntimeManager(
@@ -29,7 +29,14 @@ class SingBoxRuntimeManager(
         )
 
 
+
         if(!binary.exists()){
+
+
+            Log.d(
+                "FOVIX",
+                "Copy sing-box binary"
+            )
 
 
             context.assets
@@ -40,9 +47,7 @@ class SingBoxRuntimeManager(
                     binary.outputStream()
                         .use { output ->
 
-
                             input.copyTo(output)
-
 
                         }
 
@@ -56,8 +61,14 @@ class SingBoxRuntimeManager(
         }
 
 
-        return binary
 
+        Log.d(
+            "FOVIX",
+            "Binary path: ${binary.absolutePath}"
+        )
+
+
+        return binary
 
     }
 
@@ -67,8 +78,16 @@ class SingBoxRuntimeManager(
     fun start(){
 
 
-        if(process != null)
+        if(process != null){
+
+            Log.d(
+                "FOVIX",
+                "Already running"
+            )
+
             return
+
+        }
 
 
 
@@ -90,6 +109,12 @@ class SingBoxRuntimeManager(
 
 
 
+        Log.d(
+            "FOVIX",
+            "SingBox started"
+        )
+
+
     }
 
 
@@ -98,7 +123,14 @@ class SingBoxRuntimeManager(
     fun stop(){
 
 
+        Log.d(
+            "FOVIX",
+            "SingBox stopped"
+        )
+
+
         process?.destroy()
+
 
         process = null
 
@@ -107,8 +139,7 @@ class SingBoxRuntimeManager(
 
 
 
-
-    fun isRunning(): Boolean{
+    fun isRunning(): Boolean {
 
 
         return process != null

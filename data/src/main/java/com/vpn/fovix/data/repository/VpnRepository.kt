@@ -1,6 +1,7 @@
 package com.vpn.fovix.data.repository
 
 
+import android.util.Log
 import com.vpn.fovix.core.decision.DecisionEngine
 import com.vpn.fovix.core.decision.UserMode
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
@@ -20,6 +21,7 @@ class VpnRepository(
 ) {
 
 
+
     private val _state =
 
         MutableStateFlow(
@@ -27,9 +29,12 @@ class VpnRepository(
         )
 
 
+
     val state: StateFlow<VPNState> =
 
         _state
+
+
 
 
 
@@ -40,9 +45,23 @@ class VpnRepository(
     ) {
 
 
+        Log.d(
+            "FOVIX",
+            "Repository connect called"
+        )
+
+
+
         val decision =
 
             decisionEngine.evaluate(mode)
+
+
+
+        Log.d(
+            "FOVIX",
+            "Selected server: ${decision.recommendedServer}"
+        )
 
 
 
@@ -56,11 +75,16 @@ class VpnRepository(
 
                 status = ConnectionStatus.CONNECTED,
 
-                server = decision.recommendedServer,
-
-                protectionEnabled = true
+                server = decision.recommendedServer
 
             )
+
+
+
+        Log.d(
+            "FOVIX",
+            "State changed CONNECTED"
+        )
 
 
     }
@@ -68,7 +92,15 @@ class VpnRepository(
 
 
 
+
     fun disconnect(){
+
+
+        Log.d(
+            "FOVIX",
+            "Repository disconnect called"
+        )
+
 
 
         vpnEngine.disconnect()
@@ -79,14 +111,55 @@ class VpnRepository(
 
             _state.value.copy(
 
-                status = ConnectionStatus.DISCONNECTED,
-
-                protectionEnabled = false
+                status = ConnectionStatus.DISCONNECTED
 
             )
 
 
+
+        Log.d(
+            "FOVIX",
+            "State changed DISCONNECTED"
+        )
+
+
     }
+
+
+
+
+
+    fun toggle(){
+
+
+        val current = _state.value.status
+
+
+
+        Log.d(
+            "FOVIX",
+            "Toggle current state: $current"
+        )
+
+
+
+        if(
+
+            current == ConnectionStatus.CONNECTED
+
+        ){
+
+            disconnect()
+
+        } else {
+
+            connect()
+
+        }
+
+
+    }
+
 
 
 
@@ -114,7 +187,6 @@ class VpnRepository(
 
 
     }
-
 
 
 }

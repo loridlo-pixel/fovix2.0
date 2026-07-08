@@ -1,17 +1,25 @@
 package com.vpn.fovix.app.presentation.home
 
+
 import com.vpn.fovix.domain.vpnstate.VPNState
 
 
-fun VPNState.toHomeConnectionState(): HomeConnectionState {
 
-    return HomeConnectionState(
+fun VPNState.toHomeUiState(): HomeUiState {
+
+
+    return HomeUiState(
 
         status = status,
 
-        server = server ?: "AUTO",
+        connected =
+            status.name == "CONNECTED",
 
-        ping = latency?.toInt() ?: 0
+        server = server,
+
+        download = download,
+
+        upload = upload
 
     )
 

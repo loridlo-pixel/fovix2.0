@@ -2,6 +2,7 @@ package com.vpn.fovix.app
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
@@ -15,6 +16,7 @@ import com.vpn.fovix.app.presentation.home.HomeViewModelFactory
 import com.vpn.fovix.data.repository.VpnRepository
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 import com.vpn.fovix.ui.theme.FovixTheme
+
 
 
 class MainActivity : ComponentActivity() {
@@ -31,6 +33,7 @@ class MainActivity : ComponentActivity() {
 
 
         val container =
+
             (application as FovixApplication)
                 .container
 
@@ -61,6 +64,7 @@ class MainActivity : ComponentActivity() {
 
 
 
+
 @Composable
 fun FovixRoot(
 
@@ -69,11 +73,13 @@ fun FovixRoot(
 ) {
 
 
+
     val viewModel: HomeViewModel =
 
         viewModel(
 
-            factory = HomeViewModelFactory(
+            factory =
+            HomeViewModelFactory(
                 repository
             )
 
@@ -81,31 +87,46 @@ fun FovixRoot(
 
 
 
-    val state by viewModel.state.collectAsState()
+    val state by
+
+    viewModel.state.collectAsState()
 
 
 
     HomeDashboard(
 
         connected =
-            state.status == ConnectionStatus.CONNECTED,
+
+            state.status ==
+                    ConnectionStatus.CONNECTED,
 
 
         server =
+
             state.server ?: "Auto",
 
 
         download =
+
             state.download,
 
 
         upload =
+
             state.upload,
 
 
         onConnectClick = {
 
+
+            Log.d(
+                "FOVIX",
+                "MainActivity click received"
+            )
+
+
             viewModel.toggleConnection()
+
 
         }
 

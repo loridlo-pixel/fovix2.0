@@ -1,5 +1,7 @@
 package com.vpn.fovix.app.presentation.home
 
+
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -13,6 +15,8 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+
+
 @Composable
 fun ConnectionOrb(
 
@@ -22,36 +26,22 @@ fun ConnectionOrb(
 
 ) {
 
+
     val gradient =
-        if (connected) {
 
-            Brush.radialGradient(
+        Brush.radialGradient(
 
-                colors = listOf(
+            colors = listOf(
 
-                    Color(0xFF00E5FF),
+                Color.Cyan,
 
-                    Color(0xFF2979FF)
-
-                )
+                Color.Blue
 
             )
 
-        } else {
+        )
 
-            Brush.radialGradient(
 
-                colors = listOf(
-
-                    Color.DarkGray,
-
-                    Color.Black
-
-                )
-
-            )
-
-        }
 
     Box(
 
@@ -69,22 +59,34 @@ fun ConnectionOrb(
 
             .clickable {
 
+
+                Log.d(
+                    "FOVIX",
+                    "ORB CLICK WORKS"
+                )
+
+
                 onClick()
 
+
             },
+
 
         contentAlignment = Alignment.Center
 
     ) {
 
+
         Text(
 
-            text = if (connected) "CONNECTED" else "CONNECT",
+            text = "TEST CLICK",
 
             color = Color.White
 
         )
 
+
     }
+
 
 }

@@ -9,12 +9,6 @@ data class VPNState(
 
     val download: Int = 0,
 
-    val upload: Int = 0,
-
-    val ip: String? = null,
-
-    val latency: Long? = null,
-
-    val protectionEnabled: Boolean = false
+    val upload: Int = 0
 
 )

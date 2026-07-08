@@ -4,55 +4,40 @@ package com.vpn.fovix.app.presentation.home
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
-data class ConnectionUiState(
 
-    val text:String,
-
-    val active:Boolean,
-
-    val loading:Boolean
-
-)
+fun ConnectionStatus.toConnectionText(): String {
 
 
-fun mapConnectionState(
-    status: ConnectionStatus
-): ConnectionUiState {
-
-
-    return when(status){
+    return when(this) {
 
 
         ConnectionStatus.DISCONNECTED ->
-            ConnectionUiState(
-                text = "CONNECT",
-                active = false,
-                loading = false
-            )
+
+            "OFF"
+
 
 
         ConnectionStatus.CONNECTING ->
-            ConnectionUiState(
-                text = "CONNECTING...",
-                active = false,
-                loading = true
-            )
+
+            "CONNECTING"
+
 
 
         ConnectionStatus.CONNECTED ->
-            ConnectionUiState(
-                text = "CONNECTED",
-                active = true,
-                loading = false
-            )
+
+            "ON"
+
+
+
+        ConnectionStatus.DISCONNECTING ->
+
+            "DISCONNECTING"
+
 
 
         ConnectionStatus.ERROR ->
-            ConnectionUiState(
-                text = "ERROR",
-                active = false,
-                loading = false
-            )
+
+            "ERROR"
 
     }
 
