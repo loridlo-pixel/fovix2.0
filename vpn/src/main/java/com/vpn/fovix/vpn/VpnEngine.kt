@@ -1,11 +1,23 @@
 package com.vpn.fovix.vpn
 
 
+import android.content.Context
+import com.vpn.fovix.vpn.singbox.SingBoxBinaryManager
 import com.vpn.fovix.vpn.singbox.SingBoxProcessManager
 
 
 
-class VpnEngine {
+class VpnEngine(
+
+    context: Context
+
+) {
+
+
+
+    private val binaryManager =
+
+        SingBoxBinaryManager(context)
 
 
 
@@ -20,7 +32,6 @@ class VpnEngine {
 
 
 
-
     fun connect(){
 
 
@@ -31,15 +42,21 @@ class VpnEngine {
         }
 
 
-        /*
-            STEP 39
 
-            Реальный запуск будет после передачи:
+        val binary =
 
-            binaryPath
-            configPath
+            binaryManager.getBinaryFile()
 
-        */
+
+
+        singBox.start(
+
+            binaryPath = binary.absolutePath,
+
+            configPath = "config.json"
+
+        )
+
 
 
         running = true

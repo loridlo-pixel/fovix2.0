@@ -1,14 +1,36 @@
 package com.vpn.fovix.app
 
+
 import android.app.Application
 
-class FovixApplication : Application() {
+
+
+class FovixApplication : Application(){
+
+
 
     lateinit var container: AppContainer
 
-    override fun onCreate() {
+
+
+
+    override fun onCreate(){
+
+
         super.onCreate()
 
-        container = AppContainer()
+
+
+        container =
+
+            AppContainer(
+
+                applicationContext
+
+            )
+
+
     }
+
+
 }
