@@ -1,74 +1,45 @@
 package com.vpn.fovix.vpn
 
 
+import android.content.Context
+import android.content.Intent
+import android.util.Log
+
+
 class VpnEngine(
 
-    private val runtimeManager: SingBoxRuntimeManager
+    private val context: Context
 
 ) {
-
-
-    private var running = false
-
 
 
     fun connect(){
 
 
-        if(running)
-            return
+        Log.e(
+            "FOVIX",
+            "VPN ENGINE START"
+        )
 
 
 
-        try {
+        val intent = Intent(
 
+            context,
 
-            runtimeManager.start()
+            FovixVpnService::class.java
 
-
-
-            running = true
-
-
-
-            println(
-                "FOVIX VPN ENGINE STARTED"
-            )
-
-
-        } catch (e: Exception){
-
-
-            println(
-                "FOVIX START ERROR: ${e.message}"
-            )
-
-
-        }
-
-
-    }
+        )
 
 
 
-    fun disconnect(){
-
-
-        if(!running)
-            return
+        context.startService(intent)
 
 
 
-        runtimeManager.stop()
-
-
-
-        running = false
-
-
-
-        println(
-            "FOVIX VPN ENGINE STOPPED"
+        Log.e(
+            "FOVIX",
+            "VPN SERVICE START REQUESTED"
         )
 
 
@@ -76,13 +47,38 @@ class VpnEngine(
 
 
 
-    fun isRunning(): Boolean {
+
+    fun disconnect(){
 
 
-        return running
+        Log.e(
+            "FOVIX",
+            "VPN ENGINE STOP"
+        )
+
+
+        val intent = Intent(
+
+            context,
+
+            FovixVpnService::class.java
+
+        )
+
+
+
+        context.stopService(intent)
+
+
+
+        Log.e(
+            "FOVIX",
+            "VPN SERVICE STOP REQUESTED"
+        )
 
 
     }
+
 
 
 }

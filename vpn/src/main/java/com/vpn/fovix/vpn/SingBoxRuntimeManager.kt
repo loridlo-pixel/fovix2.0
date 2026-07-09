@@ -1,139 +1,126 @@
 package com.vpn.fovix.vpn
 
-
 import android.content.Context
 import android.util.Log
-import java.io.File
 
 
 class SingBoxRuntimeManager(
-
     private val context: Context
-
-){
-
-
-    private var process: Process? = null
+) {
 
 
-
-    private fun prepareBinary(): File {
-
-
-        val binary = File(
-
-            context.filesDir,
-
-            "sing-box"
-
-        )
+    private var running = false
 
 
 
-        if(!binary.exists()){
-
-
-            Log.d(
-                "FOVIX",
-                "Copy sing-box binary"
-            )
-
-
-            context.assets
-                .open("singbox/sing-box")
-                .use { input ->
-
-
-                    binary.outputStream()
-                        .use { output ->
-
-                            input.copyTo(output)
-
-                        }
-
-
-                }
-
-
-            binary.setExecutable(true)
-
-
+    private val testConfig = """
+    {
+      "log": {
+        "level": "info"
+      },
+      "inbounds": [],
+      "outbounds": [
+        {
+          "type": "direct",
+          "tag": "direct"
         }
-
-
-
-        Log.d(
-            "FOVIX",
-            "Binary path: ${binary.absolutePath}"
-        )
-
-
-        return binary
-
+      ]
     }
+    """.trimIndent()
 
 
 
+    fun start() {
 
-    fun start(){
 
-
-        if(process != null){
+        if (running) {
 
             Log.d(
                 "FOVIX",
-                "Already running"
+                "SINGBOX ALREADY RUNNING"
             )
 
             return
-
         }
 
 
-
-        val binary = prepareBinary()
-
+        try {
 
 
-        process = ProcessBuilder(
+            Log.d(
+                "FOVIX",
+                "START SINGBOX JNI"
+            )
 
-            binary.absolutePath,
 
-            "version"
-
-        )
-
-            .redirectErrorStream(true)
-
-            .start()
+            val result =
+                SingBoxNative.start(testConfig)
 
 
 
-        Log.d(
-            "FOVIX",
-            "SingBox started"
-        )
+            Log.d(
+                "FOVIX",
+                "SINGBOX START RESULT=$result"
+            )
 
+
+            running = result
+
+
+
+        } catch (e: Exception) {
+
+
+            Log.e(
+                "FOVIX",
+                "SINGBOX START ERROR",
+                e
+            )
+
+
+            running = false
+
+        }
 
     }
 
 
 
-
-    fun stop(){
-
-
-        Log.d(
-            "FOVIX",
-            "SingBox stopped"
-        )
+    fun stop() {
 
 
-        process?.destroy()
+        try {
 
 
-        process = null
+            Log.d(
+                "FOVIX",
+                "STOP SINGBOX JNI"
+            )
 
+
+            val result =
+                SingBoxNative.stop()
+
+
+            Log.d(
+                "FOVIX",
+                "SINGBOX STOP RESULT=$result"
+            )
+
+
+        } catch (e: Exception) {
+
+
+            Log.e(
+                "FOVIX",
+                "SINGBOX STOP ERROR",
+                e
+            )
+
+        }
+
+
+        running = false
 
     }
 
@@ -142,10 +129,16 @@ class SingBoxRuntimeManager(
     fun isRunning(): Boolean {
 
 
-        return process != null
+        return try {
 
+            SingBoxNative.isRunning()
+
+        } catch (e: Exception) {
+
+            false
+
+        }
 
     }
-
 
 }
