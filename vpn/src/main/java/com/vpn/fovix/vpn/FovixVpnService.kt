@@ -7,13 +7,12 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 
 
+
 class FovixVpnService : VpnService() {
 
 
     private var vpnInterface: ParcelFileDescriptor? = null
 
-
-    private lateinit var singBoxRuntimeManager: SingBoxRuntimeManager
 
 
 
@@ -28,25 +27,18 @@ class FovixVpnService : VpnService() {
         )
 
 
-        singBoxRuntimeManager =
-
-            SingBoxRuntimeManager(
-                this
-            )
+        Libbox.load(this)
 
     }
 
 
 
 
+
     override fun onStartCommand(
-
         intent: Intent?,
-
         flags: Int,
-
         startId: Int
-
     ): Int {
 
 
@@ -56,7 +48,24 @@ class FovixVpnService : VpnService() {
         )
 
 
-        startVpn()
+
+        if(vpnInterface != null){
+
+
+            Log.d(
+                "FOVIX",
+                "VPN ALREADY RUNNING"
+            )
+
+
+            return START_STICKY
+
+        }
+
+
+
+        createTunnel()
+
 
 
         return START_STICKY
@@ -67,51 +76,57 @@ class FovixVpnService : VpnService() {
 
 
 
-    private fun startVpn(){
-
-
-        if(vpnInterface != null){
-
-            Log.d(
-                "FOVIX",
-                "VPN ALREADY RUNNING"
-            )
-
-            return
-
-        }
 
 
 
-        val builder = Builder()
+    private fun createTunnel(){
+
+
+        try {
+
+
+            val builder = Builder()
 
 
 
-        builder.setSession(
-            "FOVIX"
-        )
-
-
-        builder.addAddress(
-            "10.0.0.2",
-            32
-        )
-
-
-        builder.addRoute(
-            "0.0.0.0",
-            0
-        )
+            builder
+                .setSession("FOVIX VPN")
+                .setMtu(1500)
+                .addAddress(
+                    "10.0.0.2",
+                    32
+                )
+                .addRoute(
+                    "0.0.0.0",
+                    0
+                )
 
 
 
-        vpnInterface =
 
-            builder.establish()
+            vpnInterface =
+                builder.establish()
 
 
 
-        if(vpnInterface != null){
+
+            if(vpnInterface == null){
+
+
+                Log.e(
+                    "FOVIX",
+                    "TUN INTERFACE FAILED"
+                )
+
+
+                stopSelf()
+
+                return
+
+            }
+
+
+
 
 
             Log.d(
@@ -121,40 +136,62 @@ class FovixVpnService : VpnService() {
 
 
 
-            try {
 
 
-                singBoxRuntimeManager.start()
+            val config =
+                SingBoxConfigProvider
+                    .getConfig()
 
 
 
-            } catch(e: Exception){
 
 
-                Log.e(
-                    "FOVIX",
-                    "SINGBOX START FAILED ${e.message}"
+            Log.d(
+                "FOVIX",
+                "LIBBOX START REQUEST"
+            )
+
+
+
+
+
+            val result =
+                Libbox.startBox(
+                    config
                 )
 
 
-            }
+
+
+
+            Log.d(
+                "FOVIX",
+                "LIBBOX RESULT=$result"
+            )
 
 
 
         }
-        else{
+        catch(e:Exception){
 
 
             Log.e(
                 "FOVIX",
-                "TUN CREATION FAILED"
+                "VPN CREATE ERROR",
+                e
             )
 
+
+            stopSelf()
 
         }
 
 
     }
+
+
+
+
 
 
 
@@ -170,18 +207,60 @@ class FovixVpnService : VpnService() {
 
 
 
-        singBoxRuntimeManager.stop()
+        try {
+
+
+            Libbox.stopBox()
+
+
+
+        }
+        catch(e:Exception){
+
+
+            Log.e(
+                "FOVIX",
+                "LIBBOX STOP ERROR",
+                e
+            )
+
+        }
+
+
 
 
 
         vpnInterface?.close()
 
+        vpnInterface=null
 
-        vpnInterface = null
 
 
 
         super.onDestroy()
+
+
+    }
+
+
+
+
+
+
+
+    override fun onRevoke(){
+
+
+        Log.d(
+            "FOVIX",
+            "VPN PERMISSION REVOKED"
+        )
+
+
+        stopSelf()
+
+
+        super.onRevoke()
 
     }
 

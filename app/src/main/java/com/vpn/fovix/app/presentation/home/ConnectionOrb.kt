@@ -16,7 +16,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
-
 @Composable
 fun ConnectionOrb(
 
@@ -60,13 +59,19 @@ fun ConnectionOrb(
             .clickable {
 
 
-                Log.d(
-                    "FOVIX",
-                    "ORB CLICK WORKS"
+                Log.e(
+                    "FOVIX_TEST",
+                    "1 ORB CLICK"
                 )
 
 
                 onClick()
+
+
+                Log.e(
+                    "FOVIX_TEST",
+                    "2 CALLBACK FINISHED"
+                )
 
 
             },
@@ -79,14 +84,15 @@ fun ConnectionOrb(
 
         Text(
 
-            text = "TEST CLICK",
+            text = if (connected)
+                "ON"
+            else
+                "OFF",
 
             color = Color.White
 
         )
 
-
     }
-
 
 }

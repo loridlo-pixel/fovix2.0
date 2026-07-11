@@ -11,7 +11,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 
-
 class VpnRepository(
 
     private val vpnEngine: VpnEngine,
@@ -21,13 +20,11 @@ class VpnRepository(
 ) {
 
 
-
     private val _state =
 
         MutableStateFlow(
             VPNState()
         )
-
 
 
     val state: StateFlow<VPNState> =
@@ -45,11 +42,10 @@ class VpnRepository(
     ) {
 
 
-        Log.d(
+        Log.e(
             "FOVIX",
-            "Repository connect called"
+            "CONNECT START"
         )
-
 
 
         val decision =
@@ -58,9 +54,9 @@ class VpnRepository(
 
 
 
-        Log.d(
+        Log.e(
             "FOVIX",
-            "Selected server: ${decision.recommendedServer}"
+            "SERVER = ${decision.recommendedServer}"
         )
 
 
@@ -81,9 +77,9 @@ class VpnRepository(
 
 
 
-        Log.d(
+        Log.e(
             "FOVIX",
-            "State changed CONNECTED"
+            "STATUS CONNECTED"
         )
 
 
@@ -96,9 +92,9 @@ class VpnRepository(
     fun disconnect(){
 
 
-        Log.d(
+        Log.e(
             "FOVIX",
-            "Repository disconnect called"
+            "DISCONNECT START"
         )
 
 
@@ -117,9 +113,9 @@ class VpnRepository(
 
 
 
-        Log.d(
+        Log.e(
             "FOVIX",
-            "State changed DISCONNECTED"
+            "STATUS DISCONNECTED"
         )
 
 
@@ -132,13 +128,15 @@ class VpnRepository(
     fun toggle(){
 
 
-        val current = _state.value.status
+        val current =
+
+            _state.value.status
 
 
 
-        Log.d(
+        Log.e(
             "FOVIX",
-            "Toggle current state: $current"
+            "TOGGLE $current"
         )
 
 
@@ -149,11 +147,15 @@ class VpnRepository(
 
         ){
 
+
             disconnect()
+
 
         } else {
 
+
             connect()
+
 
         }
 

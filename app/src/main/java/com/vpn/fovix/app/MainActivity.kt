@@ -1,11 +1,13 @@
 package com.vpn.fovix.app
 
 
+import android.net.VpnService
 import android.os.Bundle
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -18,8 +20,37 @@ import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 import com.vpn.fovix.ui.theme.FovixTheme
 
 
-
 class MainActivity : ComponentActivity() {
+
+
+    private var vpnPermissionGranted = false
+
+
+    private val vpnPermissionLauncher =
+
+        registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+
+            if (it.resultCode == RESULT_OK) {
+
+                vpnPermissionGranted = true
+
+                Log.d(
+                    "FOVIX",
+                    "VPN PERMISSION GRANTED"
+                )
+
+            } else {
+
+                Log.e(
+                    "FOVIX",
+                    "VPN PERMISSION DENIED"
+                )
+
+            }
+
+        }
 
 
     override fun onCreate(
@@ -29,7 +60,64 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
 
+        /*
+         * Load sing-box native engine
+         */
+        try {
+
+            LibboxLoader.load()
+
+            Log.d(
+                "FOVIX",
+                "libbox.so loaded successfully"
+            )
+
+        } catch (e: Exception) {
+
+            Log.e(
+                "FOVIX",
+                "libbox loading failed",
+                e
+            )
+
+        }
+
+
         enableEdgeToEdge()
+
+
+
+        val permissionIntent =
+
+            VpnService.prepare(this)
+
+
+
+        if (permissionIntent == null) {
+
+            vpnPermissionGranted = true
+
+            Log.d(
+                "FOVIX",
+                "VPN PERMISSION ALREADY GRANTED"
+            )
+
+
+        } else {
+
+
+            Log.d(
+                "FOVIX",
+                "REQUEST VPN PERMISSION"
+            )
+
+
+            vpnPermissionLauncher.launch(
+                permissionIntent
+            )
+
+        }
+
 
 
         val container =
@@ -51,16 +139,14 @@ class MainActivity : ComponentActivity() {
 
                 )
 
-
             }
 
-
         }
-
 
     }
 
 }
+
 
 
 
@@ -73,37 +159,39 @@ fun FovixRoot(
 ) {
 
 
-
     val viewModel: HomeViewModel =
 
         viewModel(
 
-            factory =
-            HomeViewModelFactory(
+            factory = HomeViewModelFactory(
                 repository
             )
 
         )
 
 
+    val state by viewModel.state.collectAsState()
 
-    val state by
 
-    viewModel.state.collectAsState()
+
+    Log.d(
+        "FOVIX",
+        "UI STATE = ${state.status}"
+    )
 
 
 
     HomeDashboard(
 
+
         connected =
 
-            state.status ==
-                    ConnectionStatus.CONNECTED,
+            state.status == ConnectionStatus.CONNECTED,
 
 
         server =
 
-            state.server ?: "Auto",
+            state.server,
 
 
         download =
@@ -119,9 +207,9 @@ fun FovixRoot(
         onConnectClick = {
 
 
-            Log.d(
-                "FOVIX",
-                "MainActivity click received"
+            Log.e(
+                "FOVIX_TEST",
+                "MAIN CALLBACK RECEIVED"
             )
 
 
@@ -131,6 +219,5 @@ fun FovixRoot(
         }
 
     )
-
 
 }
