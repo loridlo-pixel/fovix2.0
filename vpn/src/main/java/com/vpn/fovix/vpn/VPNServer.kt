@@ -9,18 +9,45 @@ data class VPNServer(
 
     val port: Int,
 
+
+    /*
+     * Универсальные идентификаторы
+     */
     val uuid: String? = null,
 
     val password: String? = null,
 
+
+    /*
+     * TLS / Reality / сертификаты
+     */
     val security: String? = null,
 
     val sni: String? = null,
 
-    val transport: String? = null,
+    val fingerprint: String? = null,
 
-    val path: String? = null,
 
-    val fingerprint: String? = null
+    /*
+     * Любые дополнительные параметры sing-box
+     *
+     * Пример:
+     *
+     * transport:
+     * {
+     *   "type":"grpc",
+     *   "service_name":"vpn"
+     * }
+     *
+     * или
+     *
+     * reality:
+     * {
+     *   "enabled":true,
+     *   "public_key":"..."
+     * }
+     *
+     */
+    val options: Map<String, Any>? = null
 
 )

@@ -7,7 +7,6 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 
 
-
 class FovixVpnService : VpnService() {
 
 
@@ -15,22 +14,16 @@ class FovixVpnService : VpnService() {
 
 
 
-
     override fun onCreate() {
 
         super.onCreate()
-
 
         Log.d(
             "FOVIX",
             "VPN SERVICE CREATED"
         )
 
-
-        Libbox.load(this)
-
     }
-
 
 
 
@@ -44,19 +37,17 @@ class FovixVpnService : VpnService() {
 
         Log.d(
             "FOVIX",
-            "VPN SERVICE START COMMAND"
+            "VPN START COMMAND"
         )
 
 
 
         if(vpnInterface != null){
 
-
             Log.d(
                 "FOVIX",
                 "VPN ALREADY RUNNING"
             )
-
 
             return START_STICKY
 
@@ -64,8 +55,7 @@ class FovixVpnService : VpnService() {
 
 
 
-        createTunnel()
-
+        startVpn()
 
 
         return START_STICKY
@@ -76,10 +66,7 @@ class FovixVpnService : VpnService() {
 
 
 
-
-
-
-    private fun createTunnel(){
+    private fun startVpn(){
 
 
         try {
@@ -88,19 +75,29 @@ class FovixVpnService : VpnService() {
             val builder = Builder()
 
 
-
             builder
-                .setSession("FOVIX VPN")
-                .setMtu(1500)
+
+                .setSession(
+                    "FOVIX VPN"
+                )
+
+                .setMtu(
+                    1500
+                )
+
                 .addAddress(
                     "10.0.0.2",
                     32
                 )
+
                 .addRoute(
                     "0.0.0.0",
                     0
                 )
 
+                .addDnsServer(
+                    "1.1.1.1"
+                )
 
 
 
@@ -109,13 +106,12 @@ class FovixVpnService : VpnService() {
 
 
 
-
             if(vpnInterface == null){
 
 
                 Log.e(
                     "FOVIX",
-                    "TUN INTERFACE FAILED"
+                    "TUN CREATE FAILED"
                 )
 
 
@@ -127,11 +123,36 @@ class FovixVpnService : VpnService() {
 
 
 
-
-
             Log.d(
                 "FOVIX",
-                "TUN INTERFACE CREATED"
+                "TUN CREATED"
+            )
+
+
+
+
+
+            val server = VPNServer(
+
+                protocol = "vless",
+
+                address = "ai.noooo.win",
+
+                port = 443,
+
+                uuid = "c5c1c20f-691d-4850-988c-ee463f4799ad",
+
+                sni = "cdn-v1-6a51ff3b.noooo.win",
+
+                fingerprint = "firefox",
+
+
+                options = mapOf(
+
+                    "flow" to ""
+
+                )
+
             )
 
 
@@ -139,35 +160,58 @@ class FovixVpnService : VpnService() {
 
 
             val config =
-                SingBoxConfigProvider
-                    .getConfig()
-
-
+                SingBoxConfigBuilder.build(server)
 
 
 
             Log.d(
                 "FOVIX",
-                "LIBBOX START REQUEST"
+                "CONFIG SIZE=${config.length}"
             )
 
 
 
+            Log.d(
+                "FOVIX",
+                config
+            )
 
 
-            val result =
-                Libbox.startBox(
+
+            val started =
+                SingBoxNative.start(
                     config
                 )
 
 
 
-
-
             Log.d(
                 "FOVIX",
-                "LIBBOX RESULT=$result"
+                "SINGBOX START RESULT=$started"
             )
+
+
+
+            if(started){
+
+
+                Log.d(
+                    "FOVIX",
+                    "FOVIX CORE RUNNING"
+                )
+
+
+            }
+            else{
+
+
+                Log.e(
+                    "FOVIX",
+                    "FOVIX CORE FAILED"
+                )
+
+
+            }
 
 
 
@@ -177,7 +221,7 @@ class FovixVpnService : VpnService() {
 
             Log.e(
                 "FOVIX",
-                "VPN CREATE ERROR",
+                "VPN START ERROR",
                 e
             )
 
@@ -193,10 +237,6 @@ class FovixVpnService : VpnService() {
 
 
 
-
-
-
-
     override fun onDestroy(){
 
 
@@ -206,12 +246,10 @@ class FovixVpnService : VpnService() {
         )
 
 
+        try{
 
-        try {
 
-
-            Libbox.stopBox()
-
+            SingBoxNative.stop()
 
 
         }
@@ -220,7 +258,7 @@ class FovixVpnService : VpnService() {
 
             Log.e(
                 "FOVIX",
-                "LIBBOX STOP ERROR",
+                "SINGBOX STOP ERROR",
                 e
             )
 
@@ -228,22 +266,15 @@ class FovixVpnService : VpnService() {
 
 
 
-
-
         vpnInterface?.close()
 
-        vpnInterface=null
-
+        vpnInterface = null
 
 
 
         super.onDestroy()
 
-
     }
-
-
-
 
 
 

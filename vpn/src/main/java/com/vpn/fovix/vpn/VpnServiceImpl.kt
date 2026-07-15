@@ -1,4 +1,4 @@
-﻿package com.vpn.fovix.vpn
+package com.vpn.fovix.vpn
 
 
 import android.content.Intent

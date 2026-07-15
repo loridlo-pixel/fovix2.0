@@ -21,21 +21,19 @@ class VpnRepository(
 
 
     private val _state =
-
         MutableStateFlow(
             VPNState()
         )
 
 
     val state: StateFlow<VPNState> =
-
         _state
 
 
 
 
 
-    fun connect(
+    fun startVpn(
 
         mode: UserMode = UserMode.SIMPLE
 
@@ -44,43 +42,27 @@ class VpnRepository(
 
         Log.e(
             "FOVIX",
-            "CONNECT START"
+            "START VPN AFTER PERMISSION"
         )
 
 
         val decision =
-
             decisionEngine.evaluate(mode)
 
 
 
-        Log.e(
-            "FOVIX",
-            "SERVER = ${decision.recommendedServer}"
-        )
-
-
-
-        vpnEngine.connect()
+        vpnEngine.startService()
 
 
 
         _state.value =
-
             _state.value.copy(
 
-                status = ConnectionStatus.CONNECTED,
+                status = ConnectionStatus.CONNECTING,
 
                 server = decision.recommendedServer
 
             )
-
-
-
-        Log.e(
-            "FOVIX",
-            "STATUS CONNECTED"
-        )
 
 
     }
@@ -94,30 +76,20 @@ class VpnRepository(
 
         Log.e(
             "FOVIX",
-            "DISCONNECT START"
+            "DISCONNECT"
         )
 
 
-
-        vpnEngine.disconnect()
+        vpnEngine.stopService()
 
 
 
         _state.value =
-
             _state.value.copy(
 
                 status = ConnectionStatus.DISCONNECTED
 
             )
-
-
-
-        Log.e(
-            "FOVIX",
-            "STATUS DISCONNECTED"
-        )
-
 
     }
 
@@ -128,41 +100,22 @@ class VpnRepository(
     fun toggle(){
 
 
-        val current =
-
-            _state.value.status
-
-
-
-        Log.e(
-            "FOVIX",
-            "TOGGLE $current"
-        )
-
-
-
         if(
-
-            current == ConnectionStatus.CONNECTED
-
+            _state.value.status ==
+            ConnectionStatus.CONNECTED
         ){
-
 
             disconnect()
 
+        }
+        else {
 
-        } else {
-
-
-            connect()
-
+            startVpn()
 
         }
 
 
     }
-
-
 
 
 
@@ -174,19 +127,16 @@ class VpnRepository(
 
 
         val decision =
-
             decisionEngine.evaluate(mode)
 
 
 
         _state.value =
-
             _state.value.copy(
 
                 server = decision.recommendedServer
 
             )
-
 
     }
 

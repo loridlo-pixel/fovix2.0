@@ -13,14 +13,13 @@ class VpnEngine(
 ) {
 
 
-    fun connect(){
+    fun startService() {
 
 
         Log.e(
             "FOVIX",
-            "VPN ENGINE START"
+            "VPN SERVICE START"
         )
-
 
 
         val intent = Intent(
@@ -32,9 +31,7 @@ class VpnEngine(
         )
 
 
-
         context.startService(intent)
-
 
 
         Log.e(
@@ -48,12 +45,13 @@ class VpnEngine(
 
 
 
-    fun disconnect(){
+
+    fun stopService() {
 
 
         Log.e(
             "FOVIX",
-            "VPN ENGINE STOP"
+            "VPN SERVICE STOP"
         )
 
 
@@ -66,9 +64,7 @@ class VpnEngine(
         )
 
 
-
         context.stopService(intent)
-
 
 
         Log.e(
@@ -78,7 +74,6 @@ class VpnEngine(
 
 
     }
-
 
 
 }

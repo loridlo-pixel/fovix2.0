@@ -8,6 +8,7 @@
 
 dependencyResolutionManagement {
     repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+
     repositories {
         google()
         mavenCentral()
@@ -27,5 +28,3 @@ include(
     ":feature_settings",
     ":feature_stats"
 )
-
-include(":core")
