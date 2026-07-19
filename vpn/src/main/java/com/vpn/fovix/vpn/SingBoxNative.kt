@@ -6,7 +6,7 @@ object SingBoxNative {
 
     init {
 
-        System.loadLibrary("singbox")
+        System.loadLibrary("fovix")
 
     }
 

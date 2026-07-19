@@ -1,6 +1,5 @@
 package com.vpn.fovix.vpn
 
-
 import android.content.Intent
 import android.net.VpnService
 import android.os.ParcelFileDescriptor
@@ -13,7 +12,6 @@ class FovixVpnService : VpnService() {
     private var vpnInterface: ParcelFileDescriptor? = null
 
 
-
     override fun onCreate() {
 
         super.onCreate()
@@ -24,7 +22,6 @@ class FovixVpnService : VpnService() {
         )
 
     }
-
 
 
 
@@ -41,8 +38,7 @@ class FovixVpnService : VpnService() {
         )
 
 
-
-        if(vpnInterface != null){
+        if (vpnInterface != null) {
 
             Log.d(
                 "FOVIX",
@@ -54,7 +50,6 @@ class FovixVpnService : VpnService() {
         }
 
 
-
         startVpn()
 
 
@@ -64,9 +59,7 @@ class FovixVpnService : VpnService() {
 
 
 
-
-
-    private fun startVpn(){
+    private fun startVpn() {
 
 
         try {
@@ -76,25 +69,20 @@ class FovixVpnService : VpnService() {
 
 
             builder
-
                 .setSession(
                     "FOVIX VPN"
                 )
-
                 .setMtu(
                     1500
                 )
-
                 .addAddress(
                     "10.0.0.2",
                     32
                 )
-
                 .addRoute(
                     "0.0.0.0",
                     0
                 )
-
                 .addDnsServer(
                     "1.1.1.1"
                 )
@@ -106,7 +94,7 @@ class FovixVpnService : VpnService() {
 
 
 
-            if(vpnInterface == null){
+            if (vpnInterface == null) {
 
 
                 Log.e(
@@ -127,8 +115,6 @@ class FovixVpnService : VpnService() {
                 "FOVIX",
                 "TUN CREATED"
             )
-
-
 
 
 
@@ -157,8 +143,6 @@ class FovixVpnService : VpnService() {
 
 
 
-
-
             val config =
                 SingBoxConfigBuilder.build(server)
 
@@ -170,7 +154,6 @@ class FovixVpnService : VpnService() {
             )
 
 
-
             Log.d(
                 "FOVIX",
                 config
@@ -178,21 +161,45 @@ class FovixVpnService : VpnService() {
 
 
 
+            /*
+             * Передаем Android TUN FD в FOVIX native engine.
+             *
+             * После detachFd():
+             * - Android больше не владеет FD
+             * - управление переходит в Go/sing-box
+             */
+
+            val tunFd =
+                vpnInterface!!.detachFd()
+
+
+            vpnInterface = null
+
+
+
+            Log.d(
+                "FOVIX",
+                "TUN FD=$tunFd"
+            )
+
+
+
             val started =
                 SingBoxNative.start(
-                    config
+                    config,
+                    tunFd
                 )
 
 
 
             Log.d(
                 "FOVIX",
-                "SINGBOX START RESULT=$started"
+                "FOVIX START RESULT=$started"
             )
 
 
 
-            if(started){
+            if (started) {
 
 
                 Log.d(
@@ -202,21 +209,25 @@ class FovixVpnService : VpnService() {
 
 
             }
-            else{
+            else {
 
 
                 Log.e(
                     "FOVIX",
-                    "FOVIX CORE FAILED"
+                    "FOVIX START FAILED"
                 )
 
+
+                SingBoxNative.stop()
+
+
+                stopSelf()
 
             }
 
 
-
         }
-        catch(e:Exception){
+        catch (e: Exception) {
 
 
             Log.e(
@@ -224,6 +235,21 @@ class FovixVpnService : VpnService() {
                 "VPN START ERROR",
                 e
             )
+
+
+            try {
+
+                SingBoxNative.stop()
+
+            }
+            catch (_: Exception) {
+
+            }
+
+
+            vpnInterface?.close()
+
+            vpnInterface = null
 
 
             stopSelf()
@@ -235,9 +261,7 @@ class FovixVpnService : VpnService() {
 
 
 
-
-
-    override fun onDestroy(){
+    override fun onDestroy() {
 
 
         Log.d(
@@ -246,19 +270,20 @@ class FovixVpnService : VpnService() {
         )
 
 
-        try{
+
+        try {
 
 
             SingBoxNative.stop()
 
 
         }
-        catch(e:Exception){
+        catch (e: Exception) {
 
 
             Log.e(
                 "FOVIX",
-                "SINGBOX STOP ERROR",
+                "FOVIX STOP ERROR",
                 e
             )
 
@@ -278,8 +303,7 @@ class FovixVpnService : VpnService() {
 
 
 
-
-    override fun onRevoke(){
+    override fun onRevoke() {
 
 
         Log.d(
@@ -288,10 +312,40 @@ class FovixVpnService : VpnService() {
         )
 
 
+        try {
+
+            SingBoxNative.stop()
+
+        }
+        catch (_: Exception) {
+
+        }
+
+
+        vpnInterface?.close()
+
+        vpnInterface = null
+
+
         stopSelf()
 
 
         super.onRevoke()
+
+    }
+
+
+
+    override fun protect(socket: Int): Boolean {
+
+
+        Log.d(
+            "FOVIX",
+            "PROTECT SOCKET=$socket"
+        )
+
+
+        return super.protect(socket)
 
     }
 

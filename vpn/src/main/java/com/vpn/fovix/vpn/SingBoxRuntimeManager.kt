@@ -1,169 +1,108 @@
 package com.vpn.fovix.vpn
 
-
-import android.content.Context
 import android.util.Log
 
 
-class SingBoxRuntimeManager(
-    private val context: Context
-) {
+object SingBoxRuntimeManager {
+
+
+    private const val TAG = "FOVIX"
 
 
     private var running = false
 
 
-    private val testConfig = """
-{
-  "log": {
-    "level": "debug"
-  },
-  "route": {
-    "auto_detect_interface": true
-  },
-  "inbounds": [],
-  "outbounds": [
-    {
-      "type": "direct",
-      "tag": "direct",
-      "override_address": "",
-      "override_port": 0
-    }
-  ]
-}
-""".trimIndent()
 
-
-    fun start() {
+    fun start(
+        config: String,
+        tunFd: Int
+    ): Boolean {
 
 
         if (running) {
 
             Log.d(
-                "FOVIX",
-                "SINGBOX ALREADY RUNNING"
+                TAG,
+                "FOVIX ALREADY RUNNING"
             )
 
-            return
+            return true
+
         }
 
 
-        try {
+
+        Log.d(
+            TAG,
+            "FOVIX RUNTIME START"
+        )
 
 
-            Log.d(
-                "FOVIX",
-                "START SINGBOX JNI"
+
+        Log.d(
+            TAG,
+            "TUN FD=$tunFd"
+        )
+
+
+
+        val result =
+            SingBoxNative.start(
+                config,
+                tunFd
             )
 
 
-            Log.d(
-                "FOVIX",
-                "CONFIG LENGTH = ${testConfig.length}"
-            )
 
-
-            val result =
-                SingBoxNative.start(
-                    testConfig
-                )
-
-
-            Log.d(
-                "FOVIX",
-                "SINGBOX JNI RESULT = $result"
-            )
-
-
-            val nativeRunning =
-                SingBoxNative.isRunning()
-
-
-            Log.d(
-                "FOVIX",
-                "SINGBOX NATIVE RUNNING = $nativeRunning"
-            )
-
-
-            running = result
+        Log.d(
+            TAG,
+            "FOVIX NATIVE START RESULT=$result"
+        )
 
 
 
-            if(result){
-
-                Log.d(
-                    "FOVIX",
-                    "SINGBOX RUNTIME STARTED"
-                )
-
-            }
-            else{
-
-                Log.e(
-                    "FOVIX",
-                    "SINGBOX RUNTIME FAILED"
-                )
-
-            }
+        running = result
 
 
-        }
-        catch(e: Exception){
 
-
-            Log.e(
-                "FOVIX",
-                "SINGBOX ERROR ${e.message}"
-            )
-
-
-            running = false
-
-        }
+        return result
 
     }
 
 
 
-    fun stop(){
+
+    fun stop(): Boolean {
 
 
-        try {
-
-
-            Log.d(
-                "FOVIX",
-                "STOP SINGBOX JNI"
-            )
-
-
-            val result =
-                SingBoxNative.stop()
+        Log.d(
+            TAG,
+            "FOVIX RUNTIME STOP"
+        )
 
 
 
-            Log.d(
-                "FOVIX",
-                "SINGBOX STOP RESULT = $result"
-            )
+        val result =
+            SingBoxNative.stop()
 
 
-        }
-        catch(e: Exception){
 
-
-            Log.e(
-                "FOVIX",
-                "SINGBOX STOP ERROR ${e.message}"
-            )
-
-        }
+        Log.d(
+            TAG,
+            "FOVIX NATIVE STOP RESULT=$result"
+        )
 
 
 
         running = false
 
+
+
+        return result
+
     }
+
+
 
 
 
@@ -177,7 +116,14 @@ class SingBoxRuntimeManager(
 
 
         }
-        catch(e: Exception){
+        catch (e: Exception) {
+
+
+            Log.e(
+                TAG,
+                "FOVIX CHECK ERROR",
+                e
+            )
 
 
             false
