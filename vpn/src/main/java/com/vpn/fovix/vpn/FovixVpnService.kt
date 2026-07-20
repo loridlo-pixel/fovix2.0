@@ -1,5 +1,7 @@
 package com.vpn.fovix.vpn
 
+import com.vpn.fovix.config.SingBoxConfigBuilder
+
 import android.content.Intent
 import android.net.VpnService
 import android.os.ParcelFileDescriptor
@@ -76,8 +78,8 @@ class FovixVpnService : VpnService() {
                     1500
                 )
                 .addAddress(
-                    "10.0.0.2",
-                    32
+                    "172.19.0.1",
+    30
                 )
                 .addRoute(
                     "0.0.0.0",
