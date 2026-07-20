@@ -29,10 +29,15 @@ object SingBoxConfigProvider {
             {
               "type": "tun",
               "tag": "tun-in",
+
               "interface_name": "fovix0",
-              "inet4_address": "172.19.0.1/30",
-              "auto_route": true,
-              "strict_route": true,
+
+              "inet4_address": "10.0.0.1/30",
+
+              "auto_route": false,
+
+              "strict_route": false,
+
               "stack": "system"
             }
           ],
@@ -45,11 +50,14 @@ object SingBoxConfigProvider {
               "tag": "proxy",
 
               "server": "ai.noooo.win",
+
               "server_port": 443,
 
               "uuid": "c5c1c20f-691d-4850-988c-ee463f4799ad",
 
+
               "tls": {
+
                 "enabled": true,
 
                 "server_name": "cdn-v1-6a51ff3b.noooo.win",
@@ -58,23 +66,34 @@ object SingBoxConfigProvider {
                   "h2"
                 ],
 
+
                 "utls": {
+
                   "enabled": true,
+
                   "fingerprint": "firefox"
+
                 }
+
               },
 
 
               "transport": {
+
                 "type": "xhttp",
+
                 "path": "/",
+
                 "mode": "stream-one"
+
               }
+
             },
 
 
             {
               "type": "direct",
+
               "tag": "direct"
             }
 
@@ -83,7 +102,7 @@ object SingBoxConfigProvider {
 
           "route": {
 
-            "auto_detect_interface": true,
+            "auto_detect_interface": false,
 
             "final": "proxy"
 
