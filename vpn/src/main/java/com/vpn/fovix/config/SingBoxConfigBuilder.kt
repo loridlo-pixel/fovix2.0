@@ -1,5 +1,6 @@
 package com.vpn.fovix.config
 
+import android.util.Log
 import com.vpn.fovix.vpn.VPNServer
 import org.json.JSONArray
 import org.json.JSONObject
@@ -16,86 +17,73 @@ object SingBoxConfigBuilder {
         val config = JSONObject()
 
 
-
         /*
-         * TUN INBOUND
+         * TUN
+         *
+         * Android VPNService already creates TUN.
+         * sing-box only receives FD and processes packets.
          */
 
         val inbounds = JSONArray()
 
-        val tun = JSONObject()
+
+        val tun = JSONObject().apply {
+
+            put(
+                "type",
+                "tun"
+            )
+
+            put(
+                "tag",
+                "tun-in"
+            )
+
+            put(
+                "mtu",
+                1500
+            )
 
 
-        tun.put(
-            "type",
-            "tun"
-        )
+            put(
+                "address",
+                JSONArray().apply {
+
+                    put(
+                        "172.19.0.1/30"
+                    )
+
+                }
+            )
 
 
-        tun.put(
-            "tag",
-            "tun-in"
-        )
+            put(
+                "auto_route",
+                false
+            )
 
 
-        /*
-         * ВАЖНО:
-         * Android уже создает TUN через VpnService.
-         * Sing-box получает FD.
-         */
-
-        tun.put(
-            "interface_name",
-            "fovix0"
-        )
+            put(
+                "strict_route",
+                false
+            )
 
 
-       tun.put(
-    "address",
-    JSONArray().apply {
+            put(
+                "stack",
+                "gvisor"
+            )
 
-        put(
-            "10.0.0.1/30"
-        )
-
-    }
-)
+        }
 
 
-        tun.put(
-            "mtu",
-            1500
-        )
-
-
-        tun.put(
-            "stack",
-            "system"
-        )
-
-
-        tun.put(
-            "auto_route",
-            false
-        )
-
-
-        tun.put(
-            "strict_route",
-            false
-        )
-
-
-        inbounds.put(
-            tun
-        )
+        inbounds.put(tun)
 
 
         config.put(
             "inbounds",
             inbounds
         )
-
 
 
 
@@ -106,104 +94,95 @@ object SingBoxConfigBuilder {
         val outbounds = JSONArray()
 
 
-        val proxy = JSONObject()
+        val proxy = JSONObject().apply {
 
 
-        proxy.put(
-            "type",
-            server.protocol
-        )
+            put(
+                "type",
+                server.protocol
+            )
 
 
-        proxy.put(
-            "tag",
-            "proxy"
-        )
+            put(
+                "tag",
+                "proxy"
+            )
 
 
-        proxy.put(
-            "server",
-            server.address
-        )
+            put(
+                "server",
+                server.address
+            )
 
 
-        proxy.put(
-            "server_port",
-            server.port
-        )
+            put(
+                "server_port",
+                server.port
+            )
 
 
-        proxy.put(
-            "uuid",
-            server.uuid
-        )
+            put(
+                "uuid",
+                server.uuid
+            )
 
 
-        proxy.put(
-            "tls",
+            /*
+             * Basic TLS VLESS.
+             *
+             * uTLS отключен для первого
+             * рабочего теста.
+             * После подтверждения соединения
+             * вернем fingerprint.
+             */
+
+            put(
+                "tls",
+                JSONObject().apply {
+
+
+                    put(
+                        "enabled",
+                        true
+                    )
+
+
+                    put(
+                        "server_name",
+                        server.sni
+                    )
+
+
+                }
+            )
+
+        }
+
+
+        outbounds.put(proxy)
+
+
+
+        /*
+         * DIRECT fallback
+         */
+
+        outbounds.put(
             JSONObject().apply {
 
 
                 put(
-                    "enabled",
-                    true
+                    "type",
+                    "direct"
                 )
 
 
                 put(
-                    "server_name",
-                    server.sni
+                    "tag",
+                    "direct"
                 )
-
-
-                put(
-                    "utls",
-                    JSONObject().apply {
-
-
-                        put(
-                            "enabled",
-                            true
-                        )
-
-
-                        put(
-                            "fingerprint",
-                            server.fingerprint
-                        )
-
-
-                    }
-                )
-
 
             }
-        )
-
-
-        outbounds.put(
-            proxy
-        )
-
-
-
-        val direct = JSONObject()
-
-
-        direct.put(
-            "type",
-            "direct"
-        )
-
-
-        direct.put(
-            "tag",
-            "direct"
-        )
-
-
-        outbounds.put(
-            direct
         )
 
 
@@ -215,9 +194,8 @@ object SingBoxConfigBuilder {
 
 
 
-
         /*
-         * ROUTE
+         * ROUTING
          */
 
         config.put(
@@ -236,9 +214,64 @@ object SingBoxConfigBuilder {
 
 
 
-        return config.toString()
+        /*
+         * DNS
+         */
+
+        config.put(
+            "dns",
+            JSONObject().apply {
+
+
+                put(
+                    "servers",
+                    JSONArray().apply {
+
+
+                        put(
+                            JSONObject().apply {
+
+                                put(
+                                    "tag",
+                                    "dns-cloudflare"
+                                )
+
+                                put(
+                                    "address",
+                                    "1.1.1.1"
+                                )
+
+                            }
+                        )
+
+                    }
+                )
+
+
+                put(
+                    "final",
+                    "dns-cloudflare"
+                )
+
+
+            }
+        )
+
+
+
+        val result =
+            config.toString()
+
+
+
+        Log.d(
+            "FOVIX",
+            "SINGBOX CONFIG=$result"
+        )
+
+
+        return result
 
     }
-
 
 }

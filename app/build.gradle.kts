@@ -42,7 +42,6 @@ android {
     compileOptions {
 
         sourceCompatibility = JavaVersion.VERSION_17
-
         targetCompatibility = JavaVersion.VERSION_17
 
     }
@@ -51,29 +50,6 @@ android {
     kotlinOptions {
 
         jvmTarget = "17"
-
-    }
-
-
-    /*
-       libbox.so и libsingbox.so
-       находятся здесь:
-
-       app/src/main/jniLibs/arm64-v8a/
-
-    */
-
-    sourceSets {
-
-        getByName("main") {
-
-            jniLibs.srcDirs(
-
-                "src/main/jniLibs"
-
-            )
-
-        }
 
     }
 
@@ -91,7 +67,6 @@ android {
 }
 
 
-
 dependencies {
 
 
@@ -104,11 +79,9 @@ dependencies {
     implementation(project(":core"))
 
 
-
     implementation(
         "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1"
     )
-
 
 
     implementation(
@@ -118,33 +91,18 @@ dependencies {
     )
 
 
+    implementation("androidx.compose.ui:ui")
 
-    implementation(
-        "androidx.compose.ui:ui"
-    )
+    implementation("androidx.compose.ui:ui-graphics")
 
+    implementation("androidx.compose.ui:ui-tooling-preview")
 
-    implementation(
-        "androidx.compose.ui:ui-graphics"
-    )
-
-
-    implementation(
-        "androidx.compose.ui:ui-tooling-preview"
-    )
-
-
-
-    implementation(
-        "androidx.compose.material3:material3"
-    )
-
+    implementation("androidx.compose.material3:material3")
 
 
     implementation(
         "androidx.activity:activity-compose:1.9.0"
     )
-
 
 
     debugImplementation(
