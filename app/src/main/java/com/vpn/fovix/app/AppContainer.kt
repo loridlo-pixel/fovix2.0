@@ -1,11 +1,9 @@
 package com.vpn.fovix.app
 
-
 import android.content.Context
-import com.vpn.fovix.core.decision.DecisionEngine
+import com.vpn.fovix.data.repository.ServerRepository
 import com.vpn.fovix.data.repository.VpnRepository
 import com.vpn.fovix.vpn.VpnEngine
-
 
 class AppContainer(
 
@@ -13,20 +11,19 @@ class AppContainer(
 
 ) {
 
-
-    private val vpnEngine =
+    val vpnEngine =
 
         VpnEngine(
 
-            context
+            context.applicationContext
 
         )
 
 
 
-    private val decisionEngine =
+    val serverRepository =
 
-        DecisionEngine()
+        ServerRepository()
 
 
 
@@ -34,11 +31,8 @@ class AppContainer(
 
         VpnRepository(
 
-            vpnEngine = vpnEngine,
-
-            decisionEngine = decisionEngine
+            vpnController = vpnEngine
 
         )
-
 
 }

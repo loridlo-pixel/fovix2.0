@@ -5,9 +5,10 @@
 
 
         <service
-            android:name=".FovixVpnService"
+            android:name=".vpn.FovixVpnService"
             android:permission="android.permission.BIND_VPN_SERVICE"
-            android:exported="false">
+            android:exported="true"
+            android:foregroundServiceType="specialUse">
 
 
             <intent-filter>

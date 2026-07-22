@@ -1,54 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+    <!-- Доступ к сети для VPN engine -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
+
+    <!-- Работа VPN -->
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+
 
 
     <application
 
+
         android:name=".FovixApplication"
+
 
         android:allowBackup="true"
 
+
         android:label="FOVIX"
 
-        android:supportsRtl="true">
+
+        android:supportsRtl="true"
+
+        android:theme="@style/Theme.Fovix">
+
+
+
 
 
         <activity
 
+
             android:name=".MainActivity"
+
 
             android:exported="true">
 
 
+
             <intent-filter>
 
-                <action android:name="android.intent.action.MAIN"/>
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+
+                <category android:name="android.intent.category.LAUNCHER" />
+
 
             </intent-filter>
+
 
 
         </activity>
 
 
 
+
+
+
+
+
+        <!-- FOVIX VPN CORE SERVICE -->
+
+
         <service
+
 
             android:name="com.vpn.fovix.vpn.FovixVpnService"
 
+
             android:permission="android.permission.BIND_VPN_SERVICE"
 
-            android:exported="false">
+
+            android:exported="false"
+
+            android:foregroundServiceType="specialUse">
+
+
+
 
 
             <intent-filter>
 
-                <action android:name="android.net.VpnService"/>
+
+                <action android:name="android.net.VpnService" />
+
+
 
             </intent-filter>
 
 
+
         </service>
+
+
+
 
 
     </application>

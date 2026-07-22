@@ -26,19 +26,17 @@ class MainActivity : ComponentActivity() {
 
 
 
+    private lateinit var appContainer: AppContainer
+
+
+
     private val vpnPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
-        ) { result ->
+        ) {
 
 
-            Log.e(
-                TAG,
-                "VPN CALLBACK ${result.resultCode}"
-            )
-
-
-            if (result.resultCode == RESULT_OK) {
+            if (it.resultCode == RESULT_OK) {
 
 
                 Log.e(
@@ -47,13 +45,16 @@ class MainActivity : ComponentActivity() {
                 )
 
 
-                FovixContainer.repository.startVpn()
+                appContainer
+                    .vpnRepository
+                    .startVpn()
 
 
             }
 
 
         }
+
 
 
 
@@ -66,7 +67,11 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
 
 
-        FovixContainer.init(this)
+
+        appContainer =
+            (application as FovixApplication)
+                .container
+
 
 
         checkSingBox()
@@ -86,7 +91,8 @@ class MainActivity : ComponentActivity() {
 
                     FovixApp(
 
-                        repository = FovixContainer.repository,
+                        repository =
+                            appContainer.vpnRepository,
 
 
                         onConnect = {
@@ -98,9 +104,14 @@ class MainActivity : ComponentActivity() {
 
                         onDisconnect = {
 
-                            FovixContainer.repository.disconnect()
+
+                            appContainer
+                                .vpnRepository
+                                .disconnect()
+
 
                         }
+
 
                     )
 
@@ -120,6 +131,8 @@ class MainActivity : ComponentActivity() {
 
 
 
+
+
     private fun requestVpnPermission() {
 
 
@@ -127,28 +140,20 @@ class MainActivity : ComponentActivity() {
             VpnService.prepare(this)
 
 
-        if (intent != null) {
 
-
-            Log.e(
-                TAG,
-                "REQUEST VPN PERMISSION"
-            )
+        if(intent != null){
 
 
             vpnPermissionLauncher.launch(intent)
 
 
-        } else {
+        }
+        else {
 
 
-            Log.e(
-                TAG,
-                "VPN PERMISSION EXISTS"
-            )
-
-
-            FovixContainer.repository.startVpn()
+            appContainer
+                .vpnRepository
+                .startVpn()
 
 
         }
@@ -160,7 +165,10 @@ class MainActivity : ComponentActivity() {
 
 
 
-    private fun checkSingBox() {
+
+
+
+    private fun checkSingBox(){
 
 
         try {
@@ -178,12 +186,12 @@ class MainActivity : ComponentActivity() {
 
 
         }
-        catch(e: UnsatisfiedLinkError) {
+        catch(e: Exception){
 
 
             Log.e(
                 TAG,
-                "JNI LOAD FAILED",
+                "JNI ERROR",
                 e
             )
 
@@ -192,7 +200,6 @@ class MainActivity : ComponentActivity() {
 
 
     }
-
 
 
 }

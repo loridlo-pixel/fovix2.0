@@ -1,33 +1,24 @@
 package com.vpn.fovix.data.repository
 
 
-import android.util.Log
-import com.vpn.fovix.core.decision.DecisionEngine
-import com.vpn.fovix.core.decision.UserMode
-import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 import com.vpn.fovix.domain.vpnstate.VPNState
-import com.vpn.fovix.vpn.VpnEngine
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.vpn.fovix.domain.vpnstate.VpnController
 import kotlinx.coroutines.flow.StateFlow
+
 
 
 class VpnRepository(
 
-    private val vpnEngine: VpnEngine,
-
-    private val decisionEngine: DecisionEngine
+    private val vpnController: VpnController
 
 ) {
 
 
-    private val _state =
-        MutableStateFlow(
-            VPNState()
-        )
 
+    val state: StateFlow<VPNState>
 
-    val state: StateFlow<VPNState> =
-        _state
+        get() = vpnController.state
+
 
 
 
@@ -35,37 +26,22 @@ class VpnRepository(
 
     fun startVpn(
 
-        mode: UserMode = UserMode.SIMPLE
+        server: Any? = null
 
     ) {
 
 
-        Log.e(
-            "FOVIX",
-            "START VPN AFTER PERMISSION"
+        vpnController.start(
+
+            server
+
         )
 
 
-        val decision =
-            decisionEngine.evaluate(mode)
-
-
-
-        vpnEngine.startService()
-
-
-
-        _state.value =
-            _state.value.copy(
-
-                status = ConnectionStatus.CONNECTING,
-
-                server = decision.recommendedServer
-
-            )
-
-
     }
+
+
+
 
 
 
@@ -74,24 +50,13 @@ class VpnRepository(
     fun disconnect(){
 
 
-        Log.e(
-            "FOVIX",
-            "DISCONNECT"
-        )
+        vpnController.stop()
 
-
-        vpnEngine.stopService()
-
-
-
-        _state.value =
-            _state.value.copy(
-
-                status = ConnectionStatus.DISCONNECTED
-
-            )
 
     }
+
+
+
 
 
 
@@ -100,45 +65,41 @@ class VpnRepository(
     fun toggle(){
 
 
-        if(
-            _state.value.status ==
-            ConnectionStatus.CONNECTED
+        val currentState = state.value
+
+
+
+        when(
+
+            currentState.status
+
         ){
 
-            disconnect()
 
-        }
-        else {
+            com.vpn.fovix.domain.vpnstate.ConnectionStatus.CONNECTED -> {
 
-            startVpn()
+
+                disconnect()
+
+
+            }
+
+
+
+            else -> {
+
+
+                startVpn(null)
+
+
+            }
+
 
         }
 
 
     }
 
-
-
-    fun chooseServer(
-
-        mode: UserMode
-
-    ){
-
-
-        val decision =
-            decisionEngine.evaluate(mode)
-
-
-
-        _state.value =
-            _state.value.copy(
-
-                server = decision.recommendedServer
-
-            )
-
-    }
 
 
 }

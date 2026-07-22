@@ -1,9 +1,6 @@
 package com.vpn.fovix.config
 
-import android.util.Log
 import com.vpn.fovix.vpn.VPNServer
-import org.json.JSONArray
-import org.json.JSONObject
 
 
 object SingBoxConfigBuilder {
@@ -14,263 +11,87 @@ object SingBoxConfigBuilder {
     ): String {
 
 
-        val config = JSONObject()
+        return """
+        {
+          "log": {
+            "disabled": false,
+            "level": "trace",
+            "timestamp": true
+          },
 
 
-        /*
-         * TUN
-         *
-         * Android VPNService already creates TUN.
-         * sing-box only receives FD and processes packets.
-         */
-
-        val inbounds = JSONArray()
-
-
-        val tun = JSONObject().apply {
-
-            put(
-                "type",
-                "tun"
-            )
-
-            put(
-                "tag",
-                "tun-in"
-            )
-
-            put(
-                "mtu",
-                1500
-            )
+          "inbounds": [
+            {
+              "type": "tun",
+              "tag": "tun-in",
+              "interface_name": "tun0",
+              "stack": "gvisor",
+              "mtu": 1500,
+              "auto_route": false,
+              "strict_route": false
+            }
+          ],
 
 
-            put(
-                "address",
-                JSONArray().apply {
+          "outbounds": [
+            {
+              "type": "vless",
+              "tag": "proxy",
 
-                    put(
-                        "172.19.0.1/30"
-                    )
+              "server": "${server.address}",
+              "server_port": ${server.port},
 
+              "uuid": "${server.uuid}",
+
+              "tls": {
+                "enabled": true,
+                "server_name": "${server.sni}",
+
+                "utls": {
+                  "enabled": true,
+                  "fingerprint": "${server.fingerprint}"
                 }
-            )
+              }
+            },
 
 
-            put(
-                "auto_route",
-                false
-            )
+            {
+              "type": "direct",
+              "tag": "direct"
+            }
+          ],
 
 
-            put(
-                "strict_route",
-                false
-            )
+          "dns": {
+            "servers": [
+              {
+                "tag": "dns-google",
+                "address": "8.8.8.8",
+                "detour": "proxy"
+              }
+            ],
+
+            "final": "dns-google"
+          },
 
 
-            put(
-                "stack",
-                "gvisor"
-            )
+          "route": {
+
+            "auto_detect_interface": false,
+
+            "rules": [
+              {
+                "ip_is_private": true,
+                "outbound": "direct"
+              }
+            ],
+
+            "final": "proxy"
+          }
+
 
         }
-
-
-        inbounds.put(tun)
-
-
-        config.put(
-            "inbounds",
-            inbounds
-        )
-
-
-
-        /*
-         * OUTBOUND VLESS
-         */
-
-        val outbounds = JSONArray()
-
-
-        val proxy = JSONObject().apply {
-
-
-            put(
-                "type",
-                server.protocol
-            )
-
-
-            put(
-                "tag",
-                "proxy"
-            )
-
-
-            put(
-                "server",
-                server.address
-            )
-
-
-            put(
-                "server_port",
-                server.port
-            )
-
-
-            put(
-                "uuid",
-                server.uuid
-            )
-
-
-            /*
-             * Basic TLS VLESS.
-             *
-             * uTLS отключен для первого
-             * рабочего теста.
-             * После подтверждения соединения
-             * вернем fingerprint.
-             */
-
-            put(
-                "tls",
-                JSONObject().apply {
-
-
-                    put(
-                        "enabled",
-                        true
-                    )
-
-
-                    put(
-                        "server_name",
-                        server.sni
-                    )
-
-
-                }
-            )
-
-        }
-
-
-        outbounds.put(proxy)
-
-
-
-        /*
-         * DIRECT fallback
-         */
-
-        outbounds.put(
-            JSONObject().apply {
-
-
-                put(
-                    "type",
-                    "direct"
-                )
-
-
-                put(
-                    "tag",
-                    "direct"
-                )
-
-            }
-        )
-
-
-
-        config.put(
-            "outbounds",
-            outbounds
-        )
-
-
-
-        /*
-         * ROUTING
-         */
-
-        config.put(
-            "route",
-            JSONObject().apply {
-
-
-                put(
-                    "final",
-                    "proxy"
-                )
-
-
-            }
-        )
-
-
-
-        /*
-         * DNS
-         */
-
-        config.put(
-            "dns",
-            JSONObject().apply {
-
-
-                put(
-                    "servers",
-                    JSONArray().apply {
-
-
-                        put(
-                            JSONObject().apply {
-
-                                put(
-                                    "tag",
-                                    "dns-cloudflare"
-                                )
-
-                                put(
-                                    "address",
-                                    "1.1.1.1"
-                                )
-
-                            }
-                        )
-
-                    }
-                )
-
-
-                put(
-                    "final",
-                    "dns-cloudflare"
-                )
-
-
-            }
-        )
-
-
-
-        val result =
-            config.toString()
-
-
-
-        Log.d(
-            "FOVIX",
-            "SINGBOX CONFIG=$result"
-        )
-
-
-        return result
+        """.trimIndent()
 
     }
 

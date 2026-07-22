@@ -6,7 +6,7 @@ import android.util.Log
 object SingBoxRuntimeManager {
 
 
-    private const val TAG = "FOVIX"
+    private const val TAG = "FOVIX_RUNTIME"
 
 
     private var running = false
@@ -19,50 +19,80 @@ object SingBoxRuntimeManager {
     ): Boolean {
 
 
-        if (running) {
-
-            Log.d(
-                TAG,
-                "FOVIX ALREADY RUNNING"
-            )
-
-            return true
-
-        }
-
-
-
-        Log.d(
+        Log.e(
             TAG,
-            "FOVIX RUNTIME START"
+            "========== START =========="
         )
 
 
+        Log.e(
+            TAG,
+            "CONFIG SIZE=${config.length}"
+        )
 
-        Log.d(
+
+        Log.e(
             TAG,
             "TUN FD=$tunFd"
         )
 
 
 
-        val result =
-            SingBoxNative.start(
-                config,
-                tunFd
+        if (tunFd <= 0) {
+
+            Log.e(
+                TAG,
+                "INVALID TUN FD"
             )
 
+            return false
+        }
 
 
-        Log.d(
+
+        if (running) {
+
+            Log.e(
+                TAG,
+                "ALREADY RUNNING"
+            )
+
+            return true
+        }
+
+
+
+        val result =
+            try {
+
+                SingBoxNative.start(
+                    config,
+                    tunFd
+                )
+
+            }
+            catch(e: Exception) {
+
+                Log.e(
+                    TAG,
+                    "NATIVE ERROR",
+                    e
+                )
+
+                false
+            }
+
+
+
+
+        Log.e(
             TAG,
-            "FOVIX NATIVE START RESULT=$result"
+            "NATIVE RESULT=$result"
         )
 
 
 
         running = result
-
 
 
         return result
@@ -75,27 +105,17 @@ object SingBoxRuntimeManager {
     fun stop(): Boolean {
 
 
-        Log.d(
+        Log.e(
             TAG,
-            "FOVIX RUNTIME STOP"
+            "STOP"
         )
-
 
 
         val result =
             SingBoxNative.stop()
 
 
-
-        Log.d(
-            TAG,
-            "FOVIX NATIVE STOP RESULT=$result"
-        )
-
-
-
         running = false
-
 
 
         return result
@@ -105,32 +125,20 @@ object SingBoxRuntimeManager {
 
 
 
-
     fun isRunning(): Boolean {
 
 
         return try {
 
-
             SingBoxNative.isRunning()
 
-
         }
-        catch (e: Exception) {
-
-
-            Log.e(
-                TAG,
-                "FOVIX CHECK ERROR",
-                e
-            )
-
+        catch(e: Exception) {
 
             false
 
         }
 
     }
-
 
 }
