@@ -70,12 +70,16 @@ fun HomeScreenDynamic(
 
                 if(state.connected) {
 
+
                     onDisconnect()
+
 
                 }
                 else {
 
+
                     onConnect()
+
 
                 }
 
@@ -156,11 +160,13 @@ fun HomeScreenDynamic(
             )
 
 
+
             Text(
 
                 text = "Expert tools enabled"
 
             )
+
 
         }
 
