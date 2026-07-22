@@ -1,46 +1,41 @@
 package com.vpn.fovix.data.repository
 
 
+import com.vpn.fovix.domain.server.Protocol
 import com.vpn.fovix.domain.server.ServerProfile
-
+import com.vpn.fovix.domain.server.Transport
 
 
 class ServerRepository {
 
 
-    private val servers = mutableListOf(
+    private val servers =
+        mutableListOf(
 
-        ServerProfile(
+            ServerProfile(
 
-            id = "auto",
+                id = "auto",
 
-            name = "Auto",
+                name = "Auto",
 
-            host = "",
+                protocol = Protocol.UNKNOWN,
 
-            port = 0,
+                address = "",
 
-            country = "AUTO",
+                port = 0,
 
-            latency = 0,
+                transport = Transport.UNKNOWN
 
-            load = 0,
-
-            enabled = true
+            )
 
         )
-
-    )
-
 
 
 
 
     fun getAll(): List<ServerProfile> {
 
-
         return servers.toList()
-
 
     }
 
@@ -48,14 +43,9 @@ class ServerRepository {
 
 
 
-
-
     fun getServerById(
-
         id: String
-
     ): ServerProfile? {
-
 
         return servers.find {
 
@@ -63,11 +53,7 @@ class ServerRepository {
 
         }
 
-
     }
-
-
-
 
 
 
@@ -75,28 +61,9 @@ class ServerRepository {
 
     fun getFastest(): ServerProfile {
 
-
-        return servers
-
-            .filter {
-
-                it.enabled
-
-            }
-
-            .minByOrNull {
-
-                it.latency
-
-            }
-            ?: servers.first()
-
-
+        return servers.first()
 
     }
-
-
-
 
 
 
@@ -104,23 +71,7 @@ class ServerRepository {
 
     fun getBestByLoad(): ServerProfile {
 
-
-        return servers
-
-            .filter {
-
-                it.enabled
-
-            }
-
-            .minByOrNull {
-
-                it.load
-
-            }
-            ?: servers.first()
-
-
+        return servers.first()
 
     }
 
@@ -128,15 +79,9 @@ class ServerRepository {
 
 
 
-
-
-
     fun addServer(
-
         server: ServerProfile
-
     ) {
-
 
         servers.removeAll {
 
@@ -147,22 +92,15 @@ class ServerRepository {
 
         servers.add(server)
 
-
     }
 
 
 
 
 
-
-
-
     fun removeServer(
-
         id: String
-
     ) {
-
 
         servers.removeAll {
 
@@ -170,90 +108,8 @@ class ServerRepository {
 
         }
 
-
     }
 
-
-
-
-
-
-
-
-    fun updateLatency(
-
-        id: String,
-
-        latency: Int
-
-    ) {
-
-
-        val index = servers.indexOfFirst {
-
-            it.id == id
-
-        }
-
-
-        if(index >= 0){
-
-
-            val old = servers[index]
-
-
-            servers[index] = old.copy(
-
-                latency = latency
-
-            )
-
-
-        }
-
-
-    }
-
-
-
-
-
-
-
-
-    fun updateLoad(
-
-        id: String,
-
-        load: Int
-
-    ) {
-
-
-        val index = servers.indexOfFirst {
-
-            it.id == id
-
-        }
-
-
-        if(index >= 0){
-
-
-            val old = servers[index]
-
-
-            servers[index] = old.copy(
-
-                load = load
-
-            )
-
-
-        }
-
-
-    }
 
 
 

@@ -38,6 +38,7 @@ android {
 
 dependencies {
 
+    implementation("org.json:json:20240303")
 
     implementation(project(":domain"))
 

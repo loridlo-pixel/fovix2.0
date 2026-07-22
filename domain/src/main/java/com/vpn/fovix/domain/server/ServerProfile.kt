@@ -7,16 +7,24 @@ data class ServerProfile(
 
     val name: String,
 
-    val host: String,
+    val protocol: Protocol,
+
+    val address: String,
 
     val port: Int,
 
-    val country: String,
+    val uuid: String? = null,
 
-    val latency: Int,
+    val transport: Transport = Transport.UNKNOWN,
 
-    val load: Int,
+    val tls: TLSConfig = TLSConfig(),
 
-    val enabled: Boolean
+    val path: String? = null,
+
+    val host: String? = null,
+
+    val networkMode: String? = null,
+
+    val subscriptionId: String? = null
 
 )
