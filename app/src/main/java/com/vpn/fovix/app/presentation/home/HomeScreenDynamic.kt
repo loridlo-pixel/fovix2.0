@@ -1,36 +1,52 @@
 package com.vpn.fovix.app.presentation.home
 
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 
+import androidx.compose.ui.graphics.Color
+
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+import com.vpn.fovix.app.presentation.home.components.FovixAddServerButton
+import com.vpn.fovix.app.presentation.home.components.FovixCoreButton
 import com.vpn.fovix.app.presentation.home.components.MetricsCard
 import com.vpn.fovix.app.presentation.home.components.ServerCard
 import com.vpn.fovix.app.presentation.home.components.StatusCard
-import com.vpn.fovix.app.presentation.home.components.FovixCoreButton
 
 
 
 @Composable
 fun HomeScreenDynamic(
 
+
     state: HomeUiState,
+
 
     onConnect: () -> Unit,
 
+
     onDisconnect: () -> Unit,
 
+
     onOpenSubscriptions: () -> Unit
+
 
 ) {
 
@@ -38,15 +54,26 @@ fun HomeScreenDynamic(
 
     Column(
 
+
         modifier = Modifier
+
             .fillMaxSize()
+
+            .background(
+
+                Color(0xFF0B1015)
+
+            )
+
             .padding(24.dp),
 
-        horizontalAlignment =
-            Alignment.CenterHorizontally,
 
-        verticalArrangement =
-            Arrangement.Center
+
+        horizontalAlignment = Alignment.CenterHorizontally,
+
+
+        verticalArrangement = Arrangement.Center
+
 
     ) {
 
@@ -54,7 +81,16 @@ fun HomeScreenDynamic(
 
         Text(
 
-            text = "FOVIX"
+
+            text = "FOVIX",
+
+
+            color = Color.White,
+
+
+            fontSize = 32.sp
+
+
 
         )
 
@@ -62,28 +98,64 @@ fun HomeScreenDynamic(
 
         Spacer(
 
-            modifier = Modifier.height(32.dp)
+            modifier = Modifier.size(12.dp)
 
         )
 
 
 
+
+
+        Text(
+
+
+            text = "Secure Connection",
+
+
+            color = Color(0xFF8B98A8),
+
+
+            fontSize = 14.sp
+
+
+
+        )
+
+
+
+
+
+        Spacer(
+
+            modifier = Modifier.size(32.dp)
+
+        )
+
+
+
+
+
+
         FovixCoreButton(
+
 
             state = state.status,
 
+
             server = state.server,
+
 
             onClick = {
 
 
-                if(state.connected) {
+                if(state.connected){
 
 
                     onDisconnect()
 
 
                 }
+
                 else {
 
 
@@ -95,57 +167,134 @@ fun HomeScreenDynamic(
 
             }
 
+
         )
+
+
+
+
 
 
 
         Spacer(
 
-            modifier = Modifier.height(24.dp)
+            modifier = Modifier.size(28.dp)
 
         )
 
 
 
-        StatusCard(
-
-            status = state.status.name
-
-        )
 
 
 
-        Spacer(
-
-            modifier = Modifier.height(16.dp)
-
-        )
+        Card(
 
 
+            modifier = Modifier,
 
-        if(state.showServer) {
+
+            colors = CardDefaults.cardColors(
 
 
-            ServerCard(
+                containerColor = Color(0xFF111820)
 
-                server = state.server
 
-            )
+            ),
+
+
+            shape = RoundedCornerShape(20.dp)
+
+
+        ){
+
+
+
+            Column(
+
+
+                modifier = Modifier.padding(20.dp),
+
+
+                horizontalAlignment = Alignment.CenterHorizontally
+
+
+            ){
+
+
+
+                Text(
+
+
+                    text = if(state.connected)
+
+                        "PROTECTED"
+
+                    else
+
+                        "DISCONNECTED",
+
+
+                    color = if(state.connected)
+
+                        Color(0xFF00E5FF)
+
+                    else
+
+                        Color(0xFFFF6B6B),
+
+
+                    fontSize = 18.sp
+
+
+                )
+
+
+
+                Spacer(
+
+                    modifier = Modifier.size(8.dp)
+
+                )
+
+
+
+                Text(
+
+
+                    text = state.server,
+
+
+                    color = Color.White,
+
+
+                    fontSize = 15.sp
+
+
+                )
+
+
+
+            }
+
 
 
         }
 
 
 
+
+
         Spacer(
 
-            modifier = Modifier.height(16.dp)
+            modifier = Modifier.size(16.dp)
 
         )
 
 
 
-        if(state.showMetrics) {
+
+
+        if(state.showMetrics){
 
 
             MetricsCard(
@@ -159,53 +308,28 @@ fun HomeScreenDynamic(
 
 
 
+
+
+
         Spacer(
 
-            modifier = Modifier.height(24.dp)
+            modifier = Modifier.size(20.dp)
 
         )
 
 
 
-        Button(
-
-            onClick = {
-
-                onOpenSubscriptions()
-
-            }
-
-        ) {
 
 
-            Text(
-
-                text = "+ Add Subscription"
-
-            )
+        FovixAddServerButton(
 
 
-        }
+            onClick = onOpenSubscriptions
 
 
-
-        if(state.showExpert) {
-
-
-            Spacer(
-
-                modifier = Modifier.height(16.dp)
-
-            )
+        )
 
 
-            Text(
-
-                text = "Expert tools enabled"
-
-            )
-
-        }
 
 
 
