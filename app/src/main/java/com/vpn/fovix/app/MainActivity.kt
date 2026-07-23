@@ -4,18 +4,24 @@ package com.vpn.fovix.app
 import android.net.VpnService
 import android.os.Bundle
 import android.util.Log
+
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
+
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
+
 import com.vpn.fovix.app.presentation.FovixApp
 import com.vpn.fovix.app.presentation.theme.FovixTheme
+
 import com.vpn.fovix.vpn.SingBoxNative
 
 
+
 class MainActivity : ComponentActivity() {
+
 
 
     companion object {
@@ -26,28 +32,44 @@ class MainActivity : ComponentActivity() {
 
 
 
+
+
     private lateinit var appContainer: AppContainer
 
 
 
+
+
     private val vpnPermissionLauncher =
+
         registerForActivityResult(
+
             ActivityResultContracts.StartActivityForResult()
+
         ) {
 
 
-            if (it.resultCode == RESULT_OK) {
+
+            if(it.resultCode == RESULT_OK){
 
 
-                Log.e(
+
+                Log.i(
+
                     TAG,
+
                     "VPN PERMISSION GRANTED"
+
                 )
 
 
+
                 appContainer
+
                     .vpnRepository
+
                     .startVpn()
+
 
 
             }
@@ -59,8 +81,13 @@ class MainActivity : ComponentActivity() {
 
 
 
+
+
+
     override fun onCreate(
+
         savedInstanceState: Bundle?
+
     ) {
 
 
@@ -69,8 +96,12 @@ class MainActivity : ComponentActivity() {
 
 
         appContainer =
+
             (application as FovixApplication)
+
                 .container
+
+
 
 
 
@@ -78,40 +109,63 @@ class MainActivity : ComponentActivity() {
 
 
 
+
+
         setContent {
+
 
 
             FovixTheme {
 
 
+
                 Surface(
+
                     modifier = Modifier.fillMaxSize()
+
                 ) {
+
 
 
                     FovixApp(
 
                         repository =
+
                             appContainer.vpnRepository,
+
+
+                        serverRepository =
+
+                            appContainer.serverRepository,
+
+
+                        subscriptionImportEngine =
+
+                            appContainer.subscriptionImportEngine,
+
 
 
                         onConnect = {
 
+
                             requestVpnPermission()
 
+
                         },
+
 
 
                         onDisconnect = {
 
 
                             appContainer
+
                                 .vpnRepository
+
                                 .disconnect()
 
 
                         }
-
 
                     )
 
@@ -133,33 +187,49 @@ class MainActivity : ComponentActivity() {
 
 
 
-    private fun requestVpnPermission() {
+
+
+    private fun requestVpnPermission(){
+
 
 
         val intent =
+
             VpnService.prepare(this)
+
+
 
 
 
         if(intent != null){
 
 
-            vpnPermissionLauncher.launch(intent)
+
+            vpnPermissionLauncher.launch(
+
+                intent
+
+            )
 
 
         }
         else {
 
 
+
             appContainer
+
                 .vpnRepository
+
                 .startVpn()
 
 
         }
 
 
+
     }
+
 
 
 
@@ -171,28 +241,40 @@ class MainActivity : ComponentActivity() {
     private fun checkSingBox(){
 
 
+
         try {
 
 
-            val state =
+
+            val running =
+
                 SingBoxNative.isRunning()
 
 
 
             Log.i(
+
                 TAG,
-                "SINGBOX JNI OK running=$state"
+
+                "SINGBOX JNI OK running=$running"
+
             )
 
 
         }
+
         catch(e: Exception){
 
 
+
             Log.e(
+
                 TAG,
-                "JNI ERROR",
+
+                "SINGBOX JNI ERROR",
+
                 e
+
             )
 
 
@@ -200,6 +282,7 @@ class MainActivity : ComponentActivity() {
 
 
     }
+
 
 
 }

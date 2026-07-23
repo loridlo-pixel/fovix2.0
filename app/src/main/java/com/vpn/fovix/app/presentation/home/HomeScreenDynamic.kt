@@ -7,15 +7,17 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.vpn.fovix.app.presentation.home.components.FovixCoreButton
+
 import com.vpn.fovix.app.presentation.home.components.MetricsCard
 import com.vpn.fovix.app.presentation.home.components.ServerCard
 import com.vpn.fovix.app.presentation.home.components.StatusCard
+import com.vpn.fovix.app.presentation.home.components.FovixCoreButton
 
 
 
@@ -26,7 +28,9 @@ fun HomeScreenDynamic(
 
     onConnect: () -> Unit,
 
-    onDisconnect: () -> Unit
+    onDisconnect: () -> Unit,
+
+    onOpenSubscriptions: () -> Unit
 
 ) {
 
@@ -38,9 +42,11 @@ fun HomeScreenDynamic(
             .fillMaxSize()
             .padding(24.dp),
 
-        horizontalAlignment = Alignment.CenterHorizontally,
+        horizontalAlignment =
+            Alignment.CenterHorizontally,
 
-        verticalArrangement = Arrangement.Center
+        verticalArrangement =
+            Arrangement.Center
 
     ) {
 
@@ -71,9 +77,7 @@ fun HomeScreenDynamic(
             onClick = {
 
 
-                if(
-                    state.connected
-                ) {
+                if(state.connected) {
 
 
                     onDisconnect()
@@ -155,6 +159,36 @@ fun HomeScreenDynamic(
 
 
 
+        Spacer(
+
+            modifier = Modifier.height(24.dp)
+
+        )
+
+
+
+        Button(
+
+            onClick = {
+
+                onOpenSubscriptions()
+
+            }
+
+        ) {
+
+
+            Text(
+
+                text = "+ Add Subscription"
+
+            )
+
+
+        }
+
+
+
         if(state.showExpert) {
 
 
@@ -165,15 +199,14 @@ fun HomeScreenDynamic(
             )
 
 
-
             Text(
 
                 text = "Expert tools enabled"
 
             )
 
-
         }
+
 
 
     }
