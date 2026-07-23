@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.vpn.fovix.app.presentation.home.components.FovixCoreButton
 import com.vpn.fovix.app.presentation.home.components.MetricsCard
 import com.vpn.fovix.app.presentation.home.components.ServerCard
 import com.vpn.fovix.app.presentation.home.components.StatusCard
@@ -61,14 +62,18 @@ fun HomeScreenDynamic(
 
 
 
-        ConnectionOrb(
+        FovixCoreButton(
 
-            connected = state.connected,
+            state = state.status,
+
+            server = state.server,
 
             onClick = {
 
 
-                if(state.connected) {
+                if(
+                    state.connected
+                ) {
 
 
                     onDisconnect()
