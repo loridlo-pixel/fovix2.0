@@ -6,120 +6,77 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 
+
+import com.vpn.fovix.app.AppContainer
 
 import com.vpn.fovix.app.presentation.home.HomeScreenDynamic
 import com.vpn.fovix.app.presentation.home.HomeViewModel
 import com.vpn.fovix.app.presentation.home.HomeViewModelFactory
 import com.vpn.fovix.app.presentation.home.toHomeUiState
 
+import com.vpn.fovix.app.presentation.settings.SettingsScreen
+import com.vpn.fovix.app.presentation.settings.SettingsViewModel
+import com.vpn.fovix.app.presentation.settings.SettingsViewModelFactory
 
 import com.vpn.fovix.app.presentation.subscription.SubscriptionScreen
 import com.vpn.fovix.app.presentation.subscription.SubscriptionViewModel
 import com.vpn.fovix.app.presentation.subscription.SubscriptionViewModelFactory
 
-
-import com.vpn.fovix.data.importer.SubscriptionImportEngine
-import com.vpn.fovix.data.repository.ServerRepository
 import com.vpn.fovix.data.repository.VpnRepository
-
 
 
 
 @Composable
 fun FovixApp(
 
+
     repository: VpnRepository,
 
-    serverRepository: ServerRepository,
 
-    subscriptionImportEngine: SubscriptionImportEngine,
+    container: AppContainer,
+
 
     onConnect: () -> Unit,
 
+
     onDisconnect: () -> Unit
+
 
 ) {
 
 
 
-    val showSubscription = remember {
-
-        mutableStateOf(false)
-
-    }
+    val screen = remember {
 
 
+        mutableStateOf(
 
-
-
-
-    if(showSubscription.value) {
-
-
-
-        val subscriptionViewModel: SubscriptionViewModel =
-
-            viewModel(
-
-                factory = SubscriptionViewModelFactory(
-
-                    subscriptionImportEngine,
-
-                    serverRepository
-
-                )
-
-            )
-
-
-
-        val state by subscriptionViewModel.state.collectAsState()
-
-
-
-
-
-        SubscriptionScreen(
-
-            state = state,
-
-
-            onInputChange = {
-
-
-                subscriptionViewModel.updateInput(
-
-                    it
-
-                )
-
-
-            },
-
-
-            onImport = {
-
-
-                subscriptionViewModel.importSubscription()
-
-
-            }
-
+            AppScreen.HOME
 
         )
 
 
-
     }
-    else {
 
 
 
-        val homeViewModel: HomeViewModel =
 
-            viewModel(
+
+
+    when(screen.value) {
+
+
+
+        AppScreen.HOME -> {
+
+
+
+            val homeViewModel: HomeViewModel = viewModel(
+
 
                 factory = HomeViewModelFactory(
 
@@ -127,44 +84,185 @@ fun FovixApp(
 
                 )
 
+
             )
 
 
 
-
-
-        val vpnState by homeViewModel.state.collectAsState()
-
-
-
-        val homeState =
-
-            vpnState.toHomeUiState()
+            val vpnState by homeViewModel.state.collectAsState()
 
 
 
+            HomeScreenDynamic(
 
 
-        HomeScreenDynamic(
-
-            state = homeState,
+                state = vpnState.toHomeUiState(),
 
 
-            onConnect = onConnect,
+                onConnect = onConnect,
 
 
-            onDisconnect = onDisconnect,
+                onDisconnect = onDisconnect,
 
 
-            onOpenSubscriptions = {
+                onOpenSubscriptions = {
 
 
-                showSubscription.value = true
+                    screen.value =
+
+                        AppScreen.SUBSCRIPTIONS
 
 
-            }
+                }
 
-        )
+
+            )
+
+
+
+        }
+
+
+
+
+
+
+
+        AppScreen.SUBSCRIPTIONS -> {
+
+
+
+            val subscriptionViewModel: SubscriptionViewModel = viewModel(
+
+
+                factory = SubscriptionViewModelFactory(
+
+
+                    container.subscriptionImportEngine,
+
+
+                    container.serverRepository
+
+
+                )
+
+
+            )
+
+
+
+            val state by subscriptionViewModel.state.collectAsState()
+
+
+
+            SubscriptionScreen(
+
+
+                state = state,
+
+
+                onInputChange = {
+
+
+                    subscriptionViewModel.updateInput(
+
+                        it
+
+                    )
+
+
+                },
+
+
+                onImport = {
+
+
+                    subscriptionViewModel.importSubscription()
+
+
+                },
+
+
+                onBack = {
+
+
+                    screen.value =
+
+                        AppScreen.HOME
+
+
+                }
+
+
+            )
+
+
+
+        }
+
+
+
+
+
+
+
+        AppScreen.SETTINGS -> {
+
+
+
+            val settingsViewModel: SettingsViewModel = viewModel(
+
+
+                factory = SettingsViewModelFactory(
+
+                    container.userPreferences
+
+                )
+
+
+            )
+
+
+
+            val mode by settingsViewModel.userMode.collectAsState()
+
+
+
+            SettingsScreen(
+
+
+                mode = mode,
+
+
+                onModeChange = {
+
+
+                    settingsViewModel.setMode(
+
+                        it
+
+                    )
+
+
+                },
+
+
+                onBack = {
+
+
+                    screen.value =
+
+                        AppScreen.HOME
+
+
+                }
+
+
+            )
+
+
+        }
+
 
 
     }

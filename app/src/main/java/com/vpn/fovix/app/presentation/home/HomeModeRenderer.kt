@@ -8,35 +8,112 @@ import androidx.compose.runtime.Composable
 @Composable
 fun HomeModeRenderer(
 
-    mode: String
+
+    state: HomeUiState,
+
+
+    onConnect: () -> Unit,
+
+
+    onDisconnect: () -> Unit,
+
+
+    onOpenSubscriptions: () -> Unit
+
 
 ) {
 
 
-    when(mode) {
+
+    when(state.userMode) {
 
 
-        "ADVANCED" -> {
 
-            AdvancedView()
+        UserMode.SIMPLE -> {
+
+
+
+            SimpleHomeView(
+
+
+                state = state,
+
+
+                onConnect = onConnect,
+
+
+                onDisconnect = onDisconnect,
+
+
+                onOpenSubscriptions = onOpenSubscriptions
+
+
+            )
+
 
         }
 
 
-        "EXPERT" -> {
 
-            ExpertView()
+
+
+
+        UserMode.ADVANCED -> {
+
+
+
+            AdvancedHomeView(
+
+
+                state = state,
+
+
+                onConnect = onConnect,
+
+
+                onDisconnect = onDisconnect,
+
+
+                onOpenSubscriptions = onOpenSubscriptions
+
+
+            )
+
 
         }
 
 
-        else -> {
 
-            SimpleView()
+
+
+
+        UserMode.EXPERT -> {
+
+
+
+            ExpertHomeView(
+
+
+                state = state,
+
+
+                onConnect = onConnect,
+
+
+                onDisconnect = onDisconnect,
+
+
+                onOpenSubscriptions = onOpenSubscriptions
+
+
+            )
+
 
         }
 
 
     }
+
+
 
 }

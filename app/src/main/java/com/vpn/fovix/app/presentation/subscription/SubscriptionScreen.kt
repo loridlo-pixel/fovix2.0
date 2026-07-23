@@ -1,123 +1,150 @@
 package com.vpn.fovix.app.presentation.subscription
 
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+
+import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+
+import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+
+import com.vpn.fovix.app.presentation.subscription.components.SubscriptionImportButton
+import com.vpn.fovix.app.presentation.subscription.components.SubscriptionInputCard
+
 
 
 
 @Composable
 fun SubscriptionScreen(
 
+
     state: SubscriptionUiState,
+
 
     onInputChange: (String) -> Unit,
 
-    onImport: () -> Unit
+
+    onImport: () -> Unit,
+
+
+    onBack: () -> Unit
+
 
 ) {
 
 
+
     Column(
 
+
         modifier = Modifier
+
             .fillMaxSize()
+
+            .background(
+
+                Color(0xFF0B1015)
+
+            )
+
             .padding(24.dp),
 
+
+
+        horizontalAlignment = Alignment.CenterHorizontally,
+
+
         verticalArrangement = Arrangement.Center
+
 
     ) {
 
 
 
-        Text(
-
-            text = "Import Subscription",
-
-            style = MaterialTheme.typography.headlineSmall
-
-        )
 
 
+        Row(
 
 
+            modifier = Modifier
 
-        Spacer(
-
-            modifier = Modifier.height(24.dp)
-
-        )
+                .fillMaxWidth(),
 
 
 
+            verticalAlignment = Alignment.CenterVertically
 
-
-        OutlinedTextField(
-
-            value = state.input,
-
-            onValueChange = {
-
-                onInputChange(it)
-
-            },
-
-            modifier = Modifier.fillMaxWidth(),
-
-            label = {
-
-                Text(
-                    "URL / Base64 / Config"
-                )
-
-            }
-
-        )
-
-
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(16.dp)
-
-        )
-
-
-
-
-
-        Button(
-
-            onClick = onImport,
-
-            modifier = Modifier.fillMaxWidth(),
-
-            enabled = !state.loading
 
         ) {
 
 
+
             Text(
 
-                if(state.loading)
 
-                    "Importing..."
+                text = "←",
 
-                else
 
-                    "Import"
+                color = Color(0xFF00E5FF),
+
+
+                fontSize = 32.sp,
+
+
+                modifier = Modifier
+
+                    .clickable {
+
+                        onBack()
+
+                    }
+
+                    .padding(
+
+                        end = 20.dp
+
+                    )
 
             )
 
 
+
+
+            Text(
+
+
+                text = "FOVIX",
+
+
+                color = Color.White,
+
+
+                fontSize = 32.sp
+
+
+            )
+
+
+
         }
+
+
 
 
 
@@ -125,7 +152,7 @@ fun SubscriptionScreen(
 
         Spacer(
 
-            modifier = Modifier.height(16.dp)
+            modifier = Modifier.size(24.dp)
 
         )
 
@@ -133,41 +160,174 @@ fun SubscriptionScreen(
 
 
 
-        if(state.message.isNotEmpty()) {
 
 
-            Text(
-
-                text = state.message
-
-            )
+        Text(
 
 
-        }
+            text = "Subscription Import",
+
+
+            color = Color(0xFF00E5FF),
+
+
+            fontSize = 20.sp
+
+
+        )
 
 
 
 
 
-        if(state.servers.isNotEmpty()) {
+        Spacer(
+
+            modifier = Modifier.size(8.dp)
+
+        )
 
 
-            Spacer(
-
-                modifier = Modifier.height(20.dp)
-
-            )
 
 
-            Text(
-
-                text =
-                    "Servers: ${state.servers.size}"
-
-            )
 
 
-        }
+        Text(
+
+
+            text = "Add your VPN source",
+
+
+            color = Color(0xFF8B98A8),
+
+
+            fontSize = 14.sp
+
+
+        )
+
+
+
+
+
+
+        Spacer(
+
+            modifier = Modifier.size(32.dp)
+
+        )
+
+
+
+
+
+
+        SubscriptionInputCard(
+
+
+            value = state.input,
+
+
+            onValueChange = onInputChange
+
+
+        )
+
+
+
+
+
+
+        Spacer(
+
+            modifier = Modifier.size(24.dp)
+
+        )
+
+
+
+
+
+
+        SubscriptionImportButton(
+
+
+            enabled = state.input.isNotBlank(),
+
+
+            onClick = onImport
+
+
+        )
+
+
+
+
+
+
+        Spacer(
+
+            modifier = Modifier.size(32.dp)
+
+        )
+
+
+
+
+
+
+        Text(
+
+
+            text = "Supported formats",
+
+
+            color = Color.White,
+
+
+            fontSize = 16.sp
+
+
+        )
+
+
+
+
+
+
+        Spacer(
+
+            modifier = Modifier.size(12.dp)
+
+        )
+
+
+
+
+
+
+
+        Text(
+
+
+            text =
+
+                """
+                ✓ VLESS
+                ✓ VMess
+                ✓ Trojan
+                ✓ Base64
+                ✓ Xray JSON
+                """.trimIndent(),
+
+
+
+            color = Color(0xFF9AA7B5),
+
+
+            fontSize = 14.sp
+
+
+        )
 
 
 

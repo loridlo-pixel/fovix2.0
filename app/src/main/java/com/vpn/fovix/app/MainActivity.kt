@@ -20,6 +20,7 @@ import com.vpn.fovix.vpn.SingBoxNative
 
 
 
+
 class MainActivity : ComponentActivity() {
 
 
@@ -46,11 +47,11 @@ class MainActivity : ComponentActivity() {
 
             ActivityResultContracts.StartActivityForResult()
 
-        ) {
+        ) { result ->
 
 
 
-            if(it.resultCode == RESULT_OK){
+            if(result.resultCode == RESULT_OK) {
 
 
 
@@ -75,7 +76,9 @@ class MainActivity : ComponentActivity() {
             }
 
 
+
         }
+
 
 
 
@@ -92,6 +95,8 @@ class MainActivity : ComponentActivity() {
 
 
         super.onCreate(savedInstanceState)
+
+
 
 
 
@@ -121,7 +126,11 @@ class MainActivity : ComponentActivity() {
 
                 Surface(
 
-                    modifier = Modifier.fillMaxSize()
+
+                    modifier = Modifier
+
+                        .fillMaxSize()
+
 
                 ) {
 
@@ -129,26 +138,25 @@ class MainActivity : ComponentActivity() {
 
                     FovixApp(
 
+
                         repository =
 
                             appContainer.vpnRepository,
 
 
-                        serverRepository =
 
-                            appContainer.serverRepository,
+                        container =
 
-
-                        subscriptionImportEngine =
-
-                            appContainer.subscriptionImportEngine,
+                            appContainer,
 
 
 
                         onConnect = {
 
 
+
                             requestVpnPermission()
+
 
 
                         },
@@ -158,6 +166,7 @@ class MainActivity : ComponentActivity() {
                         onDisconnect = {
 
 
+
                             appContainer
 
                                 .vpnRepository
@@ -165,18 +174,25 @@ class MainActivity : ComponentActivity() {
                                 .disconnect()
 
 
+
                         }
 
+
+
                     )
+
 
 
                 }
 
 
+
             }
 
 
+
         }
+
 
 
     }
@@ -189,7 +205,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-    private fun requestVpnPermission(){
+    private fun requestVpnPermission() {
 
 
 
@@ -201,7 +217,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-        if(intent != null){
+        if(intent != null) {
 
 
 
@@ -224,6 +240,7 @@ class MainActivity : ComponentActivity() {
                 .startVpn()
 
 
+
         }
 
 
@@ -238,7 +255,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-    private fun checkSingBox(){
+    private fun checkSingBox() {
 
 
 
@@ -252,6 +269,8 @@ class MainActivity : ComponentActivity() {
 
 
 
+
+
             Log.i(
 
                 TAG,
@@ -261,9 +280,9 @@ class MainActivity : ComponentActivity() {
             )
 
 
-        }
 
-        catch(e: Exception){
+        }
+        catch(e: Exception) {
 
 
 
@@ -278,7 +297,9 @@ class MainActivity : ComponentActivity() {
             )
 
 
+
         }
+
 
 
     }

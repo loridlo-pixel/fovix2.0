@@ -5,6 +5,8 @@ enum class AppScreen {
 
     HOME,
 
-    SUBSCRIPTIONS
+    SUBSCRIPTIONS,
+
+    SETTINGS
 
 }

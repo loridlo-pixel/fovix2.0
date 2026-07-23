@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+
 android {
 
     namespace = "com.vpn.fovix.app"
@@ -67,6 +68,7 @@ android {
 }
 
 
+
 dependencies {
 
 
@@ -79,9 +81,11 @@ dependencies {
     implementation(project(":core"))
 
 
+
     implementation(
         "androidx.lifecycle:lifecycle-viewmodel-compose:2.8.1"
     )
+
 
 
     implementation(
@@ -89,6 +93,7 @@ dependencies {
             "androidx.compose:compose-bom:2024.06.00"
         )
     )
+
 
 
     implementation("androidx.compose.ui:ui")
@@ -100,9 +105,18 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
 
+
     implementation(
         "androidx.activity:activity-compose:1.9.0"
     )
+
+
+
+    // FOVIX user preferences
+    implementation(
+        "androidx.datastore:datastore-preferences:1.1.1"
+    )
+
 
 
     debugImplementation(

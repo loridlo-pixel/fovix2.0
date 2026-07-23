@@ -3,16 +3,21 @@ package com.vpn.fovix.app
 
 import android.content.Context
 
+import com.vpn.fovix.app.data.UserPreferences
+
 import com.vpn.fovix.data.importer.SubscriptionImportEngine
 import com.vpn.fovix.data.repository.ServerRepository
 import com.vpn.fovix.data.repository.VpnRepository
+
 import com.vpn.fovix.vpn.VpnEngine
 
 
 
 class AppContainer(
 
+
     private val context: Context
+
 
 ) {
 
@@ -34,6 +39,8 @@ class AppContainer(
 
 
 
+
+
     val vpnRepository: VpnRepository by lazy {
 
 
@@ -45,6 +52,8 @@ class AppContainer(
 
 
     }
+
+
 
 
 
@@ -62,10 +71,30 @@ class AppContainer(
 
 
 
+
+
     val subscriptionImportEngine: SubscriptionImportEngine by lazy {
 
 
         SubscriptionImportEngine()
+
+
+    }
+
+
+
+
+
+
+
+    val userPreferences: UserPreferences by lazy {
+
+
+        UserPreferences(
+
+            context
+
+        )
 
 
     }
