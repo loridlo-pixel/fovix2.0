@@ -7,7 +7,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
-
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 
@@ -16,7 +15,6 @@ import com.vpn.fovix.app.AppContainer
 import com.vpn.fovix.app.presentation.home.HomeScreenDynamic
 import com.vpn.fovix.app.presentation.home.HomeViewModel
 import com.vpn.fovix.app.presentation.home.HomeViewModelFactory
-import com.vpn.fovix.app.presentation.home.toHomeUiState
 
 import com.vpn.fovix.app.presentation.settings.SettingsScreen
 import com.vpn.fovix.app.presentation.settings.SettingsViewModel
@@ -80,7 +78,12 @@ fun FovixApp(
 
                 factory = HomeViewModelFactory(
 
-                    repository
+
+                    repository,
+
+
+                    container.userPreferences
+
 
                 )
 
@@ -89,14 +92,16 @@ fun FovixApp(
 
 
 
-            val vpnState by homeViewModel.state.collectAsState()
+            val homeState by homeViewModel.state.collectAsState()
+
+
 
 
 
             HomeScreenDynamic(
 
 
-                state = vpnState.toHomeUiState(),
+                state = homeState,
 
 
                 onConnect = onConnect,
@@ -151,14 +156,14 @@ fun FovixApp(
 
 
 
-            val state by subscriptionViewModel.state.collectAsState()
+            val subscriptionState by subscriptionViewModel.state.collectAsState()
 
 
 
             SubscriptionScreen(
 
 
-                state = state,
+                state = subscriptionState,
 
 
                 onInputChange = {
@@ -215,7 +220,9 @@ fun FovixApp(
 
                 factory = SettingsViewModelFactory(
 
+
                     container.userPreferences
+
 
                 )
 
@@ -259,6 +266,7 @@ fun FovixApp(
 
 
             )
+
 
 
         }

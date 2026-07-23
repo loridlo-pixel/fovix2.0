@@ -2,7 +2,6 @@ package com.vpn.fovix.app.presentation.home
 
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,7 +15,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.dp
-
 
 
 
@@ -94,6 +92,7 @@ fun HomeScreenDynamic(
 
 
     }
+
 
 
 }
