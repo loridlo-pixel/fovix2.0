@@ -74,7 +74,7 @@ dependencies {
 
     implementation(project(":domain"))
 
-    implementation(project(":vpn"))
+    
 
     implementation(project(":data"))
 
