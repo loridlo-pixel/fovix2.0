@@ -38,13 +38,13 @@ android {
 
 dependencies {
 
+
     implementation("org.json:json:20240303")
+
 
     implementation(project(":domain"))
 
     implementation(project(":core"))
-
-    implementation(project(":vpn"))
 
 
     implementation(

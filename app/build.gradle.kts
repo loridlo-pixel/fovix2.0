@@ -72,14 +72,15 @@ android {
 dependencies {
 
 
-    implementation(project(":domain"))
+    implementation(project(":vpn"))
 
-    
+    implementation(project(":domain"))
 
     implementation(project(":data"))
 
     implementation(project(":core"))
 
+    implementation(project(":vpn"))
 
 
     implementation(
@@ -87,13 +88,11 @@ dependencies {
     )
 
 
-
     implementation(
         platform(
             "androidx.compose:compose-bom:2024.06.00"
         )
     )
-
 
 
     implementation("androidx.compose.ui:ui")
@@ -105,18 +104,14 @@ dependencies {
     implementation("androidx.compose.material3:material3")
 
 
-
     implementation(
         "androidx.activity:activity-compose:1.9.0"
     )
 
 
-
-    // FOVIX user preferences
     implementation(
         "androidx.datastore:datastore-preferences:1.1.1"
     )
-
 
 
     debugImplementation(

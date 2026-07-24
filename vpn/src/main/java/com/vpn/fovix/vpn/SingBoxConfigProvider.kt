@@ -1,8 +1,11 @@
 package com.vpn.fovix.vpn
 
+
 object SingBoxConfigProvider {
 
+
     fun build(): String {
+
 
         return """
         {
@@ -10,13 +13,11 @@ object SingBoxConfigProvider {
             {
               "type": "tun",
               "tag": "tun-in",
-              "interface_name": "fovix0",
-              "address": [
-                "172.19.0.1/30"
-              ],
+              "interface_name": "fovix",
               "mtu": 1500,
-              "auto_route": false,
-              "strict_route": false,
+              "auto_route": true,
+              "strict_route": true,
+              "sniff": true,
               "stack": "system"
             }
           ],
@@ -42,9 +43,12 @@ object SingBoxConfigProvider {
             }
           ],
           "route":{
+            "auto_detect_interface":true,
             "final":"proxy"
           }
         }
         """.trimIndent()
+
     }
+
 }

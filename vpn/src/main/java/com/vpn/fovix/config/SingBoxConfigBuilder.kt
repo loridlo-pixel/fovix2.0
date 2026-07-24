@@ -1,9 +1,14 @@
 package com.vpn.fovix.config
 
+
 import com.vpn.fovix.vpn.VPNServer
+import org.json.JSONArray
+import org.json.JSONObject
+
 
 
 object SingBoxConfigBuilder {
+
 
 
     fun build(
@@ -11,88 +16,136 @@ object SingBoxConfigBuilder {
     ): String {
 
 
-        return """
-        {
-          "log": {
-            "disabled": false,
-            "level": "trace",
-            "timestamp": true
-          },
+
+        val vless =
+            JSONObject()
 
 
-          "inbounds": [
-            {
-              "type": "tun",
-              "tag": "tun-in",
-              "interface_name": "tun0",
-              "stack": "gvisor",
-              "mtu": 1500,
-              "auto_route": false,
-              "strict_route": false
-            }
-          ],
+
+        vless.put(
+            "type",
+            "vless"
+        )
 
 
-          "outbounds": [
-            {
-              "type": "vless",
-              "tag": "proxy",
-
-              "server": "${server.address}",
-              "server_port": ${server.port},
-
-              "uuid": "${server.uuid}",
-
-              "tls": {
-                "enabled": true,
-                "server_name": "${server.sni}",
-
-                "utls": {
-                  "enabled": true,
-                  "fingerprint": "${server.fingerprint}"
-                }
-              }
-            },
+        vless.put(
+            "tag",
+            "proxy"
+        )
 
 
-            {
-              "type": "direct",
-              "tag": "direct"
-            }
-          ],
+        vless.put(
+            "server",
+            server.address
+        )
 
 
-          "dns": {
-            "servers": [
-              {
-                "tag": "dns-google",
-                "address": "8.8.8.8",
-                "detour": "proxy"
-              }
-            ],
-
-            "final": "dns-google"
-          },
+        vless.put(
+            "server_port",
+            server.port
+        )
 
 
-          "route": {
 
-            "auto_detect_interface": false,
+        server.uuid?.let {
 
-            "rules": [
-              {
-                "ip_is_private": true,
-                "outbound": "direct"
-              }
-            ],
-
-            "final": "proxy"
-          }
-
+            vless.put(
+                "uuid",
+                it
+            )
 
         }
-        """.trimIndent()
+
+
+
+
+
+        val direct =
+            JSONObject()
+
+
+        direct.put(
+            "type",
+            "direct"
+        )
+
+
+        direct.put(
+            "tag",
+            "direct"
+        )
+
+
+
+
+
+        val outbounds =
+            JSONArray()
+
+
+
+        outbounds.put(
+            vless
+        )
+
+
+        outbounds.put(
+            direct
+        )
+
+
+
+
+
+
+        val route =
+            JSONObject()
+
+
+        route.put(
+            "final",
+            "proxy"
+        )
+
+
+
+
+
+
+        val root =
+            JSONObject()
+
+
+
+        root.put(
+            "log",
+            JSONObject()
+                .put(
+                    "level",
+                    "debug"
+                )
+        )
+
+
+
+        root.put(
+            "outbounds",
+            outbounds
+        )
+
+
+
+        root.put(
+            "route",
+            route
+        )
+
+
+
+
+        return root.toString(2)
 
     }
+
 
 }
