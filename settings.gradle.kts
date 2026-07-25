@@ -1,4 +1,4 @@
-﻿pluginManagement {
+pluginManagement {
     repositories {
         google()
         mavenCentral()
@@ -23,6 +23,7 @@ include(
     ":data",
     ":domain",
     ":vpn",
+    ":diagnostics",
     ":feature_home",
     ":feature_servers",
     ":feature_settings",

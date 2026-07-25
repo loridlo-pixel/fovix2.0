@@ -8,7 +8,7 @@ android {
 
     namespace = "com.vpn.fovix.app"
 
-    compileSdk = 34
+    compileSdk = 35
 
 
     defaultConfig {
