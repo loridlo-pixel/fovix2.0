@@ -9,7 +9,6 @@ import java.util.UUID
 import java.util.concurrent.CopyOnWriteArrayList
 
 
-
 object FovixLogger {
 
 
@@ -29,16 +28,11 @@ object FovixLogger {
 
 
 
-
-
     fun session(): String {
 
         return sessionId
 
     }
-
-
-
 
 
 
@@ -75,9 +69,6 @@ object FovixLogger {
 
 
 
-
-
-
     fun info(
         message: String,
         extra: Any? = null
@@ -96,9 +87,6 @@ object FovixLogger {
 
 
 
-
-
-
     fun success(
         message: String,
         extra: Any? = null
@@ -107,16 +95,13 @@ object FovixLogger {
 
         log(
             "SUCCESS: " +
-            if(extra != null)
-                "$message | $extra"
-            else
-                message
+                    if(extra != null)
+                        "$message | $extra"
+                    else
+                        message
         )
 
     }
-
-
-
 
 
 
@@ -142,7 +127,6 @@ object FovixLogger {
             }
 
 
-
         log(
             "ERROR: $result"
         )
@@ -152,14 +136,10 @@ object FovixLogger {
 
 
 
-
-
-
     fun exception(
         message: String,
         throwable: Throwable? = null
     ) {
-
 
         error(
             message,
@@ -170,6 +150,12 @@ object FovixLogger {
 
 
 
+
+    fun events(): List<String> {
+
+        return events.toList()
+
+    }
 
 
 
