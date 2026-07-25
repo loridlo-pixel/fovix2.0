@@ -13,6 +13,7 @@ import com.vpn.fovix.diagnostics.FovixEvent
 import java.util.concurrent.atomic.AtomicBoolean
 
 
+
 class FovixVpnService : VpnService() {
 
 
@@ -39,22 +40,47 @@ class FovixVpnService : VpnService() {
             )
 
 
-            FovixDiagnostics.event(
-                FovixEvent.ENGINE_STOPPED
-            )
-
-
             running.set(false)
 
 
-            tunInterface?.close()
+            try {
+
+                SingBoxNative.stop()
+
+            }
+            catch(e: Exception){
+
+                Log.e(
+                    TAG,
+                    "STOP ERROR",
+                    e
+                )
+
+            }
+
+
+
+            try {
+
+                tunInterface?.close()
+
+            }
+            catch(e: Exception){}
+
 
 
             tunInterface = null
 
+
+
+            FovixDiagnostics.event(
+                FovixEvent.ENGINE_STOPPED
+            )
+
         }
 
     }
+
 
 
 
@@ -80,6 +106,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
@@ -93,18 +120,20 @@ class FovixVpnService : VpnService() {
         )
 
 
-        FovixDiagnostics.event(
-            FovixEvent.VPN_START_COMMAND
-        )
+        if(running.get()) {
 
+            Log.e(
+                TAG,
+                "VPN ALREADY RUNNING"
+            )
 
-
-        if(running.get())
             return START_STICKY
+        }
 
 
 
         startVPN()
+
 
 
         return START_STICKY
@@ -141,22 +170,35 @@ class FovixVpnService : VpnService() {
 
 
             builder
-                .setSession("FOVIX")
-                .setMtu(1500)
+    .setSession("FOVIX")
+    .setMtu(1400)
 
-                .addAddress(
-                    "10.0.0.2",
-                    32
-                )
 
-                .addRoute(
-                    "0.0.0.0",
-                    0
-                )
+    .addAddress(
+        "10.0.0.2",
+        32
+    )
 
-                .addDnsServer(
-                    "1.1.1.1"
-                )
+
+    /*
+       Весь трафик отправляем в TUN
+    */
+
+    .addRoute(
+        "0.0.0.0",
+        0
+    )
+
+
+    .addRoute(
+        "::",
+        0
+    )
+
+
+    .addDnsServer(
+        "1.1.1.1"
+    )
 
 
 
@@ -165,7 +207,7 @@ class FovixVpnService : VpnService() {
 
 
 
-            if(tunInterface == null) {
+            if(tunInterface == null){
 
 
                 Log.e(
@@ -182,7 +224,6 @@ class FovixVpnService : VpnService() {
 
                 stopSelf()
 
-
                 return
 
             }
@@ -190,12 +231,21 @@ class FovixVpnService : VpnService() {
 
 
 
+
+            /*
+             * Передаем FD в native.
+             *
+             * detachFd() передает владение
+             * файловым дескриптором sing-box.
+             *
+             * ParcelFileDescriptor больше
+             * не закрываем вручную после этого.
+             */
+
+
             val fd =
                 tunInterface!!
                     .detachFd()
-
-
-            tunInterface = null
 
 
 
@@ -214,29 +264,15 @@ class FovixVpnService : VpnService() {
 
 
 
-          val config =
-    FovixVpnConfigProvider.build()
 
+            val config =
+                FovixVpnConfigProvider.build()
 
 
 
             Log.e(
                 TAG,
                 "CONFIG SIZE=${config.length}"
-            )
-
-
-
-            FovixDiagnostics.event(
-                FovixEvent.CONFIG_GENERATED,
-                "size=${config.length}"
-            )
-
-
-
-
-            FovixDiagnostics.event(
-                FovixEvent.ENGINE_START_REQUEST
             )
 
 
@@ -250,8 +286,7 @@ class FovixVpnService : VpnService() {
 
 
 
-
-            if(!ok) {
+            if(!ok){
 
 
                 Log.e(
@@ -270,10 +305,15 @@ class FovixVpnService : VpnService() {
 
                 stopSelf()
 
-
                 return
 
             }
+
+
+
+
+
+            running.set(true)
 
 
 
@@ -288,18 +328,12 @@ class FovixVpnService : VpnService() {
 
 
         }
-        catch(e: Exception) {
+        catch(e: Exception){
 
 
             Log.e(
                 TAG,
                 "VPN ERROR",
-                e
-            )
-
-
-            FovixDiagnostics.error(
-                "vpn_start",
                 e
             )
 
@@ -311,7 +345,6 @@ class FovixVpnService : VpnService() {
 
         }
 
-
     }
 
 
@@ -320,7 +353,8 @@ class FovixVpnService : VpnService() {
 
 
 
-    private fun waitForEngineReady() {
+
+    private fun waitForEngineReady(){
 
 
         Thread {
@@ -329,23 +363,22 @@ class FovixVpnService : VpnService() {
             val timeout = 5000L
 
 
-            val startedAt =
+            val start =
                 System.currentTimeMillis()
 
 
 
             while(
-                System.currentTimeMillis() - startedAt < timeout
-            ) {
+                System.currentTimeMillis() - start < timeout
+            ){
 
 
                 try {
 
 
-                    if(SingBoxNative.isRunning()) {
-
-
-                        running.set(true)
+                    if(
+                        SingBoxNative.isRunning()
+                    ){
 
 
                         FovixDiagnostics.event(
@@ -369,11 +402,12 @@ class FovixVpnService : VpnService() {
 
 
                 }
-                catch(e: Exception) {
+                catch(e: Exception){
 
 
-                    FovixDiagnostics.error(
-                        "engine_status_check",
+                    Log.e(
+                        TAG,
+                        "ENGINE CHECK ERROR",
                         e
                     )
 
@@ -387,16 +421,16 @@ class FovixVpnService : VpnService() {
 
 
 
+
             Log.e(
                 TAG,
                 "ENGINE READY TIMEOUT"
             )
 
 
-            FovixDiagnostics.event(
-                FovixEvent.ENGINE_FAILED,
-                "startup_timeout"
-            )
+
+            running.set(false)
+
 
 
             SingBoxNative.stop()
@@ -413,7 +447,8 @@ class FovixVpnService : VpnService() {
 
 
 
-    override fun onDestroy() {
+
+    override fun onDestroy(){
 
 
         Log.e(
@@ -422,9 +457,7 @@ class FovixVpnService : VpnService() {
         )
 
 
-        FovixDiagnostics.event(
-            FovixEvent.VPN_DESTROYED
-        )
+        running.set(false)
 
 
 
@@ -432,11 +465,22 @@ class FovixVpnService : VpnService() {
 
 
 
-        tunInterface?.close()
+        try {
+
+            tunInterface?.close()
+
+        }
+        catch(e: Exception){}
 
 
 
-        running.set(false)
+        tunInterface = null
+
+
+
+        FovixDiagnostics.event(
+            FovixEvent.VPN_DESTROYED
+        )
 
 
 
