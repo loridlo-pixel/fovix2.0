@@ -1,5 +1,6 @@
 package com.vpn.fovix.config.builder
 
+
 import com.vpn.fovix.config.model.FovixConfig
 import org.json.JSONArray
 import org.json.JSONObject
@@ -16,8 +17,9 @@ object SingBoxConfigBuilder {
         val root = JSONObject()
 
 
+
         /*
-         * INBOUND
+         * INBOUNDS
          */
 
         val inbounds = JSONArray()
@@ -40,6 +42,14 @@ object SingBoxConfigBuilder {
         inbound.put(
             "mtu",
             config.inbound.mtu
+        )
+
+
+        inbound.put(
+            "address",
+            JSONArray().apply {
+                put(config.inbound.address)
+            }
         )
 
 
@@ -78,6 +88,7 @@ object SingBoxConfigBuilder {
         val outbounds = JSONArray()
 
 
+
         config.outbounds.forEach { outbound ->
 
 
@@ -96,6 +107,7 @@ object SingBoxConfigBuilder {
             )
 
 
+
             outbound.proxy?.let { proxy ->
 
 
@@ -111,6 +123,7 @@ object SingBoxConfigBuilder {
                 )
 
 
+
                 proxy.uuid?.let { uuid ->
 
                     item.put(
@@ -119,6 +132,7 @@ object SingBoxConfigBuilder {
                     )
 
                 }
+
 
 
                 proxy.password?.let { password ->
@@ -144,6 +158,7 @@ object SingBoxConfigBuilder {
                     )
 
 
+
                     tlsConfig.serverName?.let { name ->
 
                         tls.put(
@@ -154,7 +169,9 @@ object SingBoxConfigBuilder {
                     }
 
 
+
                     tlsConfig.fingerprint?.let { fingerprint ->
+
 
                         tls.put(
                             "utls",
@@ -164,6 +181,7 @@ object SingBoxConfigBuilder {
                                     "enabled",
                                     true
                                 )
+
 
                                 put(
                                     "fingerprint",
@@ -176,6 +194,7 @@ object SingBoxConfigBuilder {
                     }
 
 
+
                     item.put(
                         "tls",
                         tls
@@ -185,27 +204,29 @@ object SingBoxConfigBuilder {
 
 
 
-                proxy.transport?.let { transport ->
+
+                proxy.transport?.let { transportConfig ->
 
 
-                    val transportJson = JSONObject()
+                    val transport =
+                        JSONObject()
 
 
-                    transport.type?.let {
+                    transportConfig.type?.let { type ->
 
-                        transportJson.put(
+                        transport.put(
                             "type",
-                            it
+                            type
                         )
 
                     }
 
 
-                    transport.path?.let {
+                    transportConfig.path?.let { path ->
 
-                        transportJson.put(
+                        transport.put(
                             "path",
-                            it
+                            path
                         )
 
                     }
@@ -213,17 +234,21 @@ object SingBoxConfigBuilder {
 
                     item.put(
                         "transport",
-                        transportJson
+                        transport
                     )
 
                 }
 
+
             }
+
 
 
             outbounds.put(item)
 
+
         }
+
 
 
 
@@ -260,6 +285,7 @@ object SingBoxConfigBuilder {
         val route = JSONObject()
 
 
+
         route.put(
             "auto_detect_interface",
             config.route.autoDetectInterface
@@ -270,6 +296,7 @@ object SingBoxConfigBuilder {
             "final",
             config.route.finalOutbound
         )
+
 
 
         root.put(

@@ -9,10 +9,12 @@ data class FovixInbound(
 
     val mtu: Int = 1500,
 
+    val address: String = "172.19.0.1/30",
+
     val autoRoute: Boolean = true,
 
-    val strictRoute: Boolean = true,
+    val strictRoute: Boolean = false,
 
-    val stack: String = "system"
+    val stack: String = "gvisor"
 
 )
