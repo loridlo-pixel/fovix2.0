@@ -7,9 +7,10 @@ import android.os.ParcelFileDescriptor
 import android.util.Log
 
 import com.vpn.fovix.config.SingBoxConfigBuilder
+import com.vpn.fovix.diagnostics.FovixDiagnostics
+import com.vpn.fovix.diagnostics.FovixEvent
 
 import java.util.concurrent.atomic.AtomicBoolean
-
 
 
 class FovixVpnService : VpnService() {
@@ -17,23 +18,40 @@ class FovixVpnService : VpnService() {
 
     companion object {
 
+
         private const val TAG = "FOVIX"
 
+
         private var tunInterface: ParcelFileDescriptor? = null
+
 
         private val running =
             AtomicBoolean(false)
 
 
+
         fun stopVPN() {
 
-            Log.e(TAG,"========== STOP VPN ==========")
+
+            Log.e(
+                TAG,
+                "========== STOP VPN =========="
+            )
+
+
+            FovixDiagnostics.event(
+                FovixEvent.ENGINE_STOPPED
+            )
+
 
             running.set(false)
 
+
             tunInterface?.close()
 
-            tunInterface=null
+
+            tunInterface = null
+
         }
 
     }
@@ -41,14 +59,23 @@ class FovixVpnService : VpnService() {
 
 
 
+
     override fun onCreate() {
 
+
         super.onCreate()
+
 
         Log.e(
             TAG,
             "========== VPN SERVICE CREATED =========="
         )
+
+
+        FovixDiagnostics.event(
+            FovixEvent.VPN_SERVICE_CREATED
+        )
+
 
     }
 
@@ -56,17 +83,26 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
     override fun onStartCommand(
         intent: Intent?,
-        flags:Int,
-        startId:Int
-    ):Int {
+        flags: Int,
+        startId: Int
+    ): Int {
+
 
 
         Log.e(
             TAG,
             "========== VPN START COMMAND =========="
         )
+
+
+        FovixDiagnostics.event(
+            FovixEvent.VPN_START_COMMAND
+        )
+
 
 
         if(running.get())
@@ -86,7 +122,10 @@ class FovixVpnService : VpnService() {
 
 
 
-    private fun startVPN(){
+
+
+
+    private fun startVPN() {
 
 
         try {
@@ -100,6 +139,14 @@ class FovixVpnService : VpnService() {
 
 
 
+            FovixDiagnostics.event(
+                FovixEvent.TUN_CREATE_STARTED
+            )
+
+
+
+
+
             val builder =
                 Builder()
 
@@ -109,22 +156,21 @@ class FovixVpnService : VpnService() {
                 .setSession("FOVIX")
                 .setMtu(1500)
 
-                // VPN address
                 .addAddress(
                     "10.0.0.2",
                     32
                 )
 
-                // ВСЁ через VPN
                 .addRoute(
                     "0.0.0.0",
                     0
                 )
 
-                // IPv6 отключаем пока
                 .addDnsServer(
                     "1.1.1.1"
                 )
+
+
 
 
 
@@ -133,17 +179,33 @@ class FovixVpnService : VpnService() {
 
 
 
-            if(tunInterface==null){
+
+
+            if(tunInterface == null) {
+
 
                 Log.e(
                     TAG,
                     "TUN FAILED"
                 )
 
+
+                FovixDiagnostics.event(
+                    FovixEvent.ENGINE_FAILED,
+                    "tun_failed"
+                )
+
+
                 stopSelf()
 
+
                 return
+
             }
+
+
+
+
 
 
 
@@ -153,7 +215,9 @@ class FovixVpnService : VpnService() {
 
 
 
-            tunInterface=null
+            tunInterface = null
+
+
 
 
 
@@ -164,26 +228,39 @@ class FovixVpnService : VpnService() {
 
 
 
+            FovixDiagnostics.event(
+                FovixEvent.TUN_CREATED,
+                "fd=$fd"
+            )
+
+
+
+
+
 
 
             val server =
                 VPNServer(
 
-                    protocol="vless",
+                    protocol = "vless",
 
-                    address="ai.noooo.win",
+                    address = "ai.noooo.win",
 
-                    port=443,
+                    port = 443,
 
-                    uuid=
+                    uuid =
                     "c5c1c20f-691d-4850-988c-ee463f4799ad",
 
-                    sni=
+                    sni =
                     "cdn-v1-6a51ff3b.noooo.win",
 
-                    fingerprint="chrome"
+                    fingerprint = "chrome"
 
                 )
+
+
+
+
 
 
 
@@ -194,10 +271,31 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
             Log.e(
                 TAG,
                 "CONFIG SIZE=${config.length}"
             )
+
+
+
+            FovixDiagnostics.event(
+                FovixEvent.CONFIG_GENERATED,
+                "size=${config.length}"
+            )
+
+
+
+
+
+
+
+            FovixDiagnostics.event(
+                FovixEvent.ENGINE_START_REQUEST
+            )
+
+
 
 
 
@@ -209,23 +307,52 @@ class FovixVpnService : VpnService() {
 
 
 
-            if(!ok){
+
+
+
+
+            if(!ok) {
+
 
                 Log.e(
                     TAG,
                     "ENGINE FAILED"
                 )
 
+
+                FovixDiagnostics.event(
+                    FovixEvent.ENGINE_FAILED
+                )
+
+
                 SingBoxNative.stop()
+
 
                 stopSelf()
 
+
                 return
+
             }
 
 
 
+
+
+
+
+
             running.set(true)
+
+
+
+
+
+            FovixDiagnostics.event(
+                FovixEvent.ENGINE_STARTED
+            )
+
+
 
 
 
@@ -235,8 +362,10 @@ class FovixVpnService : VpnService() {
             )
 
 
+
         }
-        catch(e:Exception){
+        catch(e: Exception) {
+
 
 
             Log.e(
@@ -246,7 +375,16 @@ class FovixVpnService : VpnService() {
             )
 
 
+
+            FovixDiagnostics.error(
+                "vpn_start",
+                e
+            )
+
+
+
             SingBoxNative.stop()
+
 
             stopSelf()
 
@@ -260,7 +398,10 @@ class FovixVpnService : VpnService() {
 
 
 
-    override fun onDestroy(){
+
+
+
+    override fun onDestroy() {
 
 
         Log.e(
@@ -269,19 +410,28 @@ class FovixVpnService : VpnService() {
         )
 
 
+
+        FovixDiagnostics.event(
+            FovixEvent.VPN_DESTROYED
+        )
+
+
+
         SingBoxNative.stop()
+
 
 
         tunInterface?.close()
 
 
+
         running.set(false)
+
 
 
         super.onDestroy()
 
     }
-
 
 
 }
