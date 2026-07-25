@@ -4,9 +4,11 @@ package com.vpn.fovix.vpn
 import android.content.Context
 import android.content.Intent
 import android.util.Log
+
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 import com.vpn.fovix.domain.vpnstate.VPNState
 import com.vpn.fovix.domain.vpnstate.VpnController
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
@@ -25,7 +27,6 @@ class VpnEngine(
         private const val TAG = "FOVIX_ENGINE"
 
     }
-
 
 
 
@@ -51,12 +52,12 @@ class VpnEngine(
 
 
 
-
     override fun start(
 
         server: Any?
 
     ) {
+
 
 
         Log.i(
@@ -69,13 +70,21 @@ class VpnEngine(
 
 
 
+        val serverName =
+            server?.toString()
+                ?: "Auto"
+
+
+
+
         _state.value = VPNState(
 
             status = ConnectionStatus.CONNECTING,
 
-            server = server?.toString() ?: "Auto"
+            server = serverName
 
         )
+
 
 
 
@@ -97,31 +106,32 @@ class VpnEngine(
 
 
 
-
-
-            _state.value = VPNState(
-
-                status = ConnectionStatus.CONNECTED,
-
-                server = server?.toString() ?: "Auto"
-
-            )
-
-
-
-
             Log.i(
 
                 TAG,
 
-                "VPN STARTED"
+                "VPN SERVICE STARTED WAITING ENGINE"
 
             )
 
 
 
+            /*
+                ВАЖНО:
+
+                Здесь больше НЕ ставим CONNECTED.
+
+                Реальное подключение будет после:
+                TUN CREATED
+                ENGINE STARTED
+                sing-box RUNNING
+
+             */
+
+
+
         }
-        catch(e: Exception){
+        catch(e: Exception) {
 
 
 
@@ -150,7 +160,6 @@ class VpnEngine(
 
 
     }
-
 
 
 
@@ -231,8 +240,8 @@ class VpnEngine(
         )
 
 
-
     }
+
 
 
 

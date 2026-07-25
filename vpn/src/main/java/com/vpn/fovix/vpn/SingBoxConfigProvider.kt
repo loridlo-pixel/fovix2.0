@@ -6,21 +6,12 @@ object SingBoxConfigProvider {
 
     fun build(): String {
 
-
         return """
         {
-          "inbounds": [
-            {
-              "type": "tun",
-              "tag": "tun-in",
-              "interface_name": "fovix",
-              "mtu": 1500,
-              "auto_route": true,
-              "strict_route": true,
-              "sniff": true,
-              "stack": "system"
-            }
-          ],
+          "log": {
+            "level": "debug"
+          },
+
           "outbounds": [
             {
               "type": "vless",
@@ -38,13 +29,14 @@ object SingBoxConfigProvider {
               }
             },
             {
-              "type":"direct",
-              "tag":"direct"
+              "type": "direct",
+              "tag": "direct"
             }
           ],
-          "route":{
-            "auto_detect_interface":true,
-            "final":"proxy"
+
+          "route": {
+            "auto_detect_interface": true,
+            "final": "proxy"
           }
         }
         """.trimIndent()
