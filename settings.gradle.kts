@@ -26,6 +26,7 @@ include(
     ":diagnostics",
     ":feature_home",
     ":feature_servers",
+    ":core-config",
     ":feature_settings",
     ":feature_stats"
 )

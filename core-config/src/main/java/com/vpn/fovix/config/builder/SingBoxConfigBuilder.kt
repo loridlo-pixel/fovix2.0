@@ -1,7 +1,6 @@
 package com.vpn.fovix.config.builder
 
 import com.vpn.fovix.config.model.FovixConfig
-import com.vpn.fovix.config.model.FovixProxy
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -17,39 +16,234 @@ object SingBoxConfigBuilder {
         val root = JSONObject()
 
 
+        /*
+         * INBOUND
+         */
+
+        val inbounds = JSONArray()
+
+        val inbound = JSONObject()
+
+
+        inbound.put(
+            "type",
+            config.inbound.type
+        )
+
+
+        inbound.put(
+            "tag",
+            config.inbound.tag
+        )
+
+
+        inbound.put(
+            "mtu",
+            config.inbound.mtu
+        )
+
+
+        inbound.put(
+            "auto_route",
+            config.inbound.autoRoute
+        )
+
+
+        inbound.put(
+            "strict_route",
+            config.inbound.strictRoute
+        )
+
+
+        inbound.put(
+            "stack",
+            config.inbound.stack
+        )
+
+
+        inbounds.put(inbound)
+
+
+        root.put(
+            "inbounds",
+            inbounds
+        )
+
+
+
+        /*
+         * OUTBOUNDS
+         */
+
         val outbounds = JSONArray()
 
 
-        config.proxies.forEach { proxy ->
+        config.outbounds.forEach { outbound ->
 
-            outbounds.put(
-                buildProxy(proxy)
+
+            val item = JSONObject()
+
+
+            item.put(
+                "type",
+                outbound.type
             )
+
+
+            item.put(
+                "tag",
+                outbound.tag
+            )
+
+
+            outbound.proxy?.let { proxy ->
+
+
+                item.put(
+                    "server",
+                    proxy.server
+                )
+
+
+                item.put(
+                    "server_port",
+                    proxy.serverPort
+                )
+
+
+                proxy.uuid?.let { uuid ->
+
+                    item.put(
+                        "uuid",
+                        uuid
+                    )
+
+                }
+
+
+                proxy.password?.let { password ->
+
+                    item.put(
+                        "password",
+                        password
+                    )
+
+                }
+
+
+
+                proxy.tls?.let { tlsConfig ->
+
+
+                    val tls = JSONObject()
+
+
+                    tls.put(
+                        "enabled",
+                        tlsConfig.enabled
+                    )
+
+
+                    tlsConfig.serverName?.let { name ->
+
+                        tls.put(
+                            "server_name",
+                            name
+                        )
+
+                    }
+
+
+                    tlsConfig.fingerprint?.let { fingerprint ->
+
+                        tls.put(
+                            "utls",
+                            JSONObject().apply {
+
+                                put(
+                                    "enabled",
+                                    true
+                                )
+
+                                put(
+                                    "fingerprint",
+                                    fingerprint
+                                )
+
+                            }
+                        )
+
+                    }
+
+
+                    item.put(
+                        "tls",
+                        tls
+                    )
+
+                }
+
+
+
+                proxy.transport?.let { transport ->
+
+
+                    val transportJson = JSONObject()
+
+
+                    transport.type?.let {
+
+                        transportJson.put(
+                            "type",
+                            it
+                        )
+
+                    }
+
+
+                    transport.path?.let {
+
+                        transportJson.put(
+                            "path",
+                            it
+                        )
+
+                    }
+
+
+                    item.put(
+                        "transport",
+                        transportJson
+                    )
+
+                }
+
+            }
+
+
+            outbounds.put(item)
 
         }
 
 
-        outbounds.put(
-            JSONObject()
-                .put(
-                    "type",
-                    "direct"
-                )
-                .put(
-                    "tag",
-                    "direct"
-                )
+
+        val direct = JSONObject()
+
+
+        direct.put(
+            "type",
+            "direct"
         )
 
 
-        root.put(
-            "log",
-            JSONObject()
-                .put(
-                    "level",
-                    "info"
-                )
+        direct.put(
+            "tag",
+            "direct"
         )
+
+
+        outbounds.put(direct)
+
 
 
         root.put(
@@ -58,105 +252,35 @@ object SingBoxConfigBuilder {
         )
 
 
+
+        /*
+         * ROUTE
+         */
+
+        val route = JSONObject()
+
+
+        route.put(
+            "auto_detect_interface",
+            config.route.autoDetectInterface
+        )
+
+
+        route.put(
+            "final",
+            config.route.finalOutbound
+        )
+
+
         root.put(
             "route",
-            JSONObject()
-                .put(
-                    "final",
-                    config.finalOutbound
-                )
+            route
         )
+
 
 
         return root.toString(2)
 
     }
-
-
-
-
-
-    private fun buildProxy(
-        proxy: FovixProxy
-    ): JSONObject {
-
-
-        val json =
-            JSONObject()
-
-
-        json.put(
-            "type",
-            proxy.type
-        )
-
-
-        json.put(
-            "tag",
-            proxy.tag
-        )
-
-
-        json.put(
-            "server",
-            proxy.server
-        )
-
-
-        json.put(
-            "server_port",
-            proxy.serverPort
-        )
-
-
-
-        proxy.uuid?.let {
-
-            json.put(
-                "uuid",
-                it
-            )
-
-        }
-
-
-
-        proxy.password?.let {
-
-            json.put(
-                "password",
-                it
-            )
-
-        }
-
-
-
-        proxy.tls?.let {
-
-            tls ->
-
-
-            json.put(
-                "tls",
-                JSONObject()
-                    .put(
-                        "enabled",
-                        tls.enabled
-                    )
-                    .put(
-                        "server_name",
-                        tls.serverName
-                    )
-            )
-
-        }
-
-
-
-        return json
-
-    }
-
 
 }

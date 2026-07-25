@@ -51,5 +51,6 @@ android {
 dependencies {
 
     implementation(project(":diagnostics"))
+    implementation(project(":core-config"))
 
 }

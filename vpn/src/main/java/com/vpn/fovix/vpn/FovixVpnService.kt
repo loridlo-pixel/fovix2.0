@@ -6,7 +6,7 @@ import android.net.VpnService
 import android.os.ParcelFileDescriptor
 import android.util.Log
 
-import com.vpn.fovix.config.SingBoxConfigBuilder
+import com.vpn.fovix.vpn.config.FovixVpnConfigProvider
 import com.vpn.fovix.diagnostics.FovixDiagnostics
 import com.vpn.fovix.diagnostics.FovixEvent
 
@@ -214,32 +214,8 @@ class FovixVpnService : VpnService() {
 
 
 
-            val server =
-                VPNServer(
-
-                    protocol = "vless",
-
-                    address = "ai.noooo.win",
-
-                    port = 443,
-
-                    uuid =
-                    "c5c1c20f-691d-4850-988c-ee463f4799ad",
-
-                    sni =
-                    "cdn-v1-6a51ff3b.noooo.win",
-
-                    fingerprint = "chrome"
-
-                )
-
-
-
-
-
-            val config =
-                SingBoxConfigBuilder
-                    .build(server)
+          val config =
+    FovixVpnConfigProvider.build()
 
 
 

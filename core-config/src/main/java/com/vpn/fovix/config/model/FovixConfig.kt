@@ -3,8 +3,12 @@ package com.vpn.fovix.config.model
 
 data class FovixConfig(
 
-    val proxies: List<FovixProxy>,
+    val inbound: FovixInbound = FovixInbound(),
 
-    val finalOutbound: String = "proxy"
+    val outbounds: List<FovixOutbound>,
+
+    val dns: FovixDns = FovixDns(),
+
+    val route: FovixRoute = FovixRoute()
 
 )
