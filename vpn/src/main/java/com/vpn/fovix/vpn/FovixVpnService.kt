@@ -34,12 +34,6 @@ class FovixVpnService : VpnService() {
         fun stopVPN() {
 
 
-            Log.e(
-                TAG,
-                "========== STOP VPN =========="
-            )
-
-
             running.set(false)
 
 
@@ -47,14 +41,8 @@ class FovixVpnService : VpnService() {
 
                 SingBoxNative.stop()
 
-            }
-            catch(e: Exception){
+            } catch (_: Exception) {
 
-                Log.e(
-                    TAG,
-                    "STOP ERROR",
-                    e
-                )
 
             }
 
@@ -64,18 +52,14 @@ class FovixVpnService : VpnService() {
 
                 tunInterface?.close()
 
-            }
-            catch(e: Exception){}
+            } catch (_: Exception) {
 
+
+            }
 
 
             tunInterface = null
 
-
-
-            FovixDiagnostics.event(
-                FovixEvent.ENGINE_STOPPED
-            )
 
         }
 
@@ -87,12 +71,13 @@ class FovixVpnService : VpnService() {
 
     override fun onCreate() {
 
+
         super.onCreate()
 
 
         Log.e(
             TAG,
-            "========== VPN SERVICE CREATED =========="
+            "VPN CREATED"
         )
 
 
@@ -107,6 +92,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
@@ -114,20 +100,25 @@ class FovixVpnService : VpnService() {
     ): Int {
 
 
+
         Log.e(
             TAG,
-            "========== VPN START COMMAND =========="
+            "VPN START COMMAND"
         )
+
 
 
         if(running.get()) {
 
+
             Log.e(
                 TAG,
-                "VPN ALREADY RUNNING"
+                "ALREADY RUNNING"
             )
 
+
             return START_STICKY
+
         }
 
 
@@ -146,6 +137,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
     private fun startVPN() {
 
 
@@ -154,12 +146,7 @@ class FovixVpnService : VpnService() {
 
             Log.e(
                 TAG,
-                "CREATE ANDROID TUN"
-            )
-
-
-            FovixDiagnostics.event(
-                FovixEvent.TUN_CREATE_STARTED
+                "CREATE TUN"
             )
 
 
@@ -170,35 +157,44 @@ class FovixVpnService : VpnService() {
 
 
             builder
-    .setSession("FOVIX")
-    .setMtu(1400)
+
+                .setSession(
+                    "FOVIX"
+                )
 
 
-    .addAddress(
-        "10.0.0.2",
-        32
-    )
+                .setMtu(
+                    1500
+                )
 
 
-    /*
-       Весь трафик отправляем в TUN
-    */
+                /*
+                    sing-box tun stack expects this address.
+                    Android owns interface.
+                 */
 
-    .addRoute(
-        "0.0.0.0",
-        0
-    )
-
-
-    .addRoute(
-        "::",
-        0
-    )
+                .addAddress(
+                    "172.19.0.1",
+                    30
+                )
 
 
-    .addDnsServer(
-        "1.1.1.1"
-    )
+                .addRoute(
+                    "0.0.0.0",
+                    0
+                )
+
+
+                .addRoute(
+                    "::",
+                    0
+                )
+
+
+                .addDnsServer(
+                    "1.1.1.1"
+                )
+
 
 
 
@@ -212,35 +208,18 @@ class FovixVpnService : VpnService() {
 
                 Log.e(
                     TAG,
-                    "TUN FAILED"
-                )
-
-
-                FovixDiagnostics.event(
-                    FovixEvent.ENGINE_FAILED,
-                    "tun_failed"
+                    "TUN CREATE FAILED"
                 )
 
 
                 stopSelf()
+
 
                 return
 
             }
 
 
-
-
-
-            /*
-             * Передаем FD в native.
-             *
-             * detachFd() передает владение
-             * файловым дескриптором sing-box.
-             *
-             * ParcelFileDescriptor больше
-             * не закрываем вручную после этого.
-             */
 
 
             val fd =
@@ -253,14 +232,6 @@ class FovixVpnService : VpnService() {
                 TAG,
                 "TUN FD=$fd"
             )
-
-
-
-            FovixDiagnostics.event(
-                FovixEvent.TUN_CREATED,
-                "fd=$fd"
-            )
-
 
 
 
@@ -277,8 +248,15 @@ class FovixVpnService : VpnService() {
 
 
 
+            Log.e(
+                "FOVIX_RAW_CONFIG",
+                config
+            )
 
-            val ok =
+
+
+
+            val started =
                 SingBoxNative.start(
                     config,
                     fd
@@ -286,17 +264,12 @@ class FovixVpnService : VpnService() {
 
 
 
-            if(!ok){
+            if(!started){
 
 
                 Log.e(
                     TAG,
-                    "ENGINE START FAILED"
-                )
-
-
-                FovixDiagnostics.event(
-                    FovixEvent.ENGINE_FAILED
+                    "ENGINE FAILED"
                 )
 
 
@@ -305,11 +278,10 @@ class FovixVpnService : VpnService() {
 
                 stopSelf()
 
+
                 return
 
             }
-
-
 
 
 
@@ -319,12 +291,9 @@ class FovixVpnService : VpnService() {
 
             Log.e(
                 TAG,
-                "ENGINE START REQUEST ACCEPTED"
+                "ENGINE STARTED"
+
             )
-
-
-
-            waitForEngineReady()
 
 
         }
@@ -345,99 +314,6 @@ class FovixVpnService : VpnService() {
 
         }
 
-    }
-
-
-
-
-
-
-
-
-    private fun waitForEngineReady(){
-
-
-        Thread {
-
-
-            val timeout = 5000L
-
-
-            val start =
-                System.currentTimeMillis()
-
-
-
-            while(
-                System.currentTimeMillis() - start < timeout
-            ){
-
-
-                try {
-
-
-                    if(
-                        SingBoxNative.isRunning()
-                    ){
-
-
-                        FovixDiagnostics.event(
-                            FovixEvent.ENGINE_STARTED
-                        )
-
-
-                        Log.e(
-                            TAG,
-                            "========== FOVIX CONNECTED =========="
-                        )
-
-
-                        return@Thread
-
-                    }
-
-
-
-                    Thread.sleep(250)
-
-
-                }
-                catch(e: Exception){
-
-
-                    Log.e(
-                        TAG,
-                        "ENGINE CHECK ERROR",
-                        e
-                    )
-
-
-                    return@Thread
-
-                }
-
-
-            }
-
-
-
-
-            Log.e(
-                TAG,
-                "ENGINE READY TIMEOUT"
-            )
-
-
-
-            running.set(false)
-
-
-
-            SingBoxNative.stop()
-
-
-        }.start()
-
 
     }
 
@@ -447,8 +323,7 @@ class FovixVpnService : VpnService() {
 
 
 
-
-    override fun onDestroy(){
+    override fun onDestroy() {
 
 
         Log.e(
@@ -469,8 +344,11 @@ class FovixVpnService : VpnService() {
 
             tunInterface?.close()
 
+        } catch (_: Exception){
+
+
+
         }
-        catch(e: Exception){}
 
 
 
@@ -485,6 +363,7 @@ class FovixVpnService : VpnService() {
 
 
         super.onDestroy()
+
 
     }
 

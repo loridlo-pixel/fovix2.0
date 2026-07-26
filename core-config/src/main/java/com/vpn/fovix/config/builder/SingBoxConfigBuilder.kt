@@ -1,6 +1,5 @@
 package com.vpn.fovix.config.builder
 
-
 import com.vpn.fovix.config.model.FovixConfig
 import org.json.JSONArray
 import org.json.JSONObject
@@ -18,81 +17,85 @@ object SingBoxConfigBuilder {
 
 
 
+        root.put(
+            "log",
+            JSONObject()
+                .put(
+                    "level",
+                    "info"
+                )
+        )
+
+
+
         /*
-         * INBOUNDS
-         */
+            Android creates TUN interface.
+            Address is controlled by VpnService.
+            Do NOT put address here.
+        */
 
-        val inbounds = JSONArray()
+        val tun =
+            JSONObject()
 
-        val inbound = JSONObject()
 
-
-        inbound.put(
+        tun.put(
             "type",
-            config.inbound.type
+            "tun"
         )
 
 
-        inbound.put(
+        tun.put(
             "tag",
-            config.inbound.tag
+            "tun-in"
         )
 
 
-        inbound.put(
-            "mtu",
-            config.inbound.mtu
-        )
-
-
-        inbound.put(
-            "address",
-            JSONArray().apply {
-                put(config.inbound.address)
-            }
-        )
-
-
-        inbound.put(
+        tun.put(
             "auto_route",
-            config.inbound.autoRoute
+            true
         )
 
 
-        inbound.put(
+        tun.put(
             "strict_route",
-            config.inbound.strictRoute
+            true
         )
 
 
-        inbound.put(
+        tun.put(
             "stack",
-            config.inbound.stack
+            "system"
         )
 
-
-        inbounds.put(inbound)
 
 
         root.put(
             "inbounds",
-            inbounds
+            JSONArray()
+                .put(
+                    tun
+                )
         )
 
 
 
-        /*
-         * OUTBOUNDS
-         */
-
-        val outbounds = JSONArray()
+        val outbounds =
+            JSONArray()
 
 
 
         config.outbounds.forEach { outbound ->
 
 
-            val item = JSONObject()
+            val proxy =
+                outbound.proxy
+                    ?: return@forEach
+
+
+
+            val item =
+                JSONObject()
+
 
 
             item.put(
@@ -107,144 +110,102 @@ object SingBoxConfigBuilder {
             )
 
 
+            item.put(
+                "server",
+                proxy.server
+            )
 
-            outbound.proxy?.let { proxy ->
 
+            item.put(
+                "server_port",
+                proxy.serverPort
+            )
+
+
+
+            proxy.uuid?.let {
 
                 item.put(
-                    "server",
-                    proxy.server
+                    "uuid",
+                    it
                 )
-
-
-                item.put(
-                    "server_port",
-                    proxy.serverPort
-                )
-
-
-
-                proxy.uuid?.let { uuid ->
-
-                    item.put(
-                        "uuid",
-                        uuid
-                    )
-
-                }
-
-
-
-                proxy.password?.let { password ->
-
-                    item.put(
-                        "password",
-                        password
-                    )
-
-                }
-
-
-
-                proxy.tls?.let { tlsConfig ->
-
-
-                    val tls = JSONObject()
-
-
-                    tls.put(
-                        "enabled",
-                        tlsConfig.enabled
-                    )
-
-
-
-                    tlsConfig.serverName?.let { name ->
-
-                        tls.put(
-                            "server_name",
-                            name
-                        )
-
-                    }
-
-
-
-                    tlsConfig.fingerprint?.let { fingerprint ->
-
-
-                        tls.put(
-                            "utls",
-                            JSONObject().apply {
-
-                                put(
-                                    "enabled",
-                                    true
-                                )
-
-
-                                put(
-                                    "fingerprint",
-                                    fingerprint
-                                )
-
-                            }
-                        )
-
-                    }
-
-
-
-                    item.put(
-                        "tls",
-                        tls
-                    )
-
-                }
-
-
-
-
-                proxy.transport?.let { transportConfig ->
-
-
-                    val transport =
-                        JSONObject()
-
-
-                    transportConfig.type?.let { type ->
-
-                        transport.put(
-                            "type",
-                            type
-                        )
-
-                    }
-
-
-                    transportConfig.path?.let { path ->
-
-                        transport.put(
-                            "path",
-                            path
-                        )
-
-                    }
-
-
-                    item.put(
-                        "transport",
-                        transport
-                    )
-
-                }
-
 
             }
 
 
 
-            outbounds.put(item)
+            proxy.password?.let {
+
+                item.put(
+                    "password",
+                    it
+                )
+
+            }
+
+
+
+            proxy.tls?.let { tls ->
+
+
+                val tlsJson =
+                    JSONObject()
+
+
+
+                tlsJson.put(
+                    "enabled",
+                    tls.enabled
+                )
+
+
+
+                tls.serverName?.let {
+
+
+                    tlsJson.put(
+                        "server_name",
+                        it
+                    )
+
+
+                }
+
+
+
+                tls.fingerprint?.let {
+
+
+                    tlsJson.put(
+                        "utls",
+                        JSONObject()
+                            .put(
+                                "enabled",
+                                true
+                            )
+                            .put(
+                                "fingerprint",
+                                it
+                            )
+                    )
+
+
+                }
+
+
+
+                item.put(
+                    "tls",
+                    tlsJson
+                )
+
+            }
+
+
+
+            outbounds.put(
+                item
+            )
 
 
         }
@@ -252,22 +213,21 @@ object SingBoxConfigBuilder {
 
 
 
-        val direct = JSONObject()
+        outbounds.put(
 
+            JSONObject()
 
-        direct.put(
-            "type",
-            "direct"
+                .put(
+                    "type",
+                    "direct"
+                )
+
+                .put(
+                    "tag",
+                    "direct"
+                )
+
         )
-
-
-        direct.put(
-            "tag",
-            "direct"
-        )
-
-
-        outbounds.put(direct)
 
 
 
@@ -278,36 +238,9 @@ object SingBoxConfigBuilder {
 
 
 
-        /*
-         * ROUTE
-         */
-
-        val route = JSONObject()
-
-
-
-        route.put(
-            "auto_detect_interface",
-            config.route.autoDetectInterface
-        )
-
-
-        route.put(
-            "final",
-            config.route.finalOutbound
-        )
-
-
-
-        root.put(
-            "route",
-            route
-        )
-
-
-
-        return root.toString(2)
+        return root.toString()
 
     }
+
 
 }
