@@ -51,43 +51,18 @@ object SingBoxConfigBuilder {
                 .put(
 
                     JSONObject()
-
-                        .put(
-                            "type",
-                            "tun"
-                        )
-
-                        .put(
-                            "tag",
-                            "tun-in"
-                        )
-
-                        .put(
-
-                            "address",
-
-                            JSONArray()
-                                .put(
-                                    "172.19.0.1/30"
-                                )
-
-                        )
-
-                        .put(
-                            "stack",
-                            "gvisor"
-                        )
-
-                        .put(
-                            "auto_route",
-                            false
-                        )
-
-                        .put(
-                            "strict_route",
-                            false
-                        )
-
+    .put(
+        "type",
+        "tun"
+    )
+    .put(
+        "tag",
+        "tun-in"
+    )
+    .put(
+        "stack",
+        "gvisor"
+    )
                 )
 
         )
