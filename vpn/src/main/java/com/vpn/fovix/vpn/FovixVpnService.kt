@@ -6,9 +6,9 @@ import android.net.VpnService
 import android.os.ParcelFileDescriptor
 import android.util.Log
 
-import com.vpn.fovix.vpn.config.FovixVpnConfigProvider
 import com.vpn.fovix.diagnostics.FovixDiagnostics
 import com.vpn.fovix.diagnostics.FovixEvent
+import com.vpn.fovix.vpn.config.FovixVpnConfigProvider
 
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -60,7 +60,6 @@ class FovixVpnService : VpnService() {
 
             tunInterface = null
 
-
         }
 
     }
@@ -69,8 +68,9 @@ class FovixVpnService : VpnService() {
 
 
 
-    override fun onCreate() {
 
+
+    override fun onCreate() {
 
         super.onCreate()
 
@@ -93,12 +93,13 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
     override fun onStartCommand(
         intent: Intent?,
         flags: Int,
         startId: Int
     ): Int {
-
 
 
         Log.e(
@@ -138,6 +139,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
     private fun startVPN() {
 
 
@@ -157,7 +159,6 @@ class FovixVpnService : VpnService() {
 
 
             builder
-
                 .setSession(
                     "FOVIX"
                 )
@@ -169,8 +170,7 @@ class FovixVpnService : VpnService() {
 
 
                 /*
-                    sing-box tun stack expects this address.
-                    Android owns interface.
+                    Android TUN interface
                  */
 
                 .addAddress(
@@ -179,11 +179,19 @@ class FovixVpnService : VpnService() {
                 )
 
 
+                /*
+                    Full traffic through VPN
+                 */
+
                 .addRoute(
                     "0.0.0.0",
                     0
                 )
 
+
+                /*
+                    IPv6 traffic
+                 */
 
                 .addRoute(
                     "::",
@@ -191,9 +199,14 @@ class FovixVpnService : VpnService() {
                 )
 
 
+                /*
+                    DNS
+                 */
+
                 .addDnsServer(
                     "1.1.1.1"
                 )
+
 
 
 
@@ -203,7 +216,7 @@ class FovixVpnService : VpnService() {
 
 
 
-            if(tunInterface == null){
+            if(tunInterface == null) {
 
 
                 Log.e(
@@ -222,6 +235,15 @@ class FovixVpnService : VpnService() {
 
 
 
+            Log.e(
+                TAG,
+                "VPN ESTABLISHED"
+            )
+
+
+
+
+
             val fd =
                 tunInterface!!
                     .detachFd()
@@ -232,6 +254,7 @@ class FovixVpnService : VpnService() {
                 TAG,
                 "TUN FD=$fd"
             )
+
 
 
 
@@ -256,6 +279,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
             val started =
                 SingBoxNative.start(
                     config,
@@ -264,7 +288,9 @@ class FovixVpnService : VpnService() {
 
 
 
-            if(!started){
+
+
+            if(!started) {
 
 
                 Log.e(
@@ -285,6 +311,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
             running.set(true)
 
 
@@ -292,12 +319,12 @@ class FovixVpnService : VpnService() {
             Log.e(
                 TAG,
                 "ENGINE STARTED"
-
             )
 
 
+
         }
-        catch(e: Exception){
+        catch(e: Exception) {
 
 
             Log.e(
@@ -314,8 +341,9 @@ class FovixVpnService : VpnService() {
 
         }
 
-
     }
+
+
 
 
 
@@ -332,11 +360,21 @@ class FovixVpnService : VpnService() {
         )
 
 
+
         running.set(false)
 
 
 
-        SingBoxNative.stop()
+        try {
+
+            SingBoxNative.stop()
+
+        } catch (_: Exception) {
+
+
+
+        }
+
 
 
 
@@ -344,7 +382,7 @@ class FovixVpnService : VpnService() {
 
             tunInterface?.close()
 
-        } catch (_: Exception){
+        } catch (_: Exception) {
 
 
 
@@ -356,16 +394,8 @@ class FovixVpnService : VpnService() {
 
 
 
-        FovixDiagnostics.event(
-            FovixEvent.VPN_DESTROYED
-        )
-
-
-
         super.onDestroy()
 
-
     }
-
 
 }
