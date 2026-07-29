@@ -18,10 +18,6 @@ object SingBoxConfigBuilder {
 
 
 
-        /*
-            LOG
-         */
-
         root.put(
             "log",
             JSONObject()
@@ -59,17 +55,12 @@ object SingBoxConfigBuilder {
 
                                 .put(
                                     "tag",
-                                    "dns-direct"
+                                    "dns-cloudflare"
                                 )
 
                                 .put(
-                                    "type",
-                                    "udp"
-                                )
-
-                                .put(
-                                    "server",
-                                    "1.1.1.1"
+                                    "address",
+                                    "https://1.1.1.1/dns-query"
                                 )
 
                         )
@@ -78,7 +69,7 @@ object SingBoxConfigBuilder {
 
                 .put(
                     "final",
-                    "dns-direct"
+                    "dns-cloudflare"
                 )
 
                 .put(
@@ -91,11 +82,9 @@ object SingBoxConfigBuilder {
 
 
 
-
         /*
             TUN
          */
-
 
         root.put(
 
@@ -127,29 +116,10 @@ object SingBoxConfigBuilder {
                             "gvisor"
                         )
 
-                        .put(
-                            "auto_route",
-                            true
-                        )
-
-                        .put(
-                            "strict_route",
-                            false
-                        )
-
-                        .put(
-                            "sniff",
-                            true
-                        )
-
-                        .put(
-                            "sniff_override_destination",
-                            true
-                        )
-
                 )
 
         )
+
 
 
 
@@ -159,8 +129,7 @@ object SingBoxConfigBuilder {
          */
 
 
-        val proxy = JSONObject()
-
+        val vless = JSONObject()
 
             .put(
                 "type",
@@ -201,12 +170,16 @@ object SingBoxConfigBuilder {
 
 
 
-        val tls = JSONObject()
+        /*
+            TLS
+         */
 
+
+        val tls = JSONObject()
 
             .put(
                 "enabled",
-                true
+                config.security == "tls"
             )
 
             .put(
@@ -215,27 +188,46 @@ object SingBoxConfigBuilder {
             )
 
 
-            .put(
 
-                "utls",
+        tls.put(
 
-                JSONObject()
+            "utls",
 
-                    .put(
-                        "enabled",
-                        true
-                    )
+            JSONObject()
 
-                    .put(
-                        "fingerprint",
-                        config.fingerprint
-                    )
+                .put(
+                    "enabled",
+                    true
+                )
 
-            )
+                .put(
+                    "fingerprint",
+                    config.fingerprint
+                )
+
+        )
 
 
 
-        proxy.put(
+        tls.put(
+
+            "alpn",
+
+            JSONArray()
+
+                .put(
+                    "h2"
+                )
+
+                .put(
+                    "http/1.1"
+                )
+
+        )
+
+
+
+        vless.put(
             "tls",
             tls
         )
@@ -244,10 +236,6 @@ object SingBoxConfigBuilder {
 
 
 
-        /*
-            OUTBOUNDS
-         */
-
 
         root.put(
 
@@ -255,8 +243,7 @@ object SingBoxConfigBuilder {
 
             JSONArray()
 
-                .put(proxy)
-
+                .put(vless)
 
                 .put(
 
@@ -270,23 +257,6 @@ object SingBoxConfigBuilder {
                         .put(
                             "tag",
                             "direct"
-                        )
-
-                )
-
-
-                .put(
-
-                    JSONObject()
-
-                        .put(
-                            "type",
-                            "block"
-                        )
-
-                        .put(
-                            "tag",
-                            "block"
                         )
 
                 )
@@ -310,22 +280,8 @@ object SingBoxConfigBuilder {
             JSONObject()
 
                 .put(
-
-                    "rules",
-
-                    JSONArray()
-
-                        .put(
-
-                            JSONObject()
-
-                                .put(
-                                    "action",
-                                    "hijack-dns"
-                                )
-
-                        )
-
+                    "final",
+                    "proxy"
                 )
 
                 .put(
@@ -333,19 +289,12 @@ object SingBoxConfigBuilder {
                     true
                 )
 
-                .put(
-                    "final",
-                    "proxy"
-                )
-
         )
-
 
 
 
         return root.toString()
 
     }
-
 
 }
