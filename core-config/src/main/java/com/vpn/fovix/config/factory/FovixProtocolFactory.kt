@@ -2,10 +2,6 @@ package com.vpn.fovix.config.factory
 
 
 import com.vpn.fovix.config.model.FovixConfig
-import com.vpn.fovix.config.model.FovixOutbound
-import com.vpn.fovix.config.model.FovixProxy
-import com.vpn.fovix.config.model.FovixTls
-
 
 
 object FovixProtocolFactory {
@@ -19,60 +15,28 @@ object FovixProtocolFactory {
 
         port: Int,
 
-        uuid: String? = null,
+        uuid: String,
 
-        password: String? = null,
+        sni: String,
 
-        sni: String? = null,
-
-        fingerprint: String? = null
+        fingerprint: String? = "chrome"
 
     ): FovixConfig {
 
 
-        val proxy = FovixProxy(
+        return FovixConfig(
 
-            type = protocol,
+            protocol = protocol,
 
             server = server,
 
-            serverPort = port,
+            port = port,
 
             uuid = uuid,
 
-            password = password,
+            sni = sni,
 
-            tls = FovixTls(
-
-                enabled = true,
-
-                serverName = sni,
-
-                fingerprint = fingerprint
-
-            )
-
-        )
-
-
-        val outbound = FovixOutbound(
-
-            type = protocol,
-
-            tag = "proxy",
-
-            proxy = proxy
-
-        )
-
-
-        return FovixConfig(
-
-            outbounds = listOf(
-
-                outbound
-
-            )
+            fingerprint = fingerprint ?: "chrome"
 
         )
 
@@ -90,12 +54,12 @@ object FovixProtocolFactory {
 
         sni: String? = null,
 
-        fingerprint: String? = null
+        fingerprint: String? = "chrome"
 
     ): FovixConfig {
 
 
-        return create(
+        return FovixConfig(
 
             protocol = "vless",
 
@@ -105,9 +69,9 @@ object FovixProtocolFactory {
 
             uuid = uuid,
 
-            sni = sni,
+            sni = sni ?: server,
 
-            fingerprint = fingerprint
+            fingerprint = fingerprint ?: "chrome"
 
         )
 
@@ -138,7 +102,7 @@ object FovixProtocolFactory {
 
             uuid = uuid,
 
-            sni = sni
+            sni = sni ?: server
 
         )
 
@@ -159,7 +123,7 @@ object FovixProtocolFactory {
     ): FovixConfig {
 
 
-        return create(
+        return FovixConfig(
 
             protocol = "trojan",
 
@@ -167,13 +131,12 @@ object FovixProtocolFactory {
 
             port = port,
 
-            password = password,
+            uuid = password,
 
-            sni = sni
+            sni = sni ?: server
 
         )
 
     }
-
 
 }

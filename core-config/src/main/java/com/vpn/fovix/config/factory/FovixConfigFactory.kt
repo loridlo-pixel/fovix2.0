@@ -2,9 +2,6 @@ package com.vpn.fovix.config.factory
 
 
 import com.vpn.fovix.config.model.FovixConfig
-import com.vpn.fovix.config.model.FovixOutbound
-import com.vpn.fovix.config.model.FovixProxy
-import com.vpn.fovix.config.model.FovixTls
 
 
 object FovixConfigFactory {
@@ -25,47 +22,27 @@ object FovixConfigFactory {
     ): FovixConfig {
 
 
-        val proxy = FovixProxy(
-
-    type = "vless",
-
-    server = server,
-
-    serverPort = port,
-
-    uuid = uuid,
-
-    tls = FovixTls(
-
-                enabled = true,
-
-                serverName = sni,
-
-                fingerprint = fingerprint
-
-            )
-
-        )
-
-
-        val outbound = FovixOutbound(
-
-            type = "vless",
-
-            tag = "proxy",
-
-            proxy = proxy
-
-        )
-
-
         return FovixConfig(
 
-            outbounds = listOf(
+            protocol = "vless",
 
-                outbound
+            server = server,
 
-            )
+            port = port,
+
+            uuid = uuid,
+
+            flow = "xtls-rprx-vision",
+
+            sni = sni ?: server,
+
+            fingerprint = fingerprint ?: "chrome",
+
+            transport = "tcp",
+
+            packetEncoding = "xudp",
+
+            security = "tls"
 
         )
 
