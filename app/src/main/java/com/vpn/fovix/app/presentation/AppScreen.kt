@@ -5,8 +5,14 @@ enum class AppScreen {
 
     HOME,
 
-    SUBSCRIPTIONS,
+    SERVERS,
 
-    SETTINGS
+    DIAGNOSTICS,
+
+    STATS,
+
+    SETTINGS,
+
+    SUBSCRIPTIONS
 
 }

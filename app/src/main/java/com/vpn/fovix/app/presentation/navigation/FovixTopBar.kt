@@ -6,63 +6,112 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.graphics.Color
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FovixTopBar(
+
     onAddClick: () -> Unit,
+
     onSettingsClick: () -> Unit,
+
     onLogoClick: () -> Unit
+
 ) {
+
 
     CenterAlignedTopAppBar(
 
+
+        colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
+
+            containerColor = Color(0xFF0B1015),
+
+            titleContentColor = Color.White,
+
+            navigationIconContentColor = Color.White,
+
+            actionIconContentColor = Color.White
+
+        ),
+
+
         title = {
 
+
             TextButton(
+
                 onClick = onLogoClick
-            ){
+
+            ) {
+
 
                 Text(
-                    text = "FOVIX",
-                    style = MaterialTheme.typography.titleLarge
+
+                    "FOVIX"
+
                 )
 
+
             }
+
 
         },
 
 
         navigationIcon = {
 
+
             IconButton(
+
                 onClick = onAddClick
-            ){
+
+            ) {
+
 
                 Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Add server"
+
+                    Icons.Default.Add,
+
+                    null
+
                 )
 
+
             }
+
 
         },
 
 
         actions = {
 
+
             IconButton(
+
                 onClick = onSettingsClick
-            ){
+
+            ) {
+
 
                 Icon(
-                    imageVector = Icons.Default.Settings,
-                    contentDescription = "Settings"
+
+                    Icons.Default.Settings,
+
+                    null
+
                 )
+
 
             }
 
+
         }
+
+
     )
+
+
 }
