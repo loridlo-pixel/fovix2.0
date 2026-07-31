@@ -13,7 +13,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 
-
 class VpnEngine(
 
     private val context: Context
@@ -21,12 +20,40 @@ class VpnEngine(
 ) : VpnController {
 
 
-
     companion object {
 
         private const val TAG = "FOVIX_ENGINE"
 
+        private var instance: VpnEngine? = null
+
+
+        fun notifyConnected(){
+
+            instance?.setConnected()
+
+        }
+
+
+        fun notifyError(
+            reason: String
+        ){
+
+            instance?.setError(reason)
+
+        }
+
     }
+
+
+
+
+    init {
+
+        instance = this
+
+    }
+
+
 
 
 
@@ -52,12 +79,12 @@ class VpnEngine(
 
 
 
+
     override fun start(
 
         server: Any?
 
     ) {
-
 
 
         Log.i(
@@ -88,8 +115,8 @@ class VpnEngine(
 
 
 
-        try {
 
+        try {
 
 
             val intent = Intent(
@@ -101,7 +128,6 @@ class VpnEngine(
             )
 
 
-
             context.startService(intent)
 
 
@@ -110,29 +136,14 @@ class VpnEngine(
 
                 TAG,
 
-                "VPN SERVICE STARTED WAITING ENGINE"
+                "VPN SERVICE STARTED"
 
             )
 
 
 
-            /*
-                ВАЖНО:
-
-                Здесь больше НЕ ставим CONNECTED.
-
-                Реальное подключение будет после:
-                TUN CREATED
-                ENGINE STARTED
-                sing-box RUNNING
-
-             */
-
-
-
         }
-        catch(e: Exception) {
-
+        catch(e: Exception){
 
 
             Log.e(
@@ -147,20 +158,15 @@ class VpnEngine(
 
 
 
-            _state.value = VPNState(
+            setError(
 
-                status = ConnectionStatus.ERROR,
-
-                server = "Error"
+                e.message ?: "START FAILED"
 
             )
 
-
         }
 
-
     }
-
 
 
 
@@ -192,7 +198,6 @@ class VpnEngine(
         try {
 
 
-
             SingBoxNative.stop()
 
 
@@ -212,8 +217,7 @@ class VpnEngine(
 
 
         }
-        catch(e: Exception){
-
+        catch(e:Exception){
 
 
             Log.e(
@@ -226,16 +230,16 @@ class VpnEngine(
 
             )
 
-
         }
-
 
 
 
 
         _state.value = VPNState(
 
-            status = ConnectionStatus.DISCONNECTED
+            status = ConnectionStatus.DISCONNECTED,
+
+            server = "Auto"
 
         )
 
@@ -243,6 +247,63 @@ class VpnEngine(
     }
 
 
+
+
+
+    private fun setConnected(){
+
+
+        _state.value = VPNState(
+
+            status = ConnectionStatus.CONNECTED,
+
+            server = "Auto"
+
+        )
+
+
+
+        Log.i(
+
+            TAG,
+
+            "STATE CONNECTED"
+
+        )
+
+    }
+
+
+
+
+
+
+
+    private fun setError(
+
+        reason:String
+
+    ){
+
+
+        _state.value = VPNState(
+
+            status = ConnectionStatus.ERROR,
+
+            server = reason
+
+        )
+
+
+        Log.e(
+
+            TAG,
+
+            "STATE ERROR: $reason"
+
+        )
+
+    }
 
 
 
@@ -259,7 +320,7 @@ class VpnEngine(
 
 
         }
-        catch(e: Exception){
+        catch(e:Exception){
 
 
             false

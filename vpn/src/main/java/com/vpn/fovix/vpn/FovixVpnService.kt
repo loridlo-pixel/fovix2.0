@@ -75,10 +75,12 @@ class FovixVpnService : VpnService() {
 
 
 
+
     private val serviceScope =
         CoroutineScope(
             SupervisorJob() + Dispatchers.IO
         )
+
 
 
 
@@ -109,9 +111,13 @@ class FovixVpnService : VpnService() {
 
 
     override fun onStartCommand(
+
         intent: Intent?,
+
         flags: Int,
+
         startId: Int
+
     ): Int {
 
 
@@ -144,6 +150,7 @@ class FovixVpnService : VpnService() {
         return START_STICKY
 
     }
+
 
 
 
@@ -205,6 +212,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
             tunInterface =
                 builder.establish()
 
@@ -215,6 +223,11 @@ class FovixVpnService : VpnService() {
 
                 Log.e(
                     TAG,
+                    "TUN CREATE FAILED"
+                )
+
+
+                VpnEngine.notifyError(
                     "TUN CREATE FAILED"
                 )
 
@@ -230,10 +243,13 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
             Log.e(
                 TAG,
                 "VPN ESTABLISHED"
             )
+
 
 
 
@@ -253,6 +269,8 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
             val config =
                 FovixVpnConfigProvider.build()
 
@@ -265,6 +283,8 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
             Log.e(
                 "FOVIX_RAW_CONFIG",
                 config
@@ -273,16 +293,9 @@ class FovixVpnService : VpnService() {
 
 
 
-            /*
-                START SING-BOX IN BACKGROUND
 
-                IMPORTANT:
-                JNI start can take 5-7 seconds
-                because sing-box creates context,
-                parses config and initializes TUN.
 
-                Do not block Android main thread.
-            */
+
 
 
             serviceScope.launch {
@@ -291,10 +304,13 @@ class FovixVpnService : VpnService() {
                 try {
 
 
+
                     Log.e(
                         TAG,
                         "ENGINE START BACKGROUND"
                     )
+
+
 
 
 
@@ -307,11 +323,18 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
                     if(!started) {
 
 
                         Log.e(
                             TAG,
+                            "ENGINE FAILED"
+                        )
+
+
+                        VpnEngine.notifyError(
                             "ENGINE FAILED"
                         )
 
@@ -329,7 +352,11 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
                     running.set(true)
+
+
 
 
 
@@ -337,6 +364,11 @@ class FovixVpnService : VpnService() {
                         TAG,
                         "ENGINE STARTED"
                     )
+
+
+
+                    // Реальное подключение подтверждено
+                    VpnEngine.notifyConnected()
 
 
 
@@ -352,6 +384,14 @@ class FovixVpnService : VpnService() {
                     )
 
 
+
+                    VpnEngine.notifyError(
+                        e.message
+                            ?: "ENGINE ERROR"
+                    )
+
+
+
                     SingBoxNative.stop()
 
 
@@ -360,6 +400,9 @@ class FovixVpnService : VpnService() {
                 }
 
             }
+
+
+
 
 
 
@@ -373,6 +416,14 @@ class FovixVpnService : VpnService() {
                 "VPN ERROR",
                 e
             )
+
+
+
+            VpnEngine.notifyError(
+                e.message
+                    ?: "VPN ERROR"
+            )
+
 
 
             SingBoxNative.stop()
@@ -420,6 +471,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
         try {
 
             tunInterface?.close()
@@ -429,6 +481,9 @@ class FovixVpnService : VpnService() {
 
 
         }
+
+
+
 
 
 
