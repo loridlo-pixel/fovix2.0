@@ -5,12 +5,15 @@ import android.content.Context
 import android.content.Intent
 import android.util.Log
 
+
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 import com.vpn.fovix.domain.vpnstate.VPNState
 import com.vpn.fovix.domain.vpnstate.VpnController
 
+
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+
 
 
 class VpnEngine(
@@ -20,38 +23,81 @@ class VpnEngine(
 ) : VpnController {
 
 
+
     companion object {
+
 
         private const val TAG = "FOVIX_ENGINE"
 
-        private var instance: VpnEngine? = null
 
 
-        fun notifyConnected(){
+        private var stateListener:
+                ((VPNState) -> Unit)? = null
 
-            instance?.setConnected()
+
+
+        fun registerStateListener(
+            listener: (VPNState) -> Unit
+        ) {
+
+            stateListener = listener
 
         }
+
+
+
+        fun notifyConnected() {
+
+
+            val state = VPNState(
+
+                status = ConnectionStatus.CONNECTED,
+
+                server = "Auto"
+
+            )
+
+
+            stateListener?.invoke(state)
+
+
+            Log.i(
+                TAG,
+                "STATE CONNECTED"
+            )
+
+        }
+
 
 
         fun notifyError(
-            reason: String
-        ){
+            message: String
+        ) {
 
-            instance?.setError(reason)
+
+            val state = VPNState(
+
+                status = ConnectionStatus.ERROR,
+
+                server = message
+
+            )
+
+
+            stateListener?.invoke(state)
+
+
+            Log.e(
+                TAG,
+                "STATE ERROR=$message"
+            )
 
         }
 
-    }
-
-
-
-
-    init {
-
-        instance = this
 
     }
+
+
 
 
 
@@ -80,6 +126,30 @@ class VpnEngine(
 
 
 
+
+    init {
+
+
+        registerStateListener {
+
+            newState ->
+
+
+            _state.value = newState
+
+
+        }
+
+
+    }
+
+
+
+
+
+
+
+
     override fun start(
 
         server: Any?
@@ -88,11 +158,8 @@ class VpnEngine(
 
 
         Log.i(
-
             TAG,
-
             "START REQUEST"
-
         )
 
 
@@ -128,43 +195,38 @@ class VpnEngine(
             )
 
 
+
             context.startService(intent)
 
 
 
             Log.i(
-
                 TAG,
-
                 "VPN SERVICE STARTED"
-
             )
 
 
-
         }
-        catch(e: Exception){
+        catch(e: Exception) {
 
 
             Log.e(
-
                 TAG,
-
                 "VPN START FAILED",
-
                 e
-
             )
 
 
+            _state.value = VPNState(
 
-            setError(
+                status = ConnectionStatus.ERROR,
 
-                e.message ?: "START FAILED"
+                server = "Error"
 
             )
 
         }
+
 
     }
 
@@ -173,23 +235,24 @@ class VpnEngine(
 
 
 
-    override fun stop(){
+
+
+    override fun stop() {
 
 
 
         Log.i(
-
             TAG,
-
             "STOP REQUEST"
-
         )
 
 
 
         _state.value = VPNState(
 
-            status = ConnectionStatus.DISCONNECTING
+            status = ConnectionStatus.DISCONNECTING,
+
+            server = "Auto"
 
         )
 
@@ -217,15 +280,12 @@ class VpnEngine(
 
 
         }
-        catch(e:Exception){
+        catch(e: Exception) {
 
 
             Log.e(
-
                 TAG,
-
                 "STOP ERROR",
-
                 e
 
             )
@@ -250,63 +310,6 @@ class VpnEngine(
 
 
 
-    private fun setConnected(){
-
-
-        _state.value = VPNState(
-
-            status = ConnectionStatus.CONNECTED,
-
-            server = "Auto"
-
-        )
-
-
-
-        Log.i(
-
-            TAG,
-
-            "STATE CONNECTED"
-
-        )
-
-    }
-
-
-
-
-
-
-
-    private fun setError(
-
-        reason:String
-
-    ){
-
-
-        _state.value = VPNState(
-
-            status = ConnectionStatus.ERROR,
-
-            server = reason
-
-        )
-
-
-        Log.e(
-
-            TAG,
-
-            "STATE ERROR: $reason"
-
-        )
-
-    }
-
-
-
 
 
 
@@ -320,7 +323,7 @@ class VpnEngine(
 
 
         }
-        catch(e:Exception){
+        catch(e: Exception) {
 
 
             false
@@ -330,6 +333,7 @@ class VpnEngine(
 
 
     }
+
 
 
 }

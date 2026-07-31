@@ -11,6 +11,7 @@ object SingBoxNative {
     }
 
 
+
     external fun start(
         config: String,
         tunFd: Int
@@ -23,5 +24,19 @@ object SingBoxNative {
 
 
     external fun isRunning(): Boolean
+
+
+
+    /**
+     * Возвращает текущее состояние FOVIX Core
+     *
+     * Возможные значения:
+     * CHECKING
+     * CONNECTED
+     * ERROR
+     * DISCONNECTED
+     */
+    external fun getState(): String
+
 
 }
