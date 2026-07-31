@@ -60,12 +60,10 @@ fun FovixApp(
     }
 
 
-    /*
-       Пока подключаем реальный статус из VPN слоя.
-       После этого заменим на StateFlow из ViewModel.
-    */
+    // временно, позже подключим StateFlow VPN сервиса
 
-    val status = ConnectionStatus.DISCONNECTED
+    val status =
+        ConnectionStatus.DISCONNECTED
 
 
 
@@ -77,7 +75,24 @@ fun FovixApp(
 
             FovixTopBar(
 
-                onAddClick = {
+
+                onAddSubscription = {
+
+                    selectedTab.value =
+                        FovixTab.SERVERS
+
+                },
+
+
+                onPasteClipboard = {
+
+                    selectedTab.value =
+                        FovixTab.SERVERS
+
+                },
+
+
+                onQrScan = {
 
                     selectedTab.value =
                         FovixTab.SERVERS
@@ -112,6 +127,7 @@ fun FovixApp(
 
             FovixBottomBar(
 
+
                 selected = selectedTab.value,
 
 
@@ -128,7 +144,7 @@ fun FovixApp(
                 onCoreClick = {
 
 
-                    when(status) {
+                    when(status){
 
 
                         ConnectionStatus.CONNECTED -> {
@@ -144,16 +160,17 @@ fun FovixApp(
 
                         }
 
-
                     }
 
 
                 }
 
+
             )
 
 
         }
+
 
 
     ) { padding ->
@@ -162,30 +179,33 @@ fun FovixApp(
 
         Box(
 
-            modifier = Modifier.padding(padding)
+            modifier =
+                Modifier.padding(padding)
 
         ) {
 
 
 
-            when(selectedTab.value) {
+            when(selectedTab.value){
 
 
 
                 FovixTab.HOME -> {
 
 
-                    val vm: HomeViewModel = viewModel(
+                    val vm: HomeViewModel =
+                        viewModel(
 
-                        factory = HomeViewModelFactory(
+                            factory =
+                                HomeViewModelFactory(
 
-                            repository,
+                                    repository,
 
-                            container.userPreferences
+                                    container.userPreferences
+
+                                )
 
                         )
-
-                    )
 
 
                     val state by vm.state.collectAsState()
@@ -194,11 +214,15 @@ fun FovixApp(
 
                     HomeScreenDynamic(
 
+
                         state = state,
+
 
                         onConnect = onConnect,
 
+
                         onDisconnect = onDisconnect,
+
 
                         onOpenSubscriptions = {
 
@@ -218,17 +242,21 @@ fun FovixApp(
                 FovixTab.SERVERS -> {
 
 
-                    val vm: SubscriptionViewModel = viewModel(
 
-                        factory = SubscriptionViewModelFactory(
+                    val vm: SubscriptionViewModel =
+                        viewModel(
 
-                            container.subscriptionImportEngine,
+                            factory =
+                                SubscriptionViewModelFactory(
 
-                            container.serverRepository
+                                    container.subscriptionImportEngine,
+
+                                    container.serverRepository
+
+                                )
 
                         )
 
-                    )
 
 
                     val state by vm.state.collectAsState()
@@ -236,6 +264,7 @@ fun FovixApp(
 
 
                     SubscriptionScreen(
+
 
                         state = state,
 
@@ -272,10 +301,8 @@ fun FovixApp(
                 FovixTab.DOCTOR -> {
 
 
-                    SettingsScreenPlaceholder(
-
+                    PlaceholderScreen(
                         "Network Doctor"
-
                     )
 
 
@@ -287,15 +314,18 @@ fun FovixApp(
                 FovixTab.SETTINGS -> {
 
 
-                    val vm: SettingsViewModel = viewModel(
 
-                        factory = SettingsViewModelFactory(
+                    val vm: SettingsViewModel =
+                        viewModel(
 
-                            container.userPreferences
+                            factory =
+                                SettingsViewModelFactory(
+
+                                    container.userPreferences
+
+                                )
 
                         )
-
-                    )
 
 
                     val mode by vm.userMode.collectAsState()
@@ -303,6 +333,7 @@ fun FovixApp(
 
 
                     SettingsScreen(
+
 
                         mode = mode,
 
@@ -342,18 +373,16 @@ fun FovixApp(
 
 
 @Composable
-private fun SettingsScreenPlaceholder(
+private fun PlaceholderScreen(
 
     text: String
 
-) {
-
+){
 
     androidx.compose.material3.Text(
 
         text = text
 
     )
-
 
 }

@@ -94,6 +94,7 @@ dependencies {
         )
     )
 
+    implementation("com.composables:icons-lucide:1.1.0") 
 
     implementation("androidx.compose.ui:ui")
 

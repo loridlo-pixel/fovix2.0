@@ -1,47 +1,35 @@
 package com.vpn.fovix.app.presentation.navigation
 
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Dns
-import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.shape.CircleShape
 
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.material3.NavigationBar
+import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+
+import com.composables.icons.lucide.Globe
+import com.composables.icons.lucide.Stethoscope
+import com.composables.icons.lucide.Lucide
 
 import com.vpn.fovix.app.presentation.core.FovixCore
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
 
-enum class FovixTab {
-
-    SERVERS,
-
-    DOCTOR,
-
-    SETTINGS
-
-}
 
 
 
@@ -63,134 +51,127 @@ fun FovixBottomBar(
 
         modifier = Modifier
             .fillMaxWidth()
-            .height(82.dp)
             .background(
-                Brush.verticalGradient(
-                    listOf(
-                        Color(0xFF101820),
-                        Color(0xFF0B1015)
-                    )
-                )
+                Color(0xFF0B1015)
             )
 
     ) {
 
 
 
-        Row(
+        NavigationBar(
 
-            modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .height(70.dp),
-
-            horizontalArrangement = Arrangement.SpaceAround,
-
-            verticalAlignment = Alignment.CenterVertically
+            containerColor = Color(0xFF0B1015)
 
         ) {
 
 
-
-            BottomItem(
+            NavigationBarItem(
 
                 selected = selected == FovixTab.SERVERS,
 
-                icon = {
+                onClick = {
 
-                    Icon(
-                        Icons.Default.Dns,
-                        null,
-                        tint = Color.White
+                    onSelect(
+                        FovixTab.SERVERS
                     )
 
                 },
 
-                text = "Servers",
+                icon = {
 
-                onClick = {
+                    Icon(
 
-                    onSelect(FovixTab.SERVERS)
+                        imageVector = Lucide.Globe,
+
+                        contentDescription = "Servers"
+
+                    )
+
+                },
+
+                label = {
+
+                    Text(
+                        "Servers"
+                    )
 
                 }
 
             )
-
 
 
 
             Spacer(
 
-                modifier = Modifier.size(70.dp)
+                modifier = Modifier.weight(1f)
 
             )
 
 
 
-
-            BottomItem(
+            NavigationBarItem(
 
                 selected = selected == FovixTab.DOCTOR,
 
-                icon = {
+                onClick = {
 
-                    Icon(
-                        Icons.Default.Build,
-                        null,
-                        tint = Color.White
+                    onSelect(
+                        FovixTab.DOCTOR
                     )
 
                 },
 
-                text = "Doctor",
-
-                onClick = {
-
-                    onSelect(FovixTab.DOCTOR)
-
-                }
-
-            )
-
-
-
-            BottomItem(
-
-                selected = selected == FovixTab.SETTINGS,
-
                 icon = {
 
                     Icon(
-                        Icons.Default.Settings,
-                        null,
-                        tint = Color.White
+
+                        imageVector = Lucide.Stethoscope,
+
+                        contentDescription = "Doctor"
+
                     )
 
                 },
 
-                text = "Settings",
+                label = {
 
-                onClick = {
-
-                    onSelect(FovixTab.SETTINGS)
+                    Text(
+                        "Doctor"
+                    )
 
                 }
 
             )
-
 
 
         }
 
 
 
-
         Box(
 
             modifier = Modifier
-                .align(Alignment.TopCenter)
-                .offset(y = (-24).dp)
-                .size(72.dp),
+
+                .align(
+                    Alignment.TopCenter
+                )
+
+                .size(
+                    78.dp
+                )
+
+                .background(
+                    Color.Transparent,
+                    CircleShape
+                )
+
+                .clickable {
+
+                    onCoreClick()
+
+                },
+
 
             contentAlignment = Alignment.Center
 
@@ -206,75 +187,6 @@ fun FovixBottomBar(
                 onClick = onCoreClick
 
             )
-
-
-        }
-
-
-    }
-
-
-}
-
-
-
-
-@Composable
-private fun BottomItem(
-
-    selected: Boolean,
-
-    icon: @Composable () -> Unit,
-
-    text: String,
-
-    onClick: () -> Unit
-
-) {
-
-
-    IconButton(
-
-        onClick = onClick,
-
-        modifier = Modifier.size(70.dp)
-
-    ) {
-
-
-        Box(
-
-            contentAlignment = Alignment.Center
-
-        ) {
-
-
-            androidx.compose.foundation.layout.Column(
-
-                horizontalAlignment = Alignment.CenterHorizontally
-
-            ) {
-
-
-                icon()
-
-
-                Text(
-
-                    text = text,
-
-                    color = if(selected)
-
-                        Color(0xFF00E5FF)
-
-                    else
-
-                        Color.White.copy(alpha = 0.65f)
-
-                )
-
-
-            }
 
 
         }
