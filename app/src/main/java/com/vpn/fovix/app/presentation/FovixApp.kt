@@ -33,9 +33,7 @@ import com.vpn.fovix.app.presentation.settings.SettingsScreen
 import com.vpn.fovix.app.presentation.settings.SettingsViewModel
 import com.vpn.fovix.app.presentation.settings.SettingsViewModelFactory
 
-import com.vpn.fovix.app.presentation.subscription.SubscriptionScreen
-import com.vpn.fovix.app.presentation.subscription.SubscriptionViewModel
-import com.vpn.fovix.app.presentation.subscription.SubscriptionViewModelFactory
+import com.vpn.fovix.app.presentation.servers.ServersScreen
 
 import com.vpn.fovix.app.presentation.theme.FovixBackground
 
@@ -74,6 +72,8 @@ fun FovixApp(
 
 
 
+
+
     FovixBackground {
 
 
@@ -94,40 +94,54 @@ fun FovixApp(
 
                     onAddSubscription = {
 
+
                         selectedTab.value =
                             FovixTab.SERVERS
 
+
                     },
+
 
 
                     onPasteClipboard = {
 
+
                         selectedTab.value =
                             FovixTab.SERVERS
 
+
                     },
+
 
 
                     onQrScan = {
 
+
                         selectedTab.value =
                             FovixTab.SERVERS
 
+
                     },
+
 
 
                     onSettingsClick = {
 
+
                         selectedTab.value =
                             FovixTab.SETTINGS
+
 
                     },
 
 
+
                     onLogoClick = {
+
 
                         selectedTab.value =
                             FovixTab.HOME
+
 
                     }
 
@@ -152,6 +166,7 @@ fun FovixApp(
                     status = status,
 
 
+
                     onSelect = {
 
 
@@ -161,11 +176,11 @@ fun FovixApp(
                     },
 
 
+
                     onCoreClick = {
 
 
                         when(status){
-
 
 
                             ConnectionStatus.CONNECTED -> {
@@ -175,7 +190,6 @@ fun FovixApp(
 
 
                             }
-
 
 
                             else -> {
@@ -200,12 +214,13 @@ fun FovixApp(
 
 
 
-        ) { padding ->
+        ){ padding ->
+
+
 
 
 
             Box(
-
 
                 modifier = Modifier
 
@@ -213,8 +228,7 @@ fun FovixApp(
 
                     .padding(padding)
 
-
-            ) {
+            ){
 
 
 
@@ -242,7 +256,6 @@ fun FovixApp(
 
                                     )
 
-
                             )
 
 
@@ -253,29 +266,41 @@ fun FovixApp(
 
                         HomeScreenDynamic(
 
-    state = state,
 
-    onConnect = onConnect,
-
-    onDisconnect = onDisconnect,
+                            state = state,
 
 
-    onOpenSubscriptions = {
-
-        selectedTab.value =
-            FovixTab.SERVERS
-
-    },
+                            onConnect = onConnect,
 
 
-    onOpenServers = {
+                            onDisconnect = onDisconnect,
 
-        selectedTab.value =
-            FovixTab.SERVERS
 
-    }
 
-)
+                            onOpenSubscriptions = {
+
+
+                                selectedTab.value =
+                                    FovixTab.SERVERS
+
+
+                            },
+
+
+
+                            onOpenServers = {
+
+
+                                selectedTab.value =
+                                    FovixTab.SERVERS
+
+
+                            }
+
+
+                        )
+
+
 
                     }
 
@@ -288,53 +313,51 @@ fun FovixApp(
 
 
 
-                        val vm: SubscriptionViewModel =
+                        val homeVm: HomeViewModel =
                             viewModel(
 
 
                                 factory =
-                                    SubscriptionViewModelFactory(
+                                    HomeViewModelFactory(
 
 
-                                        container.subscriptionImportEngine,
+                                        repository,
 
 
-                                        container.serverRepository
+                                        container.userPreferences
 
 
                                     )
-
 
                             )
 
 
 
-                        val state by vm.state.collectAsState()
+                        val homeState by homeVm.state.collectAsState()
 
 
 
-                        SubscriptionScreen(
+                        ServersScreen(
 
 
-                            state = state,
+                            selectedServer =
+                                homeState.server,
 
 
-                            onInputChange = {
+
+                            onServerSelected = {
 
 
-                                vm.updateInput(it)
+                                homeVm.selectServer(it)
+
+
+
+                                selectedTab.value =
+                                    FovixTab.HOME
 
 
                             },
 
-
-                            onImport = {
-
-
-                                vm.importSubscription()
-
-
-                            },
 
 
                             onBack = {
@@ -347,10 +370,12 @@ fun FovixApp(
                             }
 
 
+
                         )
 
 
                     }
+
 
 
 
@@ -360,17 +385,16 @@ fun FovixApp(
                     FovixTab.DOCTOR -> {
 
 
-
                         PlaceholderScreen(
 
-
                             "Network Doctor"
-
 
                         )
 
 
                     }
+
+
 
 
 
@@ -394,7 +418,6 @@ fun FovixApp(
 
                                     )
 
-
                             )
 
 
@@ -409,6 +432,7 @@ fun FovixApp(
                             mode = mode,
 
 
+
                             onModeChange = {
 
 
@@ -416,6 +440,7 @@ fun FovixApp(
 
 
                             },
+
 
 
                             onBack = {
@@ -429,6 +454,7 @@ fun FovixApp(
 
 
                         )
+
 
 
                     }
@@ -452,6 +478,7 @@ fun FovixApp(
 
 
 }
+
 
 
 

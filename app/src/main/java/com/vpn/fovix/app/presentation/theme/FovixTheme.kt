@@ -18,24 +18,21 @@ import androidx.core.view.WindowCompat
 
 private val FovixScheme = darkColorScheme(
 
+    primary = Color(0xFFA855F7),
 
-    primary = Color(0xFF00D9FF),
+    secondary = Color(0xFF38BDF8),
 
-
-    secondary = Color(0xFF7B4DFF),
-
-
-    background = Color(0xFF080D14),
+    tertiary = Color(0xFF34D399),
 
 
-    surface = Color(0xFF080D14),
+    background = Color(0xFF0F111A),
+
+    surface = Color(0xFF151827),
 
 
     onBackground = Color.White,
 
-
     onSurface = Color.White
-
 
 )
 

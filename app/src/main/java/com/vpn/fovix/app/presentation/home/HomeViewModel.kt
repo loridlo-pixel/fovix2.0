@@ -7,14 +7,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.vpn.fovix.app.data.UserPreferences
-
 import com.vpn.fovix.data.repository.VpnRepository
 
-import com.vpn.fovix.domain.vpnstate.VPNState
-
-import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 
 
@@ -32,6 +31,18 @@ class HomeViewModel(
 
 
 
+    private val selectedServer =
+
+        MutableStateFlow(
+
+            "Auto"
+
+        )
+
+
+
+
+
     val state: StateFlow<HomeUiState> =
 
 
@@ -42,11 +53,14 @@ class HomeViewModel(
             repository.state,
 
 
-            preferences.userMode
+            preferences.userMode,
+
+
+            selectedServer
 
 
 
-        ) { vpnState, mode ->
+        ) { vpnState, mode, server ->
 
 
 
@@ -62,11 +76,15 @@ class HomeViewModel(
 
 
 
-                server = "Auto",
+                server = server,
 
 
 
-                userMode = mode
+                userMode = mode,
+
+
+
+                showServer = server != "Auto"
 
 
 
@@ -74,6 +92,7 @@ class HomeViewModel(
 
 
         }
+
 
 
         .stateIn(
@@ -96,15 +115,40 @@ class HomeViewModel(
 
 
 
+
+    fun selectServer(
+
+
+        server: String
+
+
+    ) {
+
+
+        selectedServer.value = server
+
+
+    }
+
+
+
+
+
+
+
+
     fun toggleConnection() {
 
 
 
         Log.d(
 
+
             "FOVIX",
 
+
             "Button pressed"
+
 
         )
 

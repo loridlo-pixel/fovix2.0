@@ -33,11 +33,11 @@ fun FovixBackground(
 
                     colors = listOf(
 
-                        Color(0xFF102A43),
+                        Color(0xFF171126),
 
-                        Color(0xFF0B1B2B),
+                        Color(0xFF111522),
 
-                        Color(0xFF071018)
+                        Color(0xFF0F111A)
 
                     )
 
@@ -47,6 +47,8 @@ fun FovixBackground(
 
     ) {
 
+
+        // Aurora glow
 
         Box(
 
@@ -60,13 +62,13 @@ fun FovixBackground(
 
                         colors = listOf(
 
-                            Color(0x557B4DFF),
+                            Color(0x55A855F7),
 
                             Color.Transparent
 
                         ),
 
-                        radius = 900f
+                        radius = 850f
 
                     )
 
@@ -75,9 +77,41 @@ fun FovixBackground(
         )
 
 
+
+        // Ice blue secondary glow
+
+        Box(
+
+            modifier = Modifier
+
+                .fillMaxSize()
+
+                .background(
+
+                    Brush.radialGradient(
+
+                        colors = listOf(
+
+                            Color(0x2238BDF8),
+
+                            Color.Transparent
+
+                        ),
+
+                        radius = 1200f
+
+                    )
+
+                )
+
+        )
+
+
+
         content()
 
 
     }
+
 
 }

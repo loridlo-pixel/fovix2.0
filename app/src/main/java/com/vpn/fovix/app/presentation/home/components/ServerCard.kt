@@ -2,14 +2,13 @@ package com.vpn.fovix.app.presentation.home.components
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 
@@ -17,9 +16,10 @@ import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
 
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.dp
@@ -43,59 +43,90 @@ fun ServerCard(
 
             .fillMaxWidth()
 
+            .clip(
+
+                RoundedCornerShape(24.dp)
+
+            )
+
+            .background(
+
+                Brush.linearGradient(
+
+                    colors = listOf(
+
+                        Color(0x33FFFFFF),
+
+                        Color(0x22151827)
+
+                    )
+
+                )
+
+            )
+
+            .border(
+
+                width = 1.dp,
+
+                brush = Brush.linearGradient(
+
+                    colors = listOf(
+
+                        Color(0x66A855F7),
+
+                        Color(0x4438BDF8)
+
+                    )
+
+                ),
+
+                shape = RoundedCornerShape(24.dp)
+
+            )
+
             .clickable {
 
                 onClick()
 
             }
 
-            .background(
-
-                Color(0xFF151D26),
-
-                RoundedCornerShape(22.dp)
-
-            )
-
             .padding(20.dp)
+
 
     ) {
 
 
-        Row(
 
-            modifier = Modifier.fillMaxWidth(),
+        Text(
 
-            horizontalArrangement = Arrangement.SpaceBetween,
+            text = "CONNECTED SERVER",
 
-            verticalAlignment = Alignment.CenterVertically
+            color = Color(0xFFA855F7),
 
-        ) {
+            fontSize = 12.sp
 
-
-            Text(
-
-                text = "🌐 $server",
-
-                color = Color.White,
-
-                fontSize = 18.sp
-
-            )
+        )
 
 
-            Text(
 
-                text = "CHANGE",
+        Spacer(
 
-                color = Color(0xFF00D9FF),
+            modifier = Modifier.height(8.dp)
 
-                fontSize = 12.sp
-
-            )
+        )
 
 
-        }
+
+        Text(
+
+            text = "🌐 $server",
+
+            color = Color.White,
+
+            fontSize = 19.sp
+
+        )
 
 
 
@@ -109,57 +140,14 @@ fun ServerCard(
 
         Text(
 
-            text = "VLESS • Reality",
+            text = "● Stable     42 ms     98 Mbps",
 
-            color = Color(0xFF8B98A8),
+            color = Color(0xFF34D399),
 
-            fontSize = 13.sp
-
-        )
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(14.dp)
+            fontSize = 14.sp
 
         )
 
-
-
-        Row(
-
-            modifier = Modifier.fillMaxWidth(),
-
-            horizontalArrangement = Arrangement.SpaceBetween
-
-        ) {
-
-
-            Text(
-
-                text = "Ping 42 ms",
-
-                color = Color(0xFF9AA7B5),
-
-                fontSize = 14.sp
-
-            )
-
-
-
-            Text(
-
-                text = "↓ 98 Mbps",
-
-                color = Color.White,
-
-                fontSize = 14.sp
-
-            )
-
-
-        }
 
 
     }
