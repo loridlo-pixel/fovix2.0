@@ -7,22 +7,23 @@ import android.util.Log
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 
+import androidx.core.view.WindowCompat
+
 import com.vpn.fovix.app.presentation.FovixApp
 import com.vpn.fovix.app.presentation.theme.FovixTheme
-
 import com.vpn.fovix.vpn.SingBoxNative
 
 
 
 
 class MainActivity : ComponentActivity() {
-
 
 
     companion object {
@@ -33,11 +34,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-
-
     private lateinit var appContainer: AppContainer
-
-
 
 
 
@@ -47,34 +44,24 @@ class MainActivity : ComponentActivity() {
 
             ActivityResultContracts.StartActivityForResult()
 
-        ) { result ->
+        ) {
 
 
-
-            if(result.resultCode == RESULT_OK) {
-
+            if(it.resultCode == RESULT_OK) {
 
 
                 Log.i(
-
                     TAG,
-
                     "VPN PERMISSION GRANTED"
-
                 )
 
 
-
                 appContainer
-
                     .vpnRepository
-
                     .startVpn()
 
 
-
             }
-
 
 
         }
@@ -82,15 +69,8 @@ class MainActivity : ComponentActivity() {
 
 
 
-
-
-
-
-
     override fun onCreate(
-
         savedInstanceState: Bundle?
-
     ) {
 
 
@@ -98,14 +78,26 @@ class MainActivity : ComponentActivity() {
 
 
 
+        /*
+            Happ style:
+            рисуем под статус баром
+            и под navigation bar
+        */
+
+        enableEdgeToEdge()
+
+
+        WindowCompat.setDecorFitsSystemWindows(
+            window,
+            false
+        )
+
 
 
         appContainer =
 
             (application as FovixApplication)
-
                 .container
-
 
 
 
@@ -114,10 +106,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-
-
         setContent {
-
 
 
             FovixTheme {
@@ -126,11 +115,8 @@ class MainActivity : ComponentActivity() {
 
                 Surface(
 
-
                     modifier = Modifier
-
                         .fillMaxSize()
-
 
                 ) {
 
@@ -153,11 +139,7 @@ class MainActivity : ComponentActivity() {
 
                         onConnect = {
 
-
-
                             requestVpnPermission()
-
-
 
                         },
 
@@ -166,29 +148,21 @@ class MainActivity : ComponentActivity() {
                         onDisconnect = {
 
 
-
                             appContainer
-
                                 .vpnRepository
-
                                 .disconnect()
-
 
 
                         }
 
 
-
                     )
-
 
 
                 }
 
 
-
             }
-
 
 
         }
@@ -196,9 +170,6 @@ class MainActivity : ComponentActivity() {
 
 
     }
-
-
-
 
 
 
@@ -208,7 +179,6 @@ class MainActivity : ComponentActivity() {
     private fun requestVpnPermission() {
 
 
-
         val intent =
 
             VpnService.prepare(this)
@@ -216,15 +186,11 @@ class MainActivity : ComponentActivity() {
 
 
 
-
         if(intent != null) {
 
 
-
             vpnPermissionLauncher.launch(
-
                 intent
-
             )
 
 
@@ -232,17 +198,12 @@ class MainActivity : ComponentActivity() {
         else {
 
 
-
             appContainer
-
                 .vpnRepository
-
                 .startVpn()
 
 
-
         }
-
 
 
     }
@@ -252,22 +213,15 @@ class MainActivity : ComponentActivity() {
 
 
 
-
-
-
     private fun checkSingBox() {
-
 
 
         try {
 
 
-
             val running =
 
                 SingBoxNative.isRunning()
-
-
 
 
 
@@ -280,10 +234,8 @@ class MainActivity : ComponentActivity() {
             )
 
 
-
         }
         catch(e: Exception) {
-
 
 
             Log.e(
@@ -297,9 +249,7 @@ class MainActivity : ComponentActivity() {
             )
 
 
-
         }
-
 
 
     }

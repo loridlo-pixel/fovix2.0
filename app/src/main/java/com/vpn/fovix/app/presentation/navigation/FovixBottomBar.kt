@@ -30,9 +30,6 @@ import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
 
-
-
-
 @Composable
 fun FovixBottomBar(
 
@@ -64,6 +61,7 @@ fun FovixBottomBar(
             containerColor = Color(0xFF0B1015)
 
         ) {
+
 
 
             NavigationBarItem(
@@ -143,7 +141,6 @@ fun FovixBottomBar(
                 }
 
             )
-
 
         }
 
