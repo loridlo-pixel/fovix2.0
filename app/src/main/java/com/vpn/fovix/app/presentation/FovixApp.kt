@@ -14,6 +14,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -35,6 +36,8 @@ import com.vpn.fovix.app.presentation.settings.SettingsViewModelFactory
 import com.vpn.fovix.app.presentation.subscription.SubscriptionScreen
 import com.vpn.fovix.app.presentation.subscription.SubscriptionViewModel
 import com.vpn.fovix.app.presentation.subscription.SubscriptionViewModelFactory
+
+import com.vpn.fovix.app.presentation.theme.FovixBackground
 
 import com.vpn.fovix.data.repository.VpnRepository
 
@@ -71,327 +74,365 @@ fun FovixApp(
 
 
 
-
-    Scaffold(
-
-
-        containerColor = androidx.compose.ui.graphics.Color.Transparent,
-
-
-        topBar = {
-
-
-            FovixTopBar(
-
-
-                onAddSubscription = {
-
-                    selectedTab.value =
-                        FovixTab.SERVERS
-
-                },
-
-
-                onPasteClipboard = {
-
-                    selectedTab.value =
-                        FovixTab.SERVERS
-
-                },
-
-
-                onQrScan = {
-
-                    selectedTab.value =
-                        FovixTab.SERVERS
-
-                },
-
-
-                onSettingsClick = {
-
-                    selectedTab.value =
-                        FovixTab.SETTINGS
-
-                },
-
-
-                onLogoClick = {
-
-                    selectedTab.value =
-                        FovixTab.HOME
-
-                }
-
-            )
-
-
-        },
+    FovixBackground {
 
 
 
-        bottomBar = {
+        Scaffold(
 
 
-            FovixBottomBar(
+            containerColor = Color.Transparent,
 
 
-                selected = selectedTab.value,
+
+            topBar = {
 
 
-                status = status,
+
+                FovixTopBar(
 
 
-                onSelect = {
+                    onAddSubscription = {
 
-                    selectedTab.value = it
+                        selectedTab.value =
+                            FovixTab.SERVERS
 
-                },
-
-
-                onCoreClick = {
+                    },
 
 
-                    when(status){
+                    onPasteClipboard = {
+
+                        selectedTab.value =
+                            FovixTab.SERVERS
+
+                    },
 
 
-                        ConnectionStatus.CONNECTED -> {
+                    onQrScan = {
 
-                            onDisconnect()
+                        selectedTab.value =
+                            FovixTab.SERVERS
 
-                        }
+                    },
 
 
-                        else -> {
+                    onSettingsClick = {
 
-                            onConnect()
+                        selectedTab.value =
+                            FovixTab.SETTINGS
 
-                        }
+                    },
+
+
+                    onLogoClick = {
+
+                        selectedTab.value =
+                            FovixTab.HOME
 
                     }
 
 
-                }
+                )
 
 
-            )
-
-
-        }
+            },
 
 
 
-    ) { padding ->
+            bottomBar = {
 
 
 
-        Box(
-
-            modifier = Modifier
-
-                .fillMaxSize()
-
-                .padding(padding)
-
-        ) {
+                FovixBottomBar(
 
 
-
-            when(selectedTab.value){
-
+                    selected = selectedTab.value,
 
 
-                FovixTab.HOME -> {
+                    status = status,
 
 
+                    onSelect = {
 
-                    val vm: HomeViewModel =
-                        viewModel(
 
-                            factory =
-                                HomeViewModelFactory(
+                        selectedTab.value = it
 
-                                    repository,
 
-                                    container.userPreferences
+                    },
 
-                                )
 
-                        )
+                    onCoreClick = {
+
+
+                        when(status){
 
 
 
-                    val state by vm.state.collectAsState()
+                            ConnectionStatus.CONNECTED -> {
+
+
+                                onDisconnect()
+
+
+                            }
 
 
 
-                    HomeScreenDynamic(
+                            else -> {
 
 
-                        state = state,
+                                onConnect()
 
 
-                        onConnect = onConnect,
-
-
-                        onDisconnect = onDisconnect,
-
-
-                        onOpenSubscriptions = {
-
-
-                            selectedTab.value =
-                                FovixTab.SERVERS
-
-
-                        },
-
-
-                        onOpenServers = {
-
-
-                            selectedTab.value =
-                                FovixTab.SERVERS
+                            }
 
 
                         }
 
 
-                    )
+                    }
 
 
-                }
+                )
 
 
-
-
-
-
-                FovixTab.SERVERS -> {
+            }
 
 
 
-                    val vm: SubscriptionViewModel =
-                        viewModel(
+        ) { padding ->
 
-                            factory =
-                                SubscriptionViewModelFactory(
 
-                                    container.subscriptionImportEngine,
 
-                                    container.serverRepository
+            Box(
 
-                                )
+
+                modifier = Modifier
+
+                    .fillMaxSize()
+
+                    .padding(padding)
+
+
+            ) {
+
+
+
+                when(selectedTab.value){
+
+
+
+                    FovixTab.HOME -> {
+
+
+
+                        val vm: HomeViewModel =
+                            viewModel(
+
+
+                                factory =
+                                    HomeViewModelFactory(
+
+
+                                        repository,
+
+
+                                        container.userPreferences
+
+
+                                    )
+
+
+                            )
+
+
+
+                        val state by vm.state.collectAsState()
+
+
+
+                        HomeScreenDynamic(
+
+    state = state,
+
+    onConnect = onConnect,
+
+    onDisconnect = onDisconnect,
+
+
+    onOpenSubscriptions = {
+
+        selectedTab.value =
+            FovixTab.SERVERS
+
+    },
+
+
+    onOpenServers = {
+
+        selectedTab.value =
+            FovixTab.SERVERS
+
+    }
+
+)
+
+                    }
+
+
+
+
+
+
+                    FovixTab.SERVERS -> {
+
+
+
+                        val vm: SubscriptionViewModel =
+                            viewModel(
+
+
+                                factory =
+                                    SubscriptionViewModelFactory(
+
+
+                                        container.subscriptionImportEngine,
+
+
+                                        container.serverRepository
+
+
+                                    )
+
+
+                            )
+
+
+
+                        val state by vm.state.collectAsState()
+
+
+
+                        SubscriptionScreen(
+
+
+                            state = state,
+
+
+                            onInputChange = {
+
+
+                                vm.updateInput(it)
+
+
+                            },
+
+
+                            onImport = {
+
+
+                                vm.importSubscription()
+
+
+                            },
+
+
+                            onBack = {
+
+
+                                selectedTab.value =
+                                    FovixTab.HOME
+
+
+                            }
+
 
                         )
 
 
-
-                    val state by vm.state.collectAsState()
-
-
-
-                    SubscriptionScreen(
-
-
-                        state = state,
-
-
-                        onInputChange = {
-
-                            vm.updateInput(it)
-
-                        },
-
-
-                        onImport = {
-
-                            vm.importSubscription()
-
-                        },
-
-
-                        onBack = {
-
-
-                            selectedTab.value =
-                                FovixTab.HOME
-
-
-                        }
-
-
-                    )
-
-
-                }
+                    }
 
 
 
 
 
 
-                FovixTab.DOCTOR -> {
-
-
-                    PlaceholderScreen(
-                        "Network Doctor"
-                    )
-
-
-                }
+                    FovixTab.DOCTOR -> {
 
 
 
+                        PlaceholderScreen(
 
 
+                            "Network Doctor"
 
-                FovixTab.SETTINGS -> {
-
-
-
-                    val vm: SettingsViewModel =
-                        viewModel(
-
-                            factory =
-                                SettingsViewModelFactory(
-
-                                    container.userPreferences
-
-                                )
 
                         )
 
 
-
-                    val mode by vm.userMode.collectAsState()
-
+                    }
 
 
-                    SettingsScreen(
 
 
-                        mode = mode,
 
 
-                        onModeChange = {
-
-                            vm.setMode(it)
-
-                        },
+                    FovixTab.SETTINGS -> {
 
 
-                        onBack = {
+
+                        val vm: SettingsViewModel =
+                            viewModel(
 
 
-                            selectedTab.value =
-                                FovixTab.HOME
+                                factory =
+                                    SettingsViewModelFactory(
 
 
-                        }
+                                        container.userPreferences
 
 
-                    )
+                                    )
+
+
+                            )
+
+
+
+                        val mode by vm.userMode.collectAsState()
+
+
+
+                        SettingsScreen(
+
+
+                            mode = mode,
+
+
+                            onModeChange = {
+
+
+                                vm.setMode(it)
+
+
+                            },
+
+
+                            onBack = {
+
+
+                                selectedTab.value =
+                                    FovixTab.HOME
+
+
+                            }
+
+
+                        )
+
+
+                    }
+
 
 
                 }
@@ -416,6 +457,7 @@ fun FovixApp(
 
 
 
+
 @Composable
 private fun PlaceholderScreen(
 
@@ -423,10 +465,17 @@ private fun PlaceholderScreen(
 
 ){
 
+
     androidx.compose.material3.Text(
 
-        text = text
+
+        text = text,
+
+
+        color = Color.White
+
 
     )
+
 
 }

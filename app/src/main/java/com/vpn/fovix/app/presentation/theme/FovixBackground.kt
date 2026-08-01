@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
@@ -34,11 +33,11 @@ fun FovixBackground(
 
                     colors = listOf(
 
-                        Color(0xFF101923),
+                        Color(0xFF102A43),
 
-                        Color(0xFF0D1520),
+                        Color(0xFF0B1B2B),
 
-                        Color(0xFF0A1018)
+                        Color(0xFF071018)
 
                     )
 
@@ -47,7 +46,6 @@ fun FovixBackground(
             )
 
     ) {
-
 
 
         Box(
@@ -62,15 +60,13 @@ fun FovixBackground(
 
                         colors = listOf(
 
-                            Color(0x5533D9FF),
-
-                            Color(0x227B4DFF),
+                            Color(0x557B4DFF),
 
                             Color.Transparent
 
                         ),
 
-                        radius = 1200f
+                        radius = 900f
 
                     )
 
@@ -79,8 +75,8 @@ fun FovixBackground(
         )
 
 
-
         content()
+
 
     }
 
