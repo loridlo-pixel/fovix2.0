@@ -60,7 +60,10 @@ fun FovixTopBar(
         colors = TopAppBarDefaults.centerAlignedTopAppBarColors(
 
 
-            containerColor = Color(0xFF0B1015),
+            containerColor = Color.Transparent,
+
+
+            scrolledContainerColor = Color.Transparent,
 
 
             titleContentColor = Color.White,
@@ -93,7 +96,6 @@ fun FovixTopBar(
 
 
                     color = Color.White
-
 
                 )
 
@@ -128,20 +130,21 @@ fun FovixTopBar(
                 ){
 
 
-
                     Icon(
 
 
                         imageVector = Lucide.Plus,
 
 
-                        contentDescription = "Add"
+                        contentDescription = "Add",
 
+
+                        tint = Color.White
 
                     )
 
-
                 }
+
 
 
 
@@ -171,9 +174,7 @@ fun FovixTopBar(
                         text = {
 
 
-                            Text(
-                                "Add subscription"
-                            )
+                            Text("Add subscription")
 
 
                         },
@@ -201,9 +202,7 @@ fun FovixTopBar(
                         text = {
 
 
-                            Text(
-                                "Paste clipboard"
-                            )
+                            Text("Paste clipboard")
 
 
                         },
@@ -231,9 +230,7 @@ fun FovixTopBar(
                         text = {
 
 
-                            Text(
-                                "Scan QR"
-                            )
+                            Text("Scan QR")
 
 
                         },
@@ -264,6 +261,7 @@ fun FovixTopBar(
 
 
 
+
         actions = {
 
 
@@ -284,7 +282,10 @@ fun FovixTopBar(
                     imageVector = Lucide.Settings,
 
 
-                    contentDescription = "Settings"
+                    contentDescription = "Settings",
+
+
+                    tint = Color.White
 
 
                 )

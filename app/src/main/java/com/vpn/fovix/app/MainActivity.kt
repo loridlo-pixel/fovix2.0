@@ -7,7 +7,6 @@ import android.util.Log
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
 
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,11 +14,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 
 import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 import com.vpn.fovix.app.presentation.FovixApp
 import com.vpn.fovix.app.presentation.theme.FovixTheme
-import com.vpn.fovix.vpn.SingBoxNative
 
+import com.vpn.fovix.vpn.SingBoxNative
 
 
 
@@ -50,12 +50,6 @@ class MainActivity : ComponentActivity() {
             if(it.resultCode == RESULT_OK) {
 
 
-                Log.i(
-                    TAG,
-                    "VPN PERMISSION GRANTED"
-                )
-
-
                 appContainer
                     .vpnRepository
                     .startVpn()
@@ -70,7 +64,9 @@ class MainActivity : ComponentActivity() {
 
 
     override fun onCreate(
+
         savedInstanceState: Bundle?
+
     ) {
 
 
@@ -78,19 +74,7 @@ class MainActivity : ComponentActivity() {
 
 
 
-        /*
-            Happ style:
-            рисуем под статус баром
-            и под navigation bar
-        */
-
         enableEdgeToEdge()
-
-
-        WindowCompat.setDecorFitsSystemWindows(
-            window,
-            false
-        )
 
 
 
@@ -98,7 +82,6 @@ class MainActivity : ComponentActivity() {
 
             (application as FovixApplication)
                 .container
-
 
 
 
@@ -112,14 +95,14 @@ class MainActivity : ComponentActivity() {
             FovixTheme {
 
 
-
                 Surface(
 
                     modifier = Modifier
-                        .fillMaxSize()
+                        .fillMaxSize(),
+
+                    color = androidx.compose.ui.graphics.Color.Transparent
 
                 ) {
-
 
 
                     FovixApp(
@@ -147,11 +130,9 @@ class MainActivity : ComponentActivity() {
 
                         onDisconnect = {
 
-
                             appContainer
                                 .vpnRepository
                                 .disconnect()
-
 
                         }
 
@@ -168,9 +149,54 @@ class MainActivity : ComponentActivity() {
         }
 
 
-
     }
 
+
+
+
+    private fun enableEdgeToEdge() {
+
+
+        WindowCompat.setDecorFitsSystemWindows(
+
+            window,
+
+            false
+
+        )
+
+
+        window.statusBarColor =
+
+            android.graphics.Color.TRANSPARENT
+
+
+
+        window.navigationBarColor =
+
+            android.graphics.Color.TRANSPARENT
+
+
+
+        val controller =
+
+            WindowInsetsControllerCompat(
+
+                window,
+
+                window.decorView
+
+            )
+
+
+
+        controller.isAppearanceLightStatusBars = false
+
+        controller.isAppearanceLightNavigationBars = false
+
+
+
+    }
 
 
 
@@ -185,13 +211,10 @@ class MainActivity : ComponentActivity() {
 
 
 
-
         if(intent != null) {
 
 
-            vpnPermissionLauncher.launch(
-                intent
-            )
+            vpnPermissionLauncher.launch(intent)
 
 
         }
@@ -207,7 +230,6 @@ class MainActivity : ComponentActivity() {
 
 
     }
-
 
 
 
@@ -253,7 +275,6 @@ class MainActivity : ComponentActivity() {
 
 
     }
-
 
 
 }

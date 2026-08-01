@@ -23,9 +23,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+
 import com.vpn.fovix.app.presentation.home.components.FovixAddServerButton
 import com.vpn.fovix.app.presentation.home.components.FovixCoreButton
-
+import com.vpn.fovix.app.presentation.home.components.ServerCard
 
 
 
@@ -42,7 +43,10 @@ fun ExpertHomeView(
     onDisconnect: () -> Unit,
 
 
-    onOpenSubscriptions: () -> Unit
+    onOpenSubscriptions: () -> Unit,
+
+
+    onOpenServers: () -> Unit
 
 
 ) {
@@ -57,7 +61,6 @@ fun ExpertHomeView(
             .fillMaxWidth(),
 
 
-
         horizontalAlignment = Alignment.CenterHorizontally,
 
 
@@ -68,25 +71,15 @@ fun ExpertHomeView(
 
 
 
-
-
         Text(
-
 
             text = "FOVIX",
 
-
             color = Color.White,
-
 
             fontSize = 34.sp
 
-
         )
-
-
-
-
 
 
 
@@ -95,49 +88,30 @@ fun ExpertHomeView(
             modifier = Modifier.size(24.dp)
 
         )
-
-
-
-
 
 
 
         FovixCoreButton(
 
-
             state = state.status,
-
 
             server = state.server,
 
-
             onClick = {
-
 
                 if(state.connected) {
 
-
                     onDisconnect()
 
-
-                }
-                else {
-
+                } else {
 
                     onConnect()
 
-
                 }
-
 
             }
 
-
         )
-
-
-
-
 
 
 
@@ -149,12 +123,25 @@ fun ExpertHomeView(
 
 
 
+        ServerCard(
 
+            server = state.server,
+
+            onClick = onOpenServers
+
+        )
+
+
+
+        Spacer(
+
+            modifier = Modifier.size(20.dp)
+
+        )
 
 
 
         Column(
-
 
             modifier = Modifier
 
@@ -170,28 +157,19 @@ fun ExpertHomeView(
 
                 .padding(20.dp)
 
-
         ) {
 
 
 
             Text(
 
-
                 text = "NETWORK DOCTOR",
 
-
-                color = Color(0xFF00E5FF),
-
+                color = Color(0xFF00D9FF),
 
                 fontSize = 14.sp
 
-
             )
-
-
-
-
 
 
 
@@ -203,91 +181,53 @@ fun ExpertHomeView(
 
 
 
-
-
-
-
             Text(
-
 
                 text = "✓ VPN Engine: sing-box",
 
-
                 color = Color.White,
 
-
                 fontSize = 15.sp
-
 
             )
 
 
 
-
-
-
-
             Text(
-
 
                 text = "✓ Protocol: VLESS",
 
-
                 color = Color.White,
 
-
                 fontSize = 15.sp
-
 
             )
 
 
 
-
-
-
-
             Text(
-
 
                 text = "✓ DNS: Secure",
 
-
                 color = Color.White,
-
 
                 fontSize = 15.sp
 
-
             )
-
-
-
-
 
 
 
             Text(
 
-
                 text = "✓ Routing: Auto",
-
 
                 color = Color.White,
 
-
                 fontSize = 15.sp
-
 
             )
 
-
-
         }
-
-
-
-
 
 
 
@@ -299,148 +239,12 @@ fun ExpertHomeView(
 
 
 
-
-
-
-
-        Column(
-
-
-            modifier = Modifier
-
-                .fillMaxWidth()
-
-                .background(
-
-                    Color(0xFF111820),
-
-                    RoundedCornerShape(20.dp)
-
-                )
-
-                .padding(20.dp)
-
-
-        ) {
-
-
-
-            Text(
-
-
-                text = "DIAGNOSTICS LITE",
-
-
-                color = Color(0xFF7C4DFF),
-
-
-                fontSize = 14.sp
-
-
-            )
-
-
-
-
-
-
-            Spacer(
-
-                modifier = Modifier.size(12.dp)
-
-            )
-
-
-
-
-
-
-            Text(
-
-
-                text = "Latency: 32 ms",
-
-
-                color = Color.White,
-
-
-                fontSize = 15.sp
-
-
-            )
-
-
-
-
-
-
-            Text(
-
-
-                text = "Packet Loss: 0%",
-
-
-                color = Color.White,
-
-
-                fontSize = 15.sp
-
-
-            )
-
-
-
-
-
-
-            Text(
-
-
-                text = "Speed Test: Ready",
-
-
-                color = Color(0xFF00E5FF),
-
-
-                fontSize = 15.sp
-
-
-            )
-
-
-
-        }
-
-
-
-
-
-
-
-        Spacer(
-
-            modifier = Modifier.size(24.dp)
-
-        )
-
-
-
-
-
-
-
         FovixAddServerButton(
-
 
             onClick = onOpenSubscriptions
 
-
         )
 
-
-
     }
-
-
 
 }

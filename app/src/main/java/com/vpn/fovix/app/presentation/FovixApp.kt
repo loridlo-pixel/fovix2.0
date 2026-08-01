@@ -2,14 +2,19 @@ package com.vpn.fovix.app.presentation
 
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+
 import androidx.compose.material3.Scaffold
+
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+
 import androidx.compose.ui.Modifier
+
 import androidx.lifecycle.viewmodel.compose.viewModel
 
 
@@ -60,14 +65,17 @@ fun FovixApp(
     }
 
 
-    // временно, позже подключим StateFlow VPN сервиса
 
     val status =
         ConnectionStatus.DISCONNECTED
 
 
 
+
     Scaffold(
+
+
+        containerColor = androidx.compose.ui.graphics.Color.Transparent,
 
 
         topBar = {
@@ -179,8 +187,11 @@ fun FovixApp(
 
         Box(
 
-            modifier =
-                Modifier.padding(padding)
+            modifier = Modifier
+
+                .fillMaxSize()
+
+                .padding(padding)
 
         ) {
 
@@ -191,6 +202,7 @@ fun FovixApp(
 
 
                 FovixTab.HOME -> {
+
 
 
                     val vm: HomeViewModel =
@@ -206,6 +218,7 @@ fun FovixApp(
                                 )
 
                         )
+
 
 
                     val state by vm.state.collectAsState()
@@ -226,15 +239,30 @@ fun FovixApp(
 
                         onOpenSubscriptions = {
 
+
                             selectedTab.value =
                                 FovixTab.SERVERS
 
+
+                        },
+
+
+                        onOpenServers = {
+
+
+                            selectedTab.value =
+                                FovixTab.SERVERS
+
+
                         }
+
 
                     )
 
 
                 }
+
+
 
 
 
@@ -285,15 +313,20 @@ fun FovixApp(
 
                         onBack = {
 
+
                             selectedTab.value =
                                 FovixTab.HOME
 
+
                         }
+
 
                     )
 
 
                 }
+
+
 
 
 
@@ -307,6 +340,8 @@ fun FovixApp(
 
 
                 }
+
+
 
 
 
@@ -328,6 +363,7 @@ fun FovixApp(
                         )
 
 
+
                     val mode by vm.userMode.collectAsState()
 
 
@@ -347,10 +383,13 @@ fun FovixApp(
 
                         onBack = {
 
+
                             selectedTab.value =
                                 FovixTab.HOME
 
+
                         }
+
 
                     )
 
@@ -362,13 +401,18 @@ fun FovixApp(
             }
 
 
+
         }
+
 
 
     }
 
 
+
 }
+
+
 
 
 

@@ -1,35 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
 
+<resources>
 
     <style
         name="Theme.Fovix"
-        parent="android:Theme.Material.NoActionBar">
+        parent="android:Theme.Material.Light.NoActionBar">
 
+        <!-- Рисуем под системными панелями -->
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
 
+        <!-- Верх -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+
+        <!-- Низ -->
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+
+        <!-- Убираем светлые иконки -->
+        <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
+
+        <!-- Без ActionBar -->
+        <item name="android:windowNoTitle">true</item>
+
+        <!-- Полный экран -->
         <item name="android:windowActionModeOverlay">true</item>
 
-        <item name="android:statusBarColor">
-            @android:color/transparent
+        <!-- Под вырезы экрана -->
+        <item name="android:windowLayoutInDisplayCutoutMode">
+            shortEdges
         </item>
-
-
-        <item name="android:navigationBarColor">
-            @android:color/transparent
-        </item>
-
-
-        <item name="android:windowLightStatusBar">
-            false
-        </item>
-
-
-        <item name="android:windowLightNavigationBar">
-            false
-        </item>
-
 
     </style>
-
 
 </resources>

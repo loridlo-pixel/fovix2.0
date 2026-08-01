@@ -18,7 +18,10 @@ fun HomeModeRenderer(
     onDisconnect: () -> Unit,
 
 
-    onOpenSubscriptions: () -> Unit
+    onOpenSubscriptions: () -> Unit,
+
+
+    onOpenServers: () -> Unit
 
 
 ) {
@@ -50,7 +53,6 @@ fun HomeModeRenderer(
 
             )
 
-
         }
 
 
@@ -74,11 +76,13 @@ fun HomeModeRenderer(
                 onDisconnect = onDisconnect,
 
 
-                onOpenSubscriptions = onOpenSubscriptions
+                onOpenSubscriptions = onOpenSubscriptions,
+
+
+                onOpenServers = onOpenServers
 
 
             )
-
 
         }
 
@@ -103,11 +107,13 @@ fun HomeModeRenderer(
                 onDisconnect = onDisconnect,
 
 
-                onOpenSubscriptions = onOpenSubscriptions
+                onOpenSubscriptions = onOpenSubscriptions,
+
+
+                onOpenServers = onOpenServers
 
 
             )
-
 
         }
 

@@ -57,11 +57,7 @@ fun SubscriptionScreen(
 
             .fillMaxSize()
 
-            .background(
-
-                Color(0xFF0B1015)
-
-            )
+            .background(Color.Transparent)
 
             .padding(24.dp),
 
