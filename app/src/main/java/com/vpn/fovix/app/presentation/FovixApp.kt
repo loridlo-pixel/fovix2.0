@@ -2,205 +2,95 @@ package com.vpn.fovix.app.presentation
 
 
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+
+import androidx.compose.runtime.collectAsState
+
+
+import com.vpn.fovix.app.presentation.home.HomeDashboard
+import com.vpn.fovix.app.presentation.home.UserMode
 
 import com.vpn.fovix.app.presentation.navigation.FovixBottomBar
 import com.vpn.fovix.app.presentation.navigation.FovixTab
 
-import com.vpn.fovix.app.presentation.theme.FovixTheme
-
-import com.vpn.fovix.app.presentation.home.HomeScreen
 import com.vpn.fovix.app.presentation.servers.ServersScreen
 import com.vpn.fovix.app.presentation.settings.SettingsScreen
-import com.vpn.fovix.app.presentation.subscription.SubscriptionScreen
-import com.vpn.fovix.app.presentation.subscription.SubscriptionUiState
-import com.vpn.fovix.app.presentation.home.UserMode
+
+import com.vpn.fovix.data.repository.VpnRepository
 
 
 
 @Composable
-fun FovixApp() {
+fun FovixApp(
+
+    vpnRepository: VpnRepository
+
+) {
+
+
+    val vpnState by vpnRepository.state.collectAsState()
+
 
 
     var currentTab by remember {
 
         mutableStateOf(
+
             FovixTab.HOME
+
         )
 
     }
 
 
-    var userMode by remember {
+
+    var mode by remember {
 
         mutableStateOf(
+
             UserMode.SIMPLE
+
         )
 
     }
 
 
 
-    FovixTheme {
 
 
-        Column(
+    Scaffold(
 
-            modifier = Modifier
-                .fillMaxSize()
 
-        ) {
 
-
-
-            Box(
-
-                modifier = Modifier
-                    .fillMaxSize()
-
-            ) {
-
-
-
-                when(currentTab) {
-
-
-
-                    FovixTab.HOME -> {
-
-
-                        HomeScreen()
-
-
-                    }
-
-
-
-
-                    FovixTab.SERVERS -> {
-
-
-                        ServersScreen(
-
-                            selectedServer = "",
-
-                            onServerSelected = {
-
-                            },
-
-                            onBack = {
-
-                                currentTab = FovixTab.HOME
-
-                            }
-
-                        )
-
-
-                    }
-
-
-
-
-                    FovixTab.DOCTOR -> {
-
-
-                        // пока заглушка Beta 1.0
-
-                        HomeScreen()
-
-
-                    }
-
-
-
-
-                    FovixTab.SUBSCRIPTION -> {
-
-
-                        SubscriptionScreen(
-
-                            state = SubscriptionUiState(),
-
-                            onInputChange = {
-
-                            },
-
-                            onImport = {
-
-                            },
-
-                            onBack = {
-
-                                currentTab = FovixTab.HOME
-
-                            }
-
-                        )
-
-
-                    }
-
-
-
-
-                    FovixTab.SETTINGS -> {
-
-
-                        SettingsScreen(
-
-                            mode = userMode,
-
-                            onModeChange = {
-
-                                userMode = it
-
-                            },
-
-                            onBack = {
-
-                                currentTab = FovixTab.HOME
-
-                            }
-
-                        )
-
-
-                    }
-
-
-
-                }
-
-
-            }
-
-
-
+        bottomBar = {
 
 
             FovixBottomBar(
 
                 selected = currentTab,
 
-                onSelected = {
+                connectionStatus = vpnState.status,
+
+
+                onTabSelected = {
+
 
                     currentTab = it
 
-                },
-
-                onCoreClick = {
-
-                    currentTab = FovixTab.HOME
 
                 }
 
@@ -210,7 +100,166 @@ fun FovixApp() {
         }
 
 
+
+    ) { padding ->
+
+
+
+        Box(
+
+            modifier = Modifier
+
+                .fillMaxSize()
+
+                .padding(padding)
+
+        ) {
+
+
+
+            when(currentTab) {
+
+
+
+                FovixTab.HOME -> {
+
+
+
+                    HomeDashboard(
+
+
+                        status = vpnState.status,
+
+
+                        server = vpnState.server,
+
+
+                        download = vpnState.download,
+
+
+                        upload = vpnState.upload,
+
+
+                        onConnectClick = {
+
+
+                            vpnRepository.toggle()
+
+
+                        }
+
+
+                    )
+
+
+                }
+
+
+
+
+
+                FovixTab.SERVERS -> {
+
+
+
+                    ServersScreen(
+
+
+                        selectedServer = vpnState.server,
+
+
+                        onServerSelected = {
+
+
+                            vpnRepository.startVpn(it)
+
+
+                        },
+
+
+                        onBack = {
+
+
+                            currentTab = FovixTab.HOME
+
+
+                        }
+
+
+                    )
+
+
+                }
+
+
+
+
+
+                FovixTab.DOCTOR -> {
+
+
+
+                    Text(
+
+                        text = "Network Doctor",
+
+                        modifier = Modifier
+
+                            .padding(30.dp)
+
+                    )
+
+
+                }
+
+
+
+
+
+                FovixTab.SETTINGS -> {
+
+
+
+                    SettingsScreen(
+
+
+                        mode = mode,
+
+
+                        onModeChange = {
+
+
+                            mode = it
+
+
+                        },
+
+
+                        onBack = {
+
+
+                            currentTab = FovixTab.HOME
+
+
+                        }
+
+
+                    )
+
+
+                }
+
+
+            }
+
+
+
+        }
+
+
+
     }
+
 
 
 }

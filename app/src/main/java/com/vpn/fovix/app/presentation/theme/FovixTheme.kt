@@ -1,45 +1,123 @@
 package com.vpn.fovix.app.presentation.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
+
+import android.app.Activity
+
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
+
 import androidx.compose.runtime.Composable
 
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 
-private val FovixDarkColors = darkColorScheme(
+import androidx.core.view.WindowCompat
 
-    primary = FovixAccent,
 
-    secondary = FovixGreen,
 
-    background = FovixBackground,
+private val FovixScheme = darkColorScheme(
 
-    surface = FovixSurface,
+    primary = Color(0xFFA855F7),
 
-    onPrimary = FovixBackground,
+    secondary = Color(0xFF38BDF8),
 
-    onSecondary = FovixBackground,
+    tertiary = Color(0xFF34D399),
 
-    onBackground = FovixText,
 
-    onSurface = FovixText
+    background = Color(0xFF0F111A),
+
+    surface = Color(0xFF151827),
+
+
+    onBackground = Color.White,
+
+    onSurface = Color.White
 
 )
 
 
+
+
+
 @Composable
 fun FovixTheme(
+
     content: @Composable () -> Unit
+
 ) {
+
+
+    val view = LocalView.current
+
+
+
+    if (!view.isInEditMode) {
+
+
+        val window =
+
+            (view.context as Activity)
+                .window
+
+
+
+        WindowCompat.setDecorFitsSystemWindows(
+
+            window,
+
+            false
+
+        )
+
+
+
+        window.statusBarColor =
+
+            android.graphics.Color.TRANSPARENT
+
+
+
+        window.navigationBarColor =
+
+            android.graphics.Color.TRANSPARENT
+
+
+
+        WindowCompat.getInsetsController(
+
+            window,
+
+            view
+
+        ).isAppearanceLightStatusBars = false
+
+
+
+        WindowCompat.getInsetsController(
+
+            window,
+
+            view
+
+        ).isAppearanceLightNavigationBars = false
+
+
+    }
+
+
+
+
 
     MaterialTheme(
 
-        colorScheme = FovixDarkColors,
+        colorScheme = FovixScheme,
 
-        typography = FovixTypography,
+        typography = Typography(),
 
         content = content
 
     )
+
 
 }
