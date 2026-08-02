@@ -57,8 +57,8 @@ class MainActivity : ComponentActivity() {
 
             }
 
-
         }
+
 
 
 
@@ -85,9 +85,6 @@ class MainActivity : ComponentActivity() {
 
 
 
-        checkSingBox()
-
-
 
         setContent {
 
@@ -97,8 +94,7 @@ class MainActivity : ComponentActivity() {
 
                 Surface(
 
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier = Modifier.fillMaxSize(),
 
                     color = androidx.compose.ui.graphics.Color.Transparent
 
@@ -107,37 +103,8 @@ class MainActivity : ComponentActivity() {
 
                     FovixApp(
 
-
-                        repository =
-
-                            appContainer.vpnRepository,
-
-
-
-                        container =
-
-                            appContainer,
-
-
-
-                        onConnect = {
-
-                            requestVpnPermission()
-
-                        },
-
-
-
-                        onDisconnect = {
-
-                            appContainer
-                                .vpnRepository
-                                .disconnect()
-
-                        }
-
-
-                    )
+vpnRepository = appContainer.vpnRepository
+)
 
 
                 }
@@ -150,6 +117,7 @@ class MainActivity : ComponentActivity() {
 
 
     }
+
 
 
 
@@ -174,7 +142,7 @@ class MainActivity : ComponentActivity() {
 
         window.navigationBarColor =
 
-            android.graphics.Color.TRANSPARENT
+            android.graphics.Color.BLACK
 
 
 
@@ -190,91 +158,14 @@ class MainActivity : ComponentActivity() {
 
 
 
-        controller.isAppearanceLightStatusBars = false
+        controller.isAppearanceLightStatusBars = true
+
 
         controller.isAppearanceLightNavigationBars = false
 
 
-
     }
 
-
-
-
-
-    private fun requestVpnPermission() {
-
-
-        val intent =
-
-            VpnService.prepare(this)
-
-
-
-        if(intent != null) {
-
-
-            vpnPermissionLauncher.launch(intent)
-
-
-        }
-        else {
-
-
-            appContainer
-                .vpnRepository
-                .startVpn()
-
-
-        }
-
-
-    }
-
-
-
-
-
-    private fun checkSingBox() {
-
-
-        try {
-
-
-            val running =
-
-                SingBoxNative.isRunning()
-
-
-
-            Log.i(
-
-                TAG,
-
-                "SINGBOX JNI OK running=$running"
-
-            )
-
-
-        }
-        catch(e: Exception) {
-
-
-            Log.e(
-
-                TAG,
-
-                "SINGBOX JNI ERROR",
-
-                e
-
-            )
-
-
-        }
-
-
-    }
 
 
 }

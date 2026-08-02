@@ -1,5 +1,6 @@
 package com.vpn.fovix.app.presentation.navigation
 
+
 enum class FovixTab {
 
     HOME,

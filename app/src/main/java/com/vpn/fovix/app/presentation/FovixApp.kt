@@ -6,463 +6,248 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.ui.unit.dp
 
 
-import com.vpn.fovix.app.AppContainer
+import androidx.compose.runtime.collectAsState
 
-import com.vpn.fovix.app.presentation.home.HomeScreenDynamic
-import com.vpn.fovix.app.presentation.home.HomeViewModel
-import com.vpn.fovix.app.presentation.home.HomeViewModelFactory
+
+import com.vpn.fovix.app.presentation.home.HomeDashboard
+import com.vpn.fovix.app.presentation.home.UserMode
 
 import com.vpn.fovix.app.presentation.navigation.FovixBottomBar
 import com.vpn.fovix.app.presentation.navigation.FovixTab
-import com.vpn.fovix.app.presentation.navigation.FovixTopBar
-
-import com.vpn.fovix.app.presentation.settings.SettingsScreen
-import com.vpn.fovix.app.presentation.settings.SettingsViewModel
-import com.vpn.fovix.app.presentation.settings.SettingsViewModelFactory
 
 import com.vpn.fovix.app.presentation.servers.ServersScreen
-
-import com.vpn.fovix.app.presentation.theme.FovixBackground
+import com.vpn.fovix.app.presentation.settings.SettingsScreen
 
 import com.vpn.fovix.data.repository.VpnRepository
-
-import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
 
 @Composable
 fun FovixApp(
 
-    repository: VpnRepository,
-
-    container: AppContainer,
-
-    onConnect: () -> Unit,
-
-    onDisconnect: () -> Unit
+    vpnRepository: VpnRepository
 
 ) {
 
 
-    val selectedTab = remember {
+    val vpnState by vpnRepository.state.collectAsState()
+
+
+
+    var currentTab by remember {
 
         mutableStateOf(
+
             FovixTab.HOME
+
         )
 
     }
 
 
 
-    val status =
-        ConnectionStatus.DISCONNECTED
+    var mode by remember {
 
+        mutableStateOf(
 
+            UserMode.SIMPLE
 
+        )
 
+    }
 
-    FovixBackground {
 
 
 
-        Scaffold(
 
+    Scaffold(
 
-            containerColor = Color.Transparent,
 
 
+        bottomBar = {
 
-            topBar = {
 
+            FovixBottomBar(
 
+                selected = currentTab,
 
-                FovixTopBar(
+                connectionStatus = vpnState.status,
 
 
-                    onAddSubscription = {
+                onTabSelected = {
 
 
-                        selectedTab.value =
-                            FovixTab.SERVERS
+                    currentTab = it
 
 
-                    },
+                }
 
+            )
 
 
-                    onPasteClipboard = {
+        }
 
 
-                        selectedTab.value =
-                            FovixTab.SERVERS
 
+    ) { padding ->
 
-                    },
 
 
+        Box(
 
-                    onQrScan = {
+            modifier = Modifier
 
+                .fillMaxSize()
 
-                        selectedTab.value =
-                            FovixTab.SERVERS
+                .padding(padding)
 
+        ) {
 
-                    },
 
 
+            when(currentTab) {
 
-                    onSettingsClick = {
 
 
-                        selectedTab.value =
-                            FovixTab.SETTINGS
+                FovixTab.HOME -> {
 
 
-                    },
 
+                    HomeDashboard(
 
 
-                    onLogoClick = {
+                        status = vpnState.status,
 
 
-                        selectedTab.value =
-                            FovixTab.HOME
+                        server = vpnState.server,
 
 
-                    }
+                        download = vpnState.download,
 
 
-                )
+                        upload = vpnState.upload,
 
 
-            },
+                        onConnectClick = {
 
 
-
-            bottomBar = {
-
-
-
-                FovixBottomBar(
-
-
-                    selected = selectedTab.value,
-
-
-                    status = status,
-
-
-
-                    onSelect = {
-
-
-                        selectedTab.value = it
-
-
-                    },
-
-
-
-                    onCoreClick = {
-
-
-                        when(status){
-
-
-                            ConnectionStatus.CONNECTED -> {
-
-
-                                onDisconnect()
-
-
-                            }
-
-
-                            else -> {
-
-
-                                onConnect()
-
-
-                            }
+                            vpnRepository.toggle()
 
 
                         }
 
 
-                    }
-
-
-                )
-
-
-            }
-
-
-
-        ){ padding ->
-
-
-
-
-
-            Box(
-
-                modifier = Modifier
-
-                    .fillMaxSize()
-
-                    .padding(padding)
-
-            ){
-
-
-
-                when(selectedTab.value){
-
-
-
-                    FovixTab.HOME -> {
-
-
-
-                        val vm: HomeViewModel =
-                            viewModel(
-
-
-                                factory =
-                                    HomeViewModelFactory(
-
-
-                                        repository,
-
-
-                                        container.userPreferences
-
-
-                                    )
-
-                            )
-
-
-
-                        val state by vm.state.collectAsState()
-
-
-
-                        HomeScreenDynamic(
-
-
-                            state = state,
-
-
-                            onConnect = onConnect,
-
-
-                            onDisconnect = onDisconnect,
-
-
-
-                            onOpenSubscriptions = {
-
-
-                                selectedTab.value =
-                                    FovixTab.SERVERS
-
-
-                            },
-
-
-
-                            onOpenServers = {
-
-
-                                selectedTab.value =
-                                    FovixTab.SERVERS
-
-
-                            }
-
-
-                        )
-
-
-
-                    }
-
-
-
-
-
-
-                    FovixTab.SERVERS -> {
-
-
-
-                        val homeVm: HomeViewModel =
-                            viewModel(
-
-
-                                factory =
-                                    HomeViewModelFactory(
-
-
-                                        repository,
-
-
-                                        container.userPreferences
-
-
-                                    )
-
-                            )
-
-
-
-                        val homeState by homeVm.state.collectAsState()
-
-
-
-                        ServersScreen(
-
-
-                            selectedServer =
-                                homeState.server,
-
-
-
-                            onServerSelected = {
-
-
-                                homeVm.selectServer(it)
-
-
-
-                                selectedTab.value =
-                                    FovixTab.HOME
-
-
-                            },
-
-
-
-                            onBack = {
-
-
-                                selectedTab.value =
-                                    FovixTab.HOME
-
-
-                            }
-
-
-
-                        )
-
-
-                    }
-
-
-
-
-
-
-
-                    FovixTab.DOCTOR -> {
-
-
-                        PlaceholderScreen(
-
-                            "Network Doctor"
-
-                        )
-
-
-                    }
-
-
-
-
-
-
-
-
-                    FovixTab.SETTINGS -> {
-
-
-
-                        val vm: SettingsViewModel =
-                            viewModel(
-
-
-                                factory =
-                                    SettingsViewModelFactory(
-
-
-                                        container.userPreferences
-
-
-                                    )
-
-                            )
-
-
-
-                        val mode by vm.userMode.collectAsState()
-
-
-
-                        SettingsScreen(
-
-
-                            mode = mode,
-
-
-
-                            onModeChange = {
-
-
-                                vm.setMode(it)
-
-
-                            },
-
-
-
-                            onBack = {
-
-
-                                selectedTab.value =
-                                    FovixTab.HOME
-
-
-                            }
-
-
-                        )
-
-
-
-                    }
-
+                    )
 
 
                 }
 
+
+
+
+
+                FovixTab.SERVERS -> {
+
+
+
+                    ServersScreen(
+
+
+                        selectedServer = vpnState.server,
+
+
+                        onServerSelected = {
+
+
+                            vpnRepository.startVpn(it)
+
+
+                        },
+
+
+                        onBack = {
+
+
+                            currentTab = FovixTab.HOME
+
+
+                        }
+
+
+                    )
+
+
+                }
+
+
+
+
+
+                FovixTab.DOCTOR -> {
+
+
+
+                    Text(
+
+                        text = "Network Doctor",
+
+                        modifier = Modifier
+
+                            .padding(30.dp)
+
+                    )
+
+
+                }
+
+
+
+
+
+                FovixTab.SETTINGS -> {
+
+
+
+                    SettingsScreen(
+
+
+                        mode = mode,
+
+
+                        onModeChange = {
+
+
+                            mode = it
+
+
+                        },
+
+
+                        onBack = {
+
+
+                            currentTab = FovixTab.HOME
+
+
+                        }
+
+
+                    )
+
+
+                }
 
 
             }
@@ -475,34 +260,6 @@ fun FovixApp(
 
     }
 
-
-
-}
-
-
-
-
-
-
-
-@Composable
-private fun PlaceholderScreen(
-
-    text: String
-
-){
-
-
-    androidx.compose.material3.Text(
-
-
-        text = text,
-
-
-        color = Color.White
-
-
-    )
 
 
 }

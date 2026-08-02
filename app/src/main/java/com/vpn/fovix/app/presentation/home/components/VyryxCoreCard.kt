@@ -1,136 +1,375 @@
 package com.vpn.fovix.app.presentation.home.components
 
+
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+
+import androidx.compose.material3.Text
+
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.clip
+
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
-private val Blue = Color(0xFF0066FF)
-private val TextPrimary = Color(0xFF111827)
-private val TextSecondary = Color(0xFF6B7280)
-private val SurfaceColor = Color(0xFFFFFFFF)
+import com.vpn.fovix.domain.vpnstate.ConnectionStatus
+
 
 
 @Composable
 fun VyryxCoreCard(
-    connected: Boolean = false,
+
+
+    status: ConnectionStatus = ConnectionStatus.DISCONNECTED,
+
+
+    server: String = "Auto",
+
+
+    connected: Boolean? = null,
+
+
     onClick: () -> Unit
+
+
 ) {
 
-    val infiniteTransition = rememberInfiniteTransition(label = "pulse")
 
-    val pulse by infiniteTransition.animateFloat(
-        initialValue = 1f,
-        targetValue = 1.08f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = 2000,
-                easing = FastOutSlowInEasing
-            ),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "pulse"
+
+    val actualStatus =
+
+        if(connected == true)
+
+            ConnectionStatus.CONNECTED
+
+        else
+
+            status
+
+
+
+
+
+    val transition = rememberInfiniteTransition(
+
+        label = "core_animation"
+
     )
 
 
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .clickable {
-                onClick()
-            },
-        shape = RoundedCornerShape(28.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = SurfaceColor
+
+    val shine by transition.animateFloat(
+
+        initialValue = -1f,
+
+        targetValue = 2f,
+
+
+        animationSpec = infiniteRepeatable(
+
+            animation = tween(
+
+                durationMillis = 1200,
+
+                easing = LinearEasing
+
+            )
+
         ),
-        elevation = CardDefaults.cardElevation(
-            defaultElevation = 2.dp
-        )
+
+
+        label = "shine"
+
+    )
+
+
+
+
+
+    val buttonColor = when(actualStatus) {
+
+
+        ConnectionStatus.CONNECTED ->
+
+            Color(0xFF22C55E)
+
+
+
+        ConnectionStatus.CONNECTING,
+
+        ConnectionStatus.DISCONNECTING ->
+
+            Color(0xFF6366F1)
+
+
+
+        ConnectionStatus.ERROR ->
+
+            Color(0xFFEF4444)
+
+
+
+        else ->
+
+            Color(0xFF6366F1)
+
+
+    }
+
+
+
+
+
+    Column(
+
+        modifier = Modifier
+
+            .fillMaxWidth()
+
+            .background(
+
+                Color.White,
+
+                RoundedCornerShape(28.dp)
+
+            )
+
+            .padding(22.dp)
+
     ) {
 
-        Column(
+
+
+        Text(
+
+            text = "VYRYX CORE",
+
+            color = Color(0xFF111827),
+
+            fontSize = 18.sp
+
+        )
+
+
+
+
+
+        Spacer(
+
+            modifier = Modifier.height(18.dp)
+
+        )
+
+
+
+
+
+        Box(
+
             modifier = Modifier
-                .padding(24.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+
+                .fillMaxWidth()
+
+                .height(92.dp)
+
+                .clip(
+
+                    RoundedCornerShape(24.dp)
+
+                )
+
+                .background(
+
+                    Brush.linearGradient(
+
+                        colors = listOf(
+
+                            buttonColor,
+
+                            buttonColor.copy(
+
+                                alpha = 0.75f
+
+                            )
+
+                        )
+
+                    )
+
+                )
+
+                .clickable {
+
+
+                    onClick()
+
+
+                },
+
+
+            contentAlignment = Alignment.Center
+
+
         ) {
 
 
-            Text(
-                text = "VYRYX Core",
-                color = TextPrimary,
-                fontSize = 20.sp
-            )
 
+            if(
 
-            Spacer(
-                modifier = Modifier.height(24.dp)
-            )
+                actualStatus == ConnectionStatus.CONNECTING ||
 
+                actualStatus == ConnectionStatus.DISCONNECTING
 
-            Box(
-                modifier = Modifier
-                    .size(90.dp)
-                    .scale(
-                        if (!connected) pulse else 1f
-                    )
-                    .background(
-                        color = if (connected)
-                            Color(0xFF22C55E)
-                        else
-                            Blue,
-                        shape = CircleShape
-                    ),
-                contentAlignment = Alignment.Center
             ) {
 
-                Text(
-                    text = if (connected) "✓" else "◯",
-                    color = Color.White,
-                    fontSize = 34.sp
+
+                Box(
+
+                    modifier = Modifier
+
+                        .fillMaxSize()
+
+                        .background(
+
+                            Brush.linearGradient(
+
+                                colors = listOf(
+
+                                    Color.Transparent,
+
+                                    Color.White.copy(
+
+                                        alpha = 0.35f
+
+                                    ),
+
+                                    Color.Transparent
+
+                                )
+
+                            )
+
+                        )
+
                 )
+
 
             }
 
 
-            Spacer(
-                modifier = Modifier.height(20.dp)
-            )
+
+
 
 
             Text(
-                text = if (connected)
-                    "Защита активна"
-                else
-                    "Включить защиту",
-                color = TextPrimary,
+
+                text = when(actualStatus) {
+
+
+                    ConnectionStatus.CONNECTED ->
+
+                        "CONNECTED"
+
+
+
+                    ConnectionStatus.CONNECTING ->
+
+                        "CONNECTING..."
+
+
+
+                    ConnectionStatus.DISCONNECTING ->
+
+                        "DISCONNECTING..."
+
+
+
+                    ConnectionStatus.ERROR ->
+
+                        "RETRY"
+
+
+
+                    else ->
+
+                        "CONNECT"
+
+
+                },
+
+
+                color = Color.White,
+
+
                 fontSize = 18.sp
+
+
             )
 
-
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-
-
-            Text(
-                text = if (connected)
-                    "Network Secure"
-                else
-                    "Нажмите для подключения",
-                color = TextSecondary,
-                fontSize = 14.sp
-            )
 
         }
+
+
+
+
+
+        Spacer(
+
+            modifier = Modifier.height(16.dp)
+
+        )
+
+
+
+
+
+        Row(
+
+            modifier = Modifier.fillMaxWidth(),
+
+            horizontalArrangement = Arrangement.SpaceBetween
+
+        ) {
+
+
+
+            Text(
+
+                text = "Server",
+
+                color = Color(0xFF6B7280),
+
+                fontSize = 13.sp
+
+            )
+
+
+
+            Text(
+
+                text = server,
+
+                color = Color(0xFF111827),
+
+                fontSize = 13.sp
+
+            )
+
+
+        }
+
+
     }
+
+
 }

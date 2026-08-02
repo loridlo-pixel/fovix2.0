@@ -1,80 +1,140 @@
 package com.vpn.fovix.app.presentation.home
 
 
-import android.util.Log
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.height
+
+import androidx.compose.material3.Surface
+
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
+
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+
+
+import com.vpn.fovix.app.presentation.home.components.UserProfileCard
+import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
+import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
+import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
+
+import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
 
 @Composable
 fun HomeDashboard(
 
-    connected: Boolean,
+
+    status: ConnectionStatus,
+
 
     server: String,
 
+
     download: Int,
+
 
     upload: Int,
 
+
     onConnectClick: () -> Unit
+
 
 ) {
 
 
-    Box(
 
-        modifier = Modifier.fillMaxSize(),
+    Surface(
 
-        contentAlignment = Alignment.Center
+
+        modifier = Modifier
+
+            .fillMaxSize(),
+
+
+        color = Color(0xFF080C12)
+
 
     ) {
 
 
+
         Column(
 
-            horizontalAlignment = Alignment.CenterHorizontally,
 
-            verticalArrangement = Arrangement.Center
+            modifier = Modifier
+
+                .fillMaxSize()
+
+                .padding(
+
+                    horizontal = 12.dp,
+
+                    vertical = 12.dp
+
+                )
+
 
         ) {
 
 
 
-            Text(
+            /*
+             *
+             * USER PROFILE
+             *
+             */
 
-                text = "FOVIX"
+
+            UserProfileCard(
+
+
+                username = "Дмитрий",
+
+
+                subscription = "Premium until 02.08.2027",
+
+
+                plan = "PREMIUM"
+
 
             )
+
+
 
 
 
             Spacer(
 
-                modifier = Modifier.height(40.dp)
+                modifier = Modifier.height(14.dp)
 
             )
 
 
 
-            ConnectionOrb(
 
 
-                connected = connected,
+            /*
+             *
+             * MAIN VPN CORE
+             *
+             */
+
+
+            VyryxCoreCard(
+
+
+                status = status,
+
+
+                server = server,
 
 
                 onClick = {
-
-
-                    Log.e(
-                        "FOVIX_TEST",
-                        "DASHBOARD CALLBACK"
-                    )
 
 
                     onConnectClick()
@@ -87,55 +147,72 @@ fun HomeDashboard(
 
 
 
-            Spacer(
-
-                modifier = Modifier.height(32.dp)
-
-            )
-
-
-
-            ServerCard(
-
-                server = server
-
-            )
-
 
 
             Spacer(
 
-                modifier = Modifier.height(24.dp)
+                modifier = Modifier.height(12.dp)
 
             )
 
 
 
-            SpeedMetrics(
 
-                download = download,
 
-                upload = upload
+            /*
+             *
+             * PROTECTION
+             *
+             */
+
+
+            ProtectionScoreCard(
+
+
+                score = 98
+
 
             )
+
+
 
 
 
             Spacer(
 
-                modifier = Modifier.height(24.dp)
+                modifier = Modifier.height(12.dp)
 
             )
 
 
 
-            PremiumBadge()
+
+
+            /*
+             *
+             * NETWORK HEALTH
+             *
+             */
+
+
+            NetworkHealthCard(
+
+
+                latency = 42,
+
+
+                speed = download
+
+
+            )
+
 
 
         }
 
 
     }
+
 
 
 }

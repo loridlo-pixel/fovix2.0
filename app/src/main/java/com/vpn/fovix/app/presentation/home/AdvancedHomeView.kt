@@ -1,217 +1,115 @@
 package com.vpn.fovix.app.presentation.home
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-
-import androidx.compose.foundation.shape.RoundedCornerShape
-
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.height
 
 import androidx.compose.runtime.Composable
 
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
 
-import com.vpn.fovix.app.presentation.home.components.FovixAddServerButton
-import com.vpn.fovix.app.presentation.home.components.FovixCoreButton
+import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
+import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
 import com.vpn.fovix.app.presentation.home.components.ServerCard
+import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
+import com.vpn.fovix.app.presentation.home.components.VyryxHeader
+import com.vpn.fovix.app.presentation.home.components.VyryxHomeLayout
 
 
 
 @Composable
 fun AdvancedHomeView(
 
-
     state: HomeUiState,
-
 
     onConnect: () -> Unit,
 
-
     onDisconnect: () -> Unit,
-
 
     onOpenSubscriptions: () -> Unit,
 
-
     onOpenServers: () -> Unit
-
 
 ) {
 
 
-
-    Column(
-
-
-        modifier = Modifier
-
-            .fillMaxWidth(),
+    VyryxHomeLayout(
 
 
+        header = {
 
-        horizontalAlignment = Alignment.CenterHorizontally,
+            VyryxHeader()
 
-
-        verticalArrangement = Arrangement.Center
-
-
-    ) {
+        },
 
 
-
-        Text(
-
-            text = "FOVIX",
-
-            color = Color.White,
-
-            fontSize = 34.sp
-
-        )
+        core = {
 
 
+            VyryxCoreCard(
 
+                connected = state.connected,
 
+                onClick = {
 
-        Spacer(
+                    if(state.connected){
 
-            modifier = Modifier.size(32.dp)
+                        onDisconnect()
 
-        )
+                    } else {
 
+                        onConnect()
 
-
-
-
-        FovixCoreButton(
-
-            state = state.status,
-
-            server = state.server,
-
-            onClick = {
-
-                if(state.connected) {
-
-                    onDisconnect()
-
-                } else {
-
-                    onConnect()
+                    }
 
                 }
 
-            }
-
-        )
-
-
-
-
-
-        Spacer(
-
-            modifier = Modifier.size(24.dp)
-
-        )
-
-
-
-
-
-        ServerCard(
-
-            server = state.server,
-
-            onClick = onOpenServers
-
-        )
-
-
-
-
-
-        Spacer(
-
-            modifier = Modifier.size(24.dp)
-
-        )
-
-
-
-
-
-        Column(
-
-            modifier = Modifier
-
-                .fillMaxWidth()
-
-                .background(
-
-                    Color(0xFF151D26),
-
-                    RoundedCornerShape(20.dp)
-
-                )
-
-                .padding(20.dp)
-
-        ) {
-
-
-
-            Text(
-
-                text = "NETWORK",
-
-                color = Color(0xFF8B98A8),
-
-                fontSize = 12.sp
-
             )
 
+
+        },
+
+
+        content = {
+
+
+            ServerCard(
+
+                server = state.server,
+
+                onClick = onOpenServers
+
+            )
 
 
             Spacer(
 
-                modifier = Modifier.size(8.dp)
+                modifier = Modifier.height(16.dp)
 
             )
 
 
+            ProtectionScoreCard(
 
-            Text(
-
-                text = "Ping 32 ms",
-
-                color = Color.White,
-
-                fontSize = 16.sp
+                score = 98
 
             )
 
 
+            Spacer(
 
-            Text(
+                modifier = Modifier.height(16.dp)
 
-                text = "↓ ${state.download} Mbps   ↑ ${state.upload} Mbps",
+            )
 
-                color = Color(0xFF00D9FF),
 
-                fontSize = 14.sp
+            NetworkHealthCard(
+
+                latency = 32,
+
+                speed = state.download
 
             )
 
@@ -219,29 +117,6 @@ fun AdvancedHomeView(
         }
 
 
-
-
-
-        Spacer(
-
-            modifier = Modifier.size(24.dp)
-
-        )
-
-
-
-
-
-        FovixAddServerButton(
-
-            onClick = onOpenSubscriptions
-
-        )
-
-
-
-    }
-
-
+    )
 
 }

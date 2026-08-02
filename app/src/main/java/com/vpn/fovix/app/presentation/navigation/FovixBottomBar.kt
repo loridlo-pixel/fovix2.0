@@ -1,38 +1,27 @@
 package com.vpn.fovix.app.presentation.navigation
 
 
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 
-import androidx.compose.foundation.shape.CircleShape
-
-import androidx.compose.material3.Icon
-import androidx.compose.material3.NavigationBar
-import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.dp
-
-
-import com.composables.icons.lucide.Globe
-import com.composables.icons.lucide.Stethoscope
-import com.composables.icons.lucide.Lucide
-
-
-import com.vpn.fovix.app.presentation.core.FovixCore
+import androidx.compose.ui.unit.sp
 
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
-
-
 
 
 
@@ -43,21 +32,76 @@ fun FovixBottomBar(
     selected: FovixTab,
 
 
-    status: ConnectionStatus,
+    connectionStatus: ConnectionStatus,
 
 
-    onSelect: (FovixTab) -> Unit,
-
-
-    onCoreClick: () -> Unit
+    onTabSelected: (FovixTab) -> Unit
 
 
 ) {
 
 
 
-    Box(
+    val transition = rememberInfiniteTransition(
+        label = "core_bottom"
+    )
 
+
+    val pulse by transition.animateFloat(
+
+        initialValue = 1f,
+
+        targetValue = 1.08f,
+
+        animationSpec = infiniteRepeatable(
+
+            animation = tween(
+
+                900,
+
+                easing = FastOutSlowInEasing
+
+            ),
+
+            repeatMode = RepeatMode.Reverse
+
+        ),
+
+        label = "pulse"
+
+    )
+
+
+
+
+
+    val coreColor = when(connectionStatus) {
+
+
+        ConnectionStatus.CONNECTED ->
+
+            Color(0xFF22C55E)
+
+
+
+        ConnectionStatus.CONNECTING ->
+
+            Color(0xFFF59E0B)
+
+
+
+        else ->
+
+            Color(0xFF6366F1)
+
+
+    }
+
+
+
+
+
+    Column(
 
         modifier = Modifier
 
@@ -65,174 +109,48 @@ fun FovixBottomBar(
 
             .background(
 
-                Color.Transparent
+                Color.Black
 
             )
-
-
 
     ) {
 
 
 
-        NavigationBar(
-
-
-            containerColor = Color.Transparent,
-
-
-            tonalElevation = 0.dp
-
-
-
-        ) {
-
-
-
-            NavigationBarItem(
-
-
-                selected = selected == FovixTab.SERVERS,
-
-
-                onClick = {
-
-
-                    onSelect(
-
-                        FovixTab.SERVERS
-
-                    )
-
-
-                },
-
-
-                icon = {
-
-
-                    Icon(
-
-                        imageVector = Lucide.Globe,
-
-                        contentDescription = "Servers",
-
-                        tint = Color.White
-
-                    )
-
-
-                },
-
-
-                label = {
-
-
-                    Text(
-
-                        "Servers",
-
-                        color = Color.White
-
-                    )
-
-
-                }
-
-
-            )
-
-
-
-
-
-            NavigationBarItem(
-
-
-                selected = selected == FovixTab.DOCTOR,
-
-
-                onClick = {
-
-
-                    onSelect(
-
-                        FovixTab.DOCTOR
-
-                    )
-
-
-                },
-
-
-                icon = {
-
-
-                    Icon(
-
-                        imageVector = Lucide.Stethoscope,
-
-                        contentDescription = "Doctor",
-
-                        tint = Color.White
-
-                    )
-
-
-                },
-
-
-                label = {
-
-
-                    Text(
-
-                        "Doctor",
-
-                        color = Color.White
-
-                    )
-
-
-                }
-
-
-            )
-
-
-
-        }
-
-
-
-
-
-
         Box(
-
 
             modifier = Modifier
 
-                .align(
+                .fillMaxWidth()
 
-                    Alignment.TopCenter
+                .padding(
 
-                )
+                    horizontal = 12.dp,
 
-                .size(
-
-                    78.dp
+                    vertical = 12.dp
 
                 )
 
+                .height(74.dp)
 
                 .background(
 
-                    Color.Transparent,
+                    brush = Brush.linearGradient(
 
-                    CircleShape
+                        colors = listOf(
+
+                            Color(0xFF111827),
+
+                            Color(0xFF1F2937)
+
+                        )
+
+                    ),
+
+                    shape = RoundedCornerShape(28.dp)
 
                 ),
+
 
 
             contentAlignment = Alignment.Center
@@ -242,25 +160,241 @@ fun FovixBottomBar(
 
 
 
-            FovixCore(
+            Row(
+
+                modifier = Modifier
+
+                    .fillMaxWidth(),
 
 
-                status = status,
+
+                horizontalArrangement = Arrangement.SpaceAround,
+
+                verticalAlignment = Alignment.CenterVertically
 
 
-                compact = true,
+            ) {
 
 
-                onClick = onCoreClick
+
+                BottomItem(
+
+                    text = "Home",
+
+                    active = selected == FovixTab.HOME
+
+                ) {
 
 
-            )
+                    onTabSelected(
+
+                        FovixTab.HOME
+
+                    )
+
+
+                }
+
+
+
+
+
+                BottomItem(
+
+                    text = "Servers",
+
+                    active = selected == FovixTab.SERVERS
+
+                ) {
+
+
+                    onTabSelected(
+
+                        FovixTab.SERVERS
+
+                    )
+
+
+                }
+
+
+
+
+
+
+                Box(
+
+                    modifier = Modifier
+
+                        .size(
+
+                            if(connectionStatus == ConnectionStatus.CONNECTING)
+
+                                (56 * pulse).dp
+
+                            else
+
+                                56.dp
+
+                        )
+
+                        .background(
+
+                            coreColor,
+
+                            RoundedCornerShape(20.dp)
+
+                        )
+
+                        .clickable {
+
+
+                            onTabSelected(
+
+                                FovixTab.HOME
+
+                            )
+
+
+                        },
+
+                    contentAlignment = Alignment.Center
+
+
+                ) {
+
+
+
+                    Text(
+
+                        text = "CORE",
+
+
+                        color = Color.White,
+
+
+                        fontSize = 13.sp
+
+
+                    )
+
+
+                }
+
+
+
+
+
+                BottomItem(
+
+                    text = "Doctor",
+
+                    active = selected == FovixTab.DOCTOR
+
+                ) {
+
+
+                    onTabSelected(
+
+                        FovixTab.DOCTOR
+
+                    )
+
+
+                }
+
+
+
+
+
+
+                BottomItem(
+
+                    text = "Settings",
+
+                    active = selected == FovixTab.SETTINGS
+
+                ) {
+
+
+                    onTabSelected(
+
+                        FovixTab.SETTINGS
+
+                    )
+
+
+                }
+
+
+
+            }
+
 
 
         }
 
 
+
     }
+
+
+}
+
+
+
+
+
+@Composable
+private fun BottomItem(
+
+
+    text: String,
+
+
+    active: Boolean,
+
+
+    onClick: () -> Unit
+
+
+) {
+
+
+
+    Text(
+
+        text = text,
+
+
+        color = if(active)
+
+            Color.White
+
+        else
+
+            Color.White.copy(
+
+                alpha = 0.55f
+
+            ),
+
+
+        fontSize = 12.sp,
+
+
+        modifier = Modifier
+
+            .clickable {
+
+                onClick()
+
+            }
+
+            .padding(8.dp)
+
+
+    )
 
 
 }

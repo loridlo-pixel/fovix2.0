@@ -1,250 +1,151 @@
 package com.vpn.fovix.app.presentation.home
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.height
 
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
 
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
-import com.vpn.fovix.app.presentation.home.components.FovixAddServerButton
-import com.vpn.fovix.app.presentation.home.components.FovixCoreButton
+import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
+import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
 import com.vpn.fovix.app.presentation.home.components.ServerCard
+import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
+import com.vpn.fovix.app.presentation.home.components.VyryxHeader
+import com.vpn.fovix.app.presentation.home.components.VyryxHomeLayout
 
 
 
 @Composable
 fun ExpertHomeView(
 
-
     state: HomeUiState,
-
 
     onConnect: () -> Unit,
 
-
     onDisconnect: () -> Unit,
-
 
     onOpenSubscriptions: () -> Unit,
 
-
     onOpenServers: () -> Unit
-
 
 ) {
 
 
-
-    Column(
-
-
-        modifier = Modifier
-
-            .fillMaxWidth(),
+    VyryxHomeLayout(
 
 
-        horizontalAlignment = Alignment.CenterHorizontally,
+        header = {
+
+            VyryxHeader()
+
+        },
 
 
-        verticalArrangement = Arrangement.Center
+        core = {
 
 
-    ) {
+            VyryxCoreCard(
 
+                connected = state.connected,
 
+                onClick = {
 
-        Text(
+                    if(state.connected){
 
-            text = "FOVIX",
+                        onDisconnect()
 
-            color = Color.White,
+                    } else {
 
-            fontSize = 34.sp
+                        onConnect()
 
-        )
-
-
-
-        Spacer(
-
-            modifier = Modifier.size(24.dp)
-
-        )
-
-
-
-        FovixCoreButton(
-
-            state = state.status,
-
-            server = state.server,
-
-            onClick = {
-
-                if(state.connected) {
-
-                    onDisconnect()
-
-                } else {
-
-                    onConnect()
+                    }
 
                 }
 
-            }
-
-        )
+            )
 
 
-
-        Spacer(
-
-            modifier = Modifier.size(24.dp)
-
-        )
+        },
 
 
-
-        ServerCard(
-
-            server = state.server,
-
-            onClick = onOpenServers
-
-        )
+        content = {
 
 
+            ServerCard(
 
-        Spacer(
+                server = state.server,
 
-            modifier = Modifier.size(20.dp)
+                onClick = onOpenServers
 
-        )
+            )
 
 
+            Spacer(
 
-        Column(
+                modifier = Modifier.height(16.dp)
 
-            modifier = Modifier
+            )
 
-                .fillMaxWidth()
 
-                .background(
+            ProtectionScoreCard(
 
-                    Color(0xFF151D26),
+                score = 98
 
-                    RoundedCornerShape(20.dp)
+            )
 
-                )
 
-                .padding(20.dp)
+            Spacer(
 
-        ) {
+                modifier = Modifier.height(16.dp)
 
+            )
+
+
+            NetworkHealthCard(
+
+                latency = 28,
+
+                speed = state.download
+
+            )
+
+
+            Spacer(
+
+                modifier = Modifier.height(20.dp)
+
+            )
 
 
             Text(
 
-                text = "NETWORK DOCTOR",
+                text = """
+                    Expert Security Controls
+                    
+                    DNS Protection
+                    Smart Routing
+                    Auto Recovery
+                """.trimIndent(),
 
-                color = Color(0xFF00D9FF),
+
+                color = Color(0xFF6B7280),
 
                 fontSize = 14.sp
 
             )
 
 
-
-            Spacer(
-
-                modifier = Modifier.size(16.dp)
-
-            )
-
-
-
-            Text(
-
-                text = "✓ VPN Engine: sing-box",
-
-                color = Color.White,
-
-                fontSize = 15.sp
-
-            )
-
-
-
-            Text(
-
-                text = "✓ Protocol: VLESS",
-
-                color = Color.White,
-
-                fontSize = 15.sp
-
-            )
-
-
-
-            Text(
-
-                text = "✓ DNS: Secure",
-
-                color = Color.White,
-
-                fontSize = 15.sp
-
-            )
-
-
-
-            Text(
-
-                text = "✓ Routing: Auto",
-
-                color = Color.White,
-
-                fontSize = 15.sp
-
-            )
-
         }
 
 
-
-        Spacer(
-
-            modifier = Modifier.size(20.dp)
-
-        )
-
-
-
-        FovixAddServerButton(
-
-            onClick = onOpenSubscriptions
-
-        )
-
-    }
+    )
 
 }
