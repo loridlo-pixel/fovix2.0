@@ -1,42 +1,36 @@
 package com.vpn.fovix.app.presentation.theme
 
-
-import android.app.Activity
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 
 import androidx.compose.runtime.Composable
 
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalView
-
-import androidx.core.view.WindowCompat
 
 
 
 private val FovixScheme = darkColorScheme(
 
-    primary = Color(0xFFA855F7),
+    primary = FovixColors.Accent,
 
-    secondary = Color(0xFF38BDF8),
+    secondary = FovixColors.Accent,
 
-    tertiary = Color(0xFF34D399),
+    background = FovixColors.Accent,
 
+    surface = Color.White,
 
-    background = Color(0xFF0F111A),
-
-    surface = Color(0xFF151827),
-
+    onPrimary = Color.White,
 
     onBackground = Color.White,
 
-    onSurface = Color.White
+    onSurface = FovixColors.TextPrimary
 
 )
-
-
 
 
 
@@ -48,76 +42,35 @@ fun FovixTheme(
 ) {
 
 
-    val view = LocalView.current
+    MaterialTheme(
+
+        colorScheme = FovixScheme
+
+    ) {
 
 
+        Box(
 
-    if (!view.isInEditMode) {
+            modifier = Modifier
 
+                .fillMaxSize()
 
-        val window =
+                .background(
 
-            (view.context as Activity)
-                .window
+                    FovixColors.Accent
 
+                )
 
-
-        WindowCompat.setDecorFitsSystemWindows(
-
-            window,
-
-            false
-
-        )
+        ) {
 
 
-
-        window.statusBarColor =
-
-            android.graphics.Color.TRANSPARENT
+            content()
 
 
-
-        window.navigationBarColor =
-
-            android.graphics.Color.TRANSPARENT
-
-
-
-        WindowCompat.getInsetsController(
-
-            window,
-
-            view
-
-        ).isAppearanceLightStatusBars = false
-
-
-
-        WindowCompat.getInsetsController(
-
-            window,
-
-            view
-
-        ).isAppearanceLightNavigationBars = false
+        }
 
 
     }
-
-
-
-
-
-    MaterialTheme(
-
-        colorScheme = FovixScheme,
-
-        typography = Typography(),
-
-        content = content
-
-    )
 
 
 }

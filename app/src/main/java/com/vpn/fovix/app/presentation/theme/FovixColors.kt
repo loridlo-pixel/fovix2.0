@@ -3,28 +3,33 @@ package com.vpn.fovix.app.presentation.theme
 import androidx.compose.ui.graphics.Color
 
 
-val FovixAccent = Color(0xFF00E5FF)
-
-val FovixAccentPurple = Color(0xFF7C3AED)
+object FovixColors {
 
 
-val FovixGradientStart = Color(0xFF00E5FF)
-
-val FovixGradientEnd = Color(0xFF7C3AED)
-
+    // Основной акцент FOVIX
+    val Accent = Color(0xFF00C6FF)
 
 
-val FovixBackground = Color(0xFF00E5FF)
+    // Более глубокий оттенок для градиента
+    val AccentDark = Color(0xFF0072FF)
 
 
-val FovixCard = Color.White
+    // Карточки
+    val Card = Color.White
 
 
-val FovixTextPrimary = Color(0xFF111827)
+    // Текст
+    val TextPrimary = Color(0xFF111827)
 
-val FovixTextSecondary = Color(0xFF6B7280)
+    val TextSecondary = Color(0xFF6B7280)
 
 
-val FovixSuccess = Color(0xFF22C55E)
+    // Состояния
+    val Success = Color(0xFF22C55E)
 
-val FovixDanger = Color(0xFFEF4444)
+    val Warning = Color(0xFFF59E0B)
+
+    val Error = Color(0xFFEF4444)
+
+
+}
