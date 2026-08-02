@@ -1,86 +1,100 @@
 package com.vpn.fovix.app.presentation.home
 
+
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
+
 import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
 import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
 import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
+import com.vpn.fovix.app.presentation.home.components.UserProfileCard
 
 
 @Composable
 fun HomeScreen() {
 
+
+    val accent = Color(0xFF00E5FF)
+
+
     Surface(
-        modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFF7F8FA)
+
+        modifier = Modifier
+            .fillMaxSize()
+            .background(accent),
+
+        color = accent
+
     ) {
 
+
         Column(
+
             modifier = Modifier
                 .fillMaxSize()
                 .padding(
-                    horizontal = 20.dp,
-                    vertical = 24.dp
-                )
+                    start = 20.dp,
+                    end = 20.dp,
+                    top = 24.dp
+                ),
+
+            verticalArrangement = Arrangement.spacedBy(16.dp)
+
         ) {
 
-            Text(
-                text = "VYRYX",
-                style = MaterialTheme.typography.headlineMedium,
-                color = Color(0xFF111827)
+
+
+            UserProfileCard(
+                username = "FOVIX USER",
+                plan = "PREMIUM"
             )
 
 
-            Spacer(
-                modifier = Modifier.height(8.dp)
-            )
-
-
-            Text(
-                text = "Добрый день",
-                style = MaterialTheme.typography.bodyLarge,
-                color = Color(0xFF6B7280)
-            )
-
-
-            Spacer(
-                modifier = Modifier.height(28.dp)
-            )
 
 
             VyryxCoreCard(
+
                 connected = false,
+
                 onClick = {
-                    // позже подключим vpn start
+
                 }
+
             )
 
 
-            Spacer(
-                modifier = Modifier.height(16.dp)
-            )
+
 
 
             ProtectionScoreCard(
+
                 score = 98
+
             )
 
 
-            Spacer(
-                modifier = Modifier.height(16.dp)
-            )
+
 
 
             NetworkHealthCard(
+
                 latency = 42,
+
                 speed = 186
+
             )
 
+
+
         }
+
     }
+
 }

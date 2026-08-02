@@ -24,19 +24,26 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun UserProfileCard(
 
+
     username: String = "Дмитрий",
+
 
     subscription: String = "Premium until 02.08.2027",
 
+
     plan: String = "PREMIUM",
 
+
     onMenuClick: () -> Unit = {}
+
+
 
 ) {
 
 
 
     Row(
+
 
         modifier = Modifier
 
@@ -50,7 +57,7 @@ fun UserProfileCard(
 
             .background(
 
-                Color(0xFF151B24)
+                Color.White
 
             )
 
@@ -63,7 +70,9 @@ fun UserProfileCard(
             ),
 
 
+
         verticalAlignment = Alignment.CenterVertically
+
 
     ) {
 
@@ -71,24 +80,30 @@ fun UserProfileCard(
 
         Box(
 
+
             modifier = Modifier
 
-                .size(52.dp)
+                .size(54.dp)
 
                 .clip(CircleShape)
 
                 .background(
 
-                    Color(0xFF2563EB)
+                    Color(0xFF00CFFF)
 
                 ),
 
 
+
             contentAlignment = Alignment.Center
+
 
         ){
 
+
+
             Text(
+
 
                 text = username
 
@@ -97,13 +112,17 @@ fun UserProfileCard(
                     .uppercase(),
 
 
+
                 color = Color.White,
 
+
                 fontSize = 22.sp
+
 
             )
 
         }
+
 
 
 
@@ -119,6 +138,8 @@ fun UserProfileCard(
 
 
 
+
+
         Column(
 
             modifier = Modifier.weight(1f)
@@ -129,13 +150,20 @@ fun UserProfileCard(
 
             Text(
 
+
                 text = username,
 
-                color = Color.White,
+
+                color = Color(0xFF111827),
+
 
                 fontSize = 17.sp
 
+
+
             )
+
+
 
 
 
@@ -147,13 +175,20 @@ fun UserProfileCard(
 
 
 
+
+
             Text(
+
 
                 text = subscription,
 
-                color = Color(0xFF9CA3AF),
+
+                color = Color(0xFF6B7280),
+
 
                 fontSize = 12.sp
+
+
 
             )
 
@@ -164,23 +199,38 @@ fun UserProfileCard(
 
 
 
+
+
+
         Column(
 
+
             horizontalAlignment = Alignment.End
+
 
         ){
 
 
 
+
+
             Text(
+
 
                 text = "...",
 
-                color = Color.White,
+
+                color = Color(0xFF111827),
+
 
                 fontSize = 24.sp
 
+
+
             )
+
+
+
 
 
 
@@ -192,21 +242,32 @@ fun UserProfileCard(
 
 
 
+
+
+
             Text(
+
 
                 text = plan,
 
-                color = Color(0xFF38BDF8),
+
+                color = Color(0xFF009FD4),
+
 
                 fontSize = 13.sp
 
+
+
             )
+
 
 
         }
 
 
+
     }
+
 
 
 }
