@@ -2,249 +2,181 @@ package com.vpn.fovix.app.presentation
 
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
-
-
-import androidx.compose.runtime.collectAsState
-
-
-import com.vpn.fovix.app.presentation.home.HomeDashboard
-import com.vpn.fovix.app.presentation.home.UserMode
 
 import com.vpn.fovix.app.presentation.navigation.FovixBottomBar
 import com.vpn.fovix.app.presentation.navigation.FovixTab
 
+import com.vpn.fovix.app.presentation.theme.FovixTheme
+
+import com.vpn.fovix.app.presentation.home.HomeScreen
 import com.vpn.fovix.app.presentation.servers.ServersScreen
 import com.vpn.fovix.app.presentation.settings.SettingsScreen
-
-import com.vpn.fovix.data.repository.VpnRepository
+import com.vpn.fovix.app.presentation.subscription.SubscriptionScreen
+import com.vpn.fovix.app.presentation.subscription.SubscriptionUiState
+import com.vpn.fovix.app.presentation.home.UserMode
 
 
 
 @Composable
-fun FovixApp(
-
-    vpnRepository: VpnRepository
-
-) {
-
-
-    val vpnState by vpnRepository.state.collectAsState()
-
+fun FovixApp() {
 
 
     var currentTab by remember {
 
         mutableStateOf(
-
             FovixTab.HOME
-
         )
 
     }
 
 
-
-    var mode by remember {
+    var userMode by remember {
 
         mutableStateOf(
-
             UserMode.SIMPLE
-
         )
 
     }
 
 
 
+    FovixTheme {
 
 
-    Scaffold(
-
-
-
-        bottomBar = {
-
-
-            FovixBottomBar(
-
-                selected = currentTab,
-
-                connectionStatus = vpnState.status,
-
-
-                onTabSelected = {
-
-
-                    currentTab = it
-
-
-                }
-
-            )
-
-
-        }
-
-
-
-    ) { padding ->
-
-
-
-        Box(
+        Column(
 
             modifier = Modifier
-
                 .fillMaxSize()
-
-                .padding(padding)
 
         ) {
 
 
 
-            when(currentTab) {
+            Box(
 
+                modifier = Modifier
+                    .fillMaxSize()
 
+            ) {
 
-                FovixTab.HOME -> {
 
 
+                when(currentTab) {
 
-                    HomeDashboard(
 
 
-                        status = vpnState.status,
+                    FovixTab.HOME -> {
 
 
-                        server = vpnState.server,
+                        HomeScreen()
 
 
-                        download = vpnState.download,
+                    }
 
 
-                        upload = vpnState.upload,
 
 
-                        onConnectClick = {
+                    FovixTab.SERVERS -> {
 
 
-                            vpnRepository.toggle()
+                        ServersScreen(
 
+                            selectedServer = "",
 
-                        }
+                            onServerSelected = {
 
+                            },
 
-                    )
+                            onBack = {
 
+                                currentTab = FovixTab.HOME
 
-                }
+                            }
 
+                        )
 
 
+                    }
 
 
-                FovixTab.SERVERS -> {
 
 
+                    FovixTab.DOCTOR -> {
 
-                    ServersScreen(
 
+                        // пока заглушка Beta 1.0
 
-                        selectedServer = vpnState.server,
+                        HomeScreen()
 
 
-                        onServerSelected = {
+                    }
 
 
-                            vpnRepository.startVpn(it)
 
 
-                        },
+                    FovixTab.SUBSCRIPTION -> {
 
 
-                        onBack = {
+                        SubscriptionScreen(
 
+                            state = SubscriptionUiState(),
 
-                            currentTab = FovixTab.HOME
+                            onInputChange = {
 
+                            },
 
-                        }
+                            onImport = {
 
+                            },
 
-                    )
+                            onBack = {
 
+                                currentTab = FovixTab.HOME
 
-                }
+                            }
 
+                        )
 
 
+                    }
 
 
-                FovixTab.DOCTOR -> {
 
 
+                    FovixTab.SETTINGS -> {
 
-                    Text(
 
-                        text = "Network Doctor",
+                        SettingsScreen(
 
-                        modifier = Modifier
+                            mode = userMode,
 
-                            .padding(30.dp)
+                            onModeChange = {
 
-                    )
+                                userMode = it
 
+                            },
 
-                }
+                            onBack = {
 
+                                currentTab = FovixTab.HOME
 
+                            }
 
+                        )
 
 
-                FovixTab.SETTINGS -> {
+                    }
 
-
-
-                    SettingsScreen(
-
-
-                        mode = mode,
-
-
-                        onModeChange = {
-
-
-                            mode = it
-
-
-                        },
-
-
-                        onBack = {
-
-
-                            currentTab = FovixTab.HOME
-
-
-                        }
-
-
-                    )
 
 
                 }
@@ -254,12 +186,31 @@ fun FovixApp(
 
 
 
+
+
+            FovixBottomBar(
+
+                selected = currentTab,
+
+                onSelected = {
+
+                    currentTab = it
+
+                },
+
+                onCoreClick = {
+
+                    currentTab = FovixTab.HOME
+
+                }
+
+            )
+
+
         }
 
 
-
     }
-
 
 
 }

@@ -9,6 +9,8 @@ enum class FovixTab {
 
     DOCTOR,
 
+    SUBSCRIPTION,
+
     SETTINGS
 
 }

@@ -2,14 +2,13 @@
 
     <string name="app_name">FOVIX</string>
 
-    <!-- Navigation -->
     <string name="home">Home</string>
     <string name="servers">Servers</string>
     <string name="core">CORE</string>
     <string name="doctor">Doctor</string>
     <string name="settings">Settings</string>
 
-    <!-- Connection -->
+
     <string name="connect">CONNECT</string>
     <string name="disconnect">DISCONNECT</string>
     <string name="connecting">CONNECTING</string>
@@ -18,25 +17,34 @@
     <string name="offline">OFFLINE</string>
     <string name="connection_protected">PROTECTED</string>
 
-    <!-- User -->
+
     <string name="welcome">Welcome</string>
     <string name="premium">PREMIUM</string>
     <string name="free">FREE</string>
 
-    <!-- Security -->
-    <string name="security_pin">Your PIN protects access to FOVIX</string>
-    <string name="enter_pin">Enter PIN</string>
 
-    <!-- Core -->
-    <string name="fovix_core">FOVIX CORE</string>
+    <string name="security_pin">
+        Your PIN protects your FOVIX account
+    </string>
 
-    <!-- Modes -->
+    <string name="enter_pin">
+        Enter PIN
+    </string>
+
+
+    <string name="fovix_core">
+        FOVIX CORE
+    </string>
+
+
     <string name="simple">Simple</string>
     <string name="advanced">Advanced</string>
     <string name="expert">Expert</string>
 
-    <!-- Settings -->
-    <string name="user_experience">User Experience</string>
+
+    <string name="user_experience">
+        User Experience
+    </string>
 
     <string name="clean_vpn_experience">
         Clean VPN experience
@@ -50,19 +58,40 @@
         Diagnostics and engine information
     </string>
 
-    <!-- Servers -->
-    <string name="server">Server</string>
-    <string name="ping">Ping</string>
-    <string name="valid">Valid</string>
 
-    <string name="add_server">ADD SERVER</string>
+    <string name="server">
+        Server
+    </string>
 
-    <!-- Subscription -->
-    <string name="subscription">Subscription</string>
-    <string name="premium_plan">Premium VPN Plan</string>
-    <string name="active">ACTIVE</string>
+    <string name="ping">
+        Ping
+    </string>
+
+    <string name="valid">
+        Valid
+    </string>
+
+
+    <string name="add_server">
+        ADD SERVER
+    </string>
+
+
+    <string name="subscription">
+        Subscription
+    </string>
+
+    <string name="premium_plan">
+        Premium VPN Plan
+    </string>
+
+    <string name="active">
+        ACTIVE
+    </string>
+
     <string name="update_subscription">
         Update Subscription
     </string>
+
 
 </resources>

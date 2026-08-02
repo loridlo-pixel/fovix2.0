@@ -1,346 +1,200 @@
 package com.vpn.fovix.app.presentation.navigation
 
 
-import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 
-import com.vpn.fovix.domain.vpnstate.ConnectionStatus
-
+import com.vpn.fovix.app.presentation.theme.FovixAccent
+import com.vpn.fovix.app.presentation.theme.FovixBackground
+import com.vpn.fovix.app.presentation.theme.FovixSurface
 
 
 @Composable
 fun FovixBottomBar(
 
-
     selected: FovixTab,
 
+    onSelected: (FovixTab) -> Unit,
 
-    connectionStatus: ConnectionStatus,
-
-
-    onTabSelected: (FovixTab) -> Unit
-
+    onCoreClick: () -> Unit
 
 ) {
 
 
-
-    val transition = rememberInfiniteTransition(
-        label = "core_bottom"
-    )
-
-
-    val pulse by transition.animateFloat(
-
-        initialValue = 1f,
-
-        targetValue = 1.08f,
-
-        animationSpec = infiniteRepeatable(
-
-            animation = tween(
-
-                900,
-
-                easing = FastOutSlowInEasing
-
-            ),
-
-            repeatMode = RepeatMode.Reverse
-
-        ),
-
-        label = "pulse"
-
-    )
-
-
-
-
-
-    val coreColor = when(connectionStatus) {
-
-
-        ConnectionStatus.CONNECTED ->
-
-            Color(0xFF22C55E)
-
-
-
-        ConnectionStatus.CONNECTING ->
-
-            Color(0xFFF59E0B)
-
-
-
-        else ->
-
-            Color(0xFF6366F1)
-
-
-    }
-
-
-
-
-
-    Column(
+    Box(
 
         modifier = Modifier
 
             .fillMaxWidth()
 
-            .background(
+            .background(FovixBackground)
 
-                Color.Black
-
+            .padding(
+                horizontal = 16.dp,
+                vertical = 12.dp
             )
 
     ) {
 
 
-
-        Box(
+        Row(
 
             modifier = Modifier
 
                 .fillMaxWidth()
 
-                .padding(
+                .height(72.dp)
 
-                    horizontal = 12.dp,
-
-                    vertical = 12.dp
-
+                .shadow(
+                    20.dp,
+                    RoundedCornerShape(28.dp)
                 )
 
-                .height(74.dp)
-
                 .background(
+                    FovixSurface,
+                    RoundedCornerShape(28.dp)
+                )
 
-                    brush = Brush.linearGradient(
-
-                        colors = listOf(
-
-                            Color(0xFF111827),
-
-                            Color(0xFF1F2937)
-
-                        )
-
-                    ),
-
-                    shape = RoundedCornerShape(28.dp)
-
-                ),
+                .padding(horizontal = 10.dp),
 
 
+            verticalAlignment = Alignment.CenterVertically,
 
-            contentAlignment = Alignment.Center
+            horizontalArrangement = Arrangement.SpaceAround
 
 
         ) {
 
 
 
-            Row(
+            BottomItem(
+
+                icon = "⌂",
+
+                title = "Home",
+
+                active = selected == FovixTab.HOME
+
+            ) {
+
+                onSelected(FovixTab.HOME)
+
+            }
+
+
+
+
+            BottomItem(
+
+                icon = "◉",
+
+                title = "Servers",
+
+                active = selected == FovixTab.SERVERS
+
+            ) {
+
+                onSelected(FovixTab.SERVERS)
+
+            }
+
+
+
+
+            Box(
 
                 modifier = Modifier
 
-                    .fillMaxWidth(),
+                    .size(62.dp)
+
+                    .shadow(
+                        18.dp,
+                        CircleShape
+                    )
+
+                    .background(
+                        FovixAccent,
+                        CircleShape
+                    )
+
+                    .clickable {
+
+                        onCoreClick()
+
+                    },
 
 
-
-                horizontalArrangement = Arrangement.SpaceAround,
-
-                verticalAlignment = Alignment.CenterVertically
+                contentAlignment = Alignment.Center
 
 
             ) {
 
 
+                Text(
 
-                BottomItem(
+                    text = "CORE",
 
-                    text = "Home",
+                    color = Color.Black,
 
-                    active = selected == FovixTab.HOME
+                    style = MaterialTheme.typography.labelMedium
 
-                ) {
 
-
-                    onTabSelected(
-
-                        FovixTab.HOME
-
-                    )
-
-
-                }
-
-
-
-
-
-                BottomItem(
-
-                    text = "Servers",
-
-                    active = selected == FovixTab.SERVERS
-
-                ) {
-
-
-                    onTabSelected(
-
-                        FovixTab.SERVERS
-
-                    )
-
-
-                }
-
-
-
-
-
-
-                Box(
-
-                    modifier = Modifier
-
-                        .size(
-
-                            if(connectionStatus == ConnectionStatus.CONNECTING)
-
-                                (56 * pulse).dp
-
-                            else
-
-                                56.dp
-
-                        )
-
-                        .background(
-
-                            coreColor,
-
-                            RoundedCornerShape(20.dp)
-
-                        )
-
-                        .clickable {
-
-
-                            onTabSelected(
-
-                                FovixTab.HOME
-
-                            )
-
-
-                        },
-
-                    contentAlignment = Alignment.Center
-
-
-                ) {
-
-
-
-                    Text(
-
-                        text = "CORE",
-
-
-                        color = Color.White,
-
-
-                        fontSize = 13.sp
-
-
-                    )
-
-
-                }
-
-
-
-
-
-                BottomItem(
-
-                    text = "Doctor",
-
-                    active = selected == FovixTab.DOCTOR
-
-                ) {
-
-
-                    onTabSelected(
-
-                        FovixTab.DOCTOR
-
-                    )
-
-
-                }
-
-
-
-
-
-
-                BottomItem(
-
-                    text = "Settings",
-
-                    active = selected == FovixTab.SETTINGS
-
-                ) {
-
-
-                    onTabSelected(
-
-                        FovixTab.SETTINGS
-
-                    )
-
-
-                }
-
+                )
 
 
             }
 
 
 
+
+            BottomItem(
+
+                icon = "✚",
+
+                title = "Doctor",
+
+                active = selected == FovixTab.DOCTOR
+
+            ) {
+
+                onSelected(FovixTab.DOCTOR)
+
+            }
+
+
+
+
+            BottomItem(
+
+                icon = "⚙",
+
+                title = "Settings",
+
+                active = selected == FovixTab.SETTINGS
+
+            ) {
+
+                onSelected(FovixTab.SETTINGS)
+
+            }
+
+
         }
-
-
 
     }
 
-
 }
-
 
 
 
@@ -348,40 +202,18 @@ fun FovixBottomBar(
 @Composable
 private fun BottomItem(
 
+    icon: String,
 
-    text: String,
-
+    title: String,
 
     active: Boolean,
 
-
     onClick: () -> Unit
-
 
 ) {
 
 
-
-    Text(
-
-        text = text,
-
-
-        color = if(active)
-
-            Color.White
-
-        else
-
-            Color.White.copy(
-
-                alpha = 0.55f
-
-            ),
-
-
-        fontSize = 12.sp,
-
+    Column(
 
         modifier = Modifier
 
@@ -391,10 +223,57 @@ private fun BottomItem(
 
             }
 
-            .padding(8.dp)
+            .padding(horizontal = 8.dp),
 
 
-    )
+        horizontalAlignment = Alignment.CenterHorizontally
 
+
+    ) {
+
+
+        Text(
+
+            text = icon,
+
+            color = if(active)
+
+                FovixAccent
+
+            else
+
+                Color.Gray
+
+
+        )
+
+
+        Spacer(
+
+            modifier = Modifier.height(4.dp)
+
+        )
+
+
+        Text(
+
+            text = title,
+
+            color = if(active)
+
+                FovixAccent
+
+            else
+
+                Color.Gray,
+
+
+            style = MaterialTheme.typography.labelSmall
+
+
+        )
+
+
+    }
 
 }
