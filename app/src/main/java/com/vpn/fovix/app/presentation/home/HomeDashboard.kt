@@ -15,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
+
 import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
 import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
 import com.vpn.fovix.app.presentation.home.components.UserProfileCard
@@ -27,19 +28,28 @@ import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 @Composable
 fun HomeDashboard(
 
+
     status: ConnectionStatus,
+
 
     server: String,
 
+
     download: Int,
+
 
     upload: Int,
 
-    mode: UserMode,
 
-    onModeChange: (UserMode) -> Unit,
+    onConnectClick: () -> Unit,
 
-    onConnectClick: () -> Unit
+
+    onProfileClick: () -> Unit = {},
+
+
+    onModeClick: () -> Unit = {}
+
+
 
 ) {
 
@@ -47,16 +57,23 @@ fun HomeDashboard(
 
     Surface(
 
+
         modifier = Modifier
+
             .fillMaxSize(),
 
+
         color = MaterialTheme.colorScheme.background
+
+
 
     ) {
 
 
 
         Column(
+
+
 
             modifier = Modifier
 
@@ -70,6 +87,8 @@ fun HomeDashboard(
 
                 )
 
+
+
         ) {
 
 
@@ -77,46 +96,46 @@ fun HomeDashboard(
             UserProfileCard(
 
 
+
                 username = "Дмитрий",
+
 
 
                 subscription = "Premium until 02.08.2027",
 
 
-                mode = mode,
+
+                mode = UserMode.SIMPLE,
+
+
+
+                onProfileClick = {
+
+
+
+                    onProfileClick()
+
+
+
+                },
+
 
 
                 onModeClick = {
 
 
-                    val nextMode = when(mode) {
+
+                    onModeClick()
 
 
-                        UserMode.SIMPLE ->
-
-                            UserMode.ADVANCED
-
-
-
-                        UserMode.ADVANCED ->
-
-                            UserMode.EXPERT
-
-
-
-                        UserMode.EXPERT ->
-
-                            UserMode.SIMPLE
-
-                    }
-
-
-                    onModeChange(nextMode)
 
                 }
 
 
+
             )
+
+
 
 
 
@@ -124,9 +143,15 @@ fun HomeDashboard(
 
             Spacer(
 
+
+
                 modifier = Modifier.height(18.dp)
 
+
+
             )
+
+
 
 
 
@@ -135,19 +160,30 @@ fun HomeDashboard(
             VyryxCoreCard(
 
 
+
                 status = status,
+
 
 
                 server = server,
 
 
+
                 onClick = {
+
+
 
                     onConnectClick()
 
+
+
                 }
 
+
+
             )
+
+
 
 
 
@@ -155,9 +191,15 @@ fun HomeDashboard(
 
             Spacer(
 
+
+
                 modifier = Modifier.height(16.dp)
 
+
+
             )
+
+
 
 
 
@@ -165,9 +207,15 @@ fun HomeDashboard(
 
             ProtectionScoreCard(
 
+
+
                 score = 98
 
+
+
             )
+
+
 
 
 
@@ -175,9 +223,15 @@ fun HomeDashboard(
 
             Spacer(
 
+
+
                 modifier = Modifier.height(16.dp)
 
+
+
             )
+
+
 
 
 
@@ -186,17 +240,25 @@ fun HomeDashboard(
             NetworkHealthCard(
 
 
+
                 latency = 42,
+
 
 
                 speed = download
 
 
+
             )
+
 
 
         }
 
+
+
     }
+
+
 
 }

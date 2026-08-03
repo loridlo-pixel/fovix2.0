@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -39,7 +40,10 @@ fun FovixApp(
 ) {
 
 
+
     val vpnState by vpnRepository.state.collectAsState()
+
+
 
 
 
@@ -52,6 +56,8 @@ fun FovixApp(
         )
 
     }
+
+
 
 
 
@@ -69,37 +75,57 @@ fun FovixApp(
 
 
 
+
+
     Scaffold(
+
 
 
         bottomBar = {
 
 
+
             FovixBottomBar(
 
+
+
                 selected = currentTab,
+
+
 
                 connectionStatus = vpnState.status,
 
 
+
                 onTabSelected = {
+
+
 
                     currentTab = it
 
+
+
                 }
+
 
 
             )
 
 
+
         }
+
 
 
     ) { padding ->
 
 
 
+
+
         Box(
+
+
 
             modifier = Modifier
 
@@ -107,7 +133,11 @@ fun FovixApp(
 
                 .padding(padding)
 
+
+
         ) {
+
+
 
 
 
@@ -115,48 +145,81 @@ fun FovixApp(
 
 
 
+
+
                 FovixTab.HOME -> {
+
 
 
                     HomeDashboard(
 
 
+
                         status = vpnState.status,
+
 
 
                         server = vpnState.server,
 
 
+
                         download = vpnState.download,
+
 
 
                         upload = vpnState.upload,
 
 
-                        mode = mode,
-
-
-                        onModeChange = {
-
-
-                            mode = it
-
-                        },
-
 
                         onConnectClick = {
+
 
 
                             vpnRepository.toggle()
 
 
+
+                        },
+
+
+
+
+
+                        onProfileClick = {
+
+
+
+                            currentTab = FovixTab.PROFILE
+
+
+
+                        },
+
+
+
+
+
+                        onModeClick = {
+
+
+
+                            // TODO открыть выбор режима
+
+                            // Simple / Advanced / Expert
+
+
+
                         }
+
 
 
                     )
 
 
+
                 }
+
+
 
 
 
@@ -171,31 +234,42 @@ fun FovixApp(
                     ServersScreen(
 
 
+
                         selectedServer = vpnState.server,
+
 
 
                         onServerSelected = {
 
 
+
                             vpnRepository.startVpn(it)
+
 
 
                         },
 
 
+
                         onBack = {
+
 
 
                             currentTab = FovixTab.HOME
 
 
+
                         }
+
 
 
                     )
 
 
+
                 }
+
+
 
 
 
@@ -207,18 +281,27 @@ fun FovixApp(
 
 
 
-                    androidx.compose.material3.Text(
+                    Text(
+
+
 
                         text = "Network Doctor",
+
+
 
                         modifier = Modifier
 
                             .padding(30.dp)
 
+
+
                     )
 
 
+
                 }
+
+
 
 
 
@@ -233,40 +316,87 @@ fun FovixApp(
                     SettingsScreen(
 
 
+
                         mode = mode,
+
 
 
                         onModeChange = {
 
 
+
                             mode = it
+
 
 
                         },
 
 
+
                         onBack = {
+
 
 
                             currentTab = FovixTab.HOME
 
 
+
                         }
+
 
 
                     )
 
 
+
                 }
+
+
+
+
+
+
+
+
+
+                FovixTab.PROFILE -> {
+
+
+
+                    Text(
+
+
+
+                        text = "Profile",
+
+
+
+                        modifier = Modifier
+
+                            .padding(30.dp)
+
+
+
+                    )
+
+
+
+                }
+
+
+
 
 
             }
 
 
+
         }
 
 
+
     }
+
 
 
 }

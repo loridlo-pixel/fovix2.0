@@ -27,30 +27,38 @@ import com.vpn.fovix.app.presentation.home.UserMode
 @Composable
 fun UserProfileCard(
 
+
     username: String = "Дмитрий",
+
 
     subscription: String = "Premium until 02.08.2027",
 
-    mode: UserMode,
 
-    onMenuClick: () -> Unit = {},
+    mode: UserMode = UserMode.SIMPLE,
 
-    onModeClick: () -> Unit = {}
+
+    onModeClick: () -> Unit = {},
+
+
+    onProfileClick: () -> Unit = {}
+
 
 ) {
 
 
-    Box(
+
+    Row(
+
 
         modifier = Modifier
 
             .fillMaxWidth()
 
-            .height(76.dp)
+            .height(46.dp)
 
             .clip(
 
-                RoundedCornerShape(22.dp)
+                RoundedCornerShape(16.dp)
 
             )
 
@@ -62,98 +70,71 @@ fun UserProfileCard(
 
             .padding(
 
-                horizontal = 16.dp
+                horizontal = 12.dp
 
-            )
+            ),
+
+
+
+        verticalAlignment = Alignment.CenterVertically
+
 
     ) {
 
 
 
-        Row(
+        Box(
 
-            modifier = Modifier.fillMaxSize(),
 
-            verticalAlignment = Alignment.CenterVertically
+            modifier = Modifier
+
+                .size(29.dp)
+
+                .clip(
+
+                    CircleShape
+
+                )
+
+                .background(
+
+                    Color(0xFF2563EB)
+
+                )
+
+                .clickable {
+
+                    onProfileClick()
+
+                },
+
+
+
+            contentAlignment = Alignment.Center
+
 
         ) {
 
 
 
-            Box(
+            Text(
 
-                modifier = Modifier
 
-                    .size(42.dp)
+                text = username
 
-                    .clip(CircleShape)
+                    .first()
 
-                    .background(
-
-                        Color(0xFF2563EB)
-
-                    ),
-
-                contentAlignment = Alignment.Center
-
-            ) {
-
-                Text(
-
-                    text = username
-                        .first()
-                        .uppercase(),
-
-                    color = Color.White,
-
-                    fontSize = 17.sp
-
-                )
-
-            }
+                    .uppercase(),
 
 
 
+                color = Color.White,
 
-            Spacer(
 
-                modifier = Modifier.width(12.dp)
+                fontSize = 13.sp
+
 
             )
-
-
-
-
-            Column(
-
-                verticalArrangement = Arrangement.Center
-
-            ) {
-
-
-                Text(
-
-                    text = username,
-
-                    color = Color(0xFF111827),
-
-                    fontSize = 15.sp
-
-                )
-
-
-                Text(
-
-                    text = subscription,
-
-                    color = Color(0xFF6B7280),
-
-                    fontSize = 11.sp
-
-                )
-
-            }
-
 
 
         }
@@ -161,26 +142,130 @@ fun UserProfileCard(
 
 
 
-        Row(
+
+
+        Spacer(
+
+
+            modifier = Modifier.width(10.dp)
+
+
+        )
+
+
+
+
+
+
+
+        Column(
+
 
             modifier = Modifier
 
-                .align(Alignment.CenterEnd)
+                .weight(1f)
 
-                .padding(end = 34.dp)
+                .clickable {
+
+                    onProfileClick()
+
+                },
 
 
-                .clip(
 
-                    RoundedCornerShape(50)
+            verticalArrangement = Arrangement.Center
 
-                )
 
-                .background(
+        ) {
 
-                    modeColor(mode)
 
-                )
+
+            Text(
+
+
+                text = username,
+
+
+                color = Color(0xFF111827),
+
+
+                fontSize = 13.sp,
+
+
+                lineHeight = 14.sp
+
+
+            )
+
+
+
+
+
+
+            Text(
+
+
+                text = subscription,
+
+
+                color = Color(0xFF6B7280),
+
+
+                fontSize = 9.sp,
+
+
+                lineHeight = 11.sp
+
+
+            )
+
+
+        }
+
+
+
+
+
+
+
+
+        Text(
+
+
+            text = when(mode) {
+
+
+                UserMode.SIMPLE -> "SIMPLE"
+
+
+                UserMode.ADVANCED -> "ADVANCED"
+
+
+                UserMode.EXPERT -> "EXPERT • PRO"
+
+
+            },
+
+
+
+            color = when(mode) {
+
+
+                UserMode.EXPERT -> Color(0xFF7C3AED)
+
+
+                else -> Color(0xFF0284C7)
+
+
+            },
+
+
+
+            fontSize = 10.sp,
+
+
+
+            modifier = Modifier
 
                 .clickable {
 
@@ -188,94 +273,11 @@ fun UserProfileCard(
 
                 }
 
-                .padding(
-
-                    horizontal = 10.dp,
-
-                    vertical = 5.dp
-
-                ),
-
-
-            verticalAlignment = Alignment.CenterVertically
-
-        ) {
-
-
-            Text(
-
-                text = mode.name,
-
-                color = Color.White,
-
-                fontSize = 11.sp
-
-            )
-
-
-        }
-
-
-
-
-        Text(
-
-            text = "...",
-
-            color = Color(0xFF111827),
-
-            fontSize = 22.sp,
-
-            modifier = Modifier
-
-                .align(
-
-                    Alignment.TopEnd
-
-                )
-
-                .clickable {
-
-                    onMenuClick()
-
-                }
 
         )
 
 
-
     }
 
-}
-
-
-
-private fun modeColor(
-
-    mode: UserMode
-
-): Color {
-
-
-    return when(mode) {
-
-
-        UserMode.SIMPLE ->
-
-            Color(0xFF38BDF8)
-
-
-
-        UserMode.ADVANCED ->
-
-            Color(0xFF8B5CF6)
-
-
-
-        UserMode.EXPERT ->
-
-            Color(0xFFF59E0B)
-
-    }
 
 }

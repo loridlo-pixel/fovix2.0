@@ -1,9 +1,15 @@
 package com.vpn.fovix.app.presentation.home
 
 
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+
+import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
 
-import com.vpn.fovix.domain.vpnstate.ConnectionStatus
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 
 
 
@@ -11,21 +17,15 @@ import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 fun HomeScreen() {
 
 
-    HomeDashboard(
+    Text(
 
-        status = ConnectionStatus.DISCONNECTED,
+        text = "FOVIX HOME",
 
-        server = "Auto",
+        modifier = Modifier
 
-        download = 0,
+            .fillMaxSize()
 
-        upload = 0,
-
-        mode = UserMode.SIMPLE,
-
-        onModeChange = {},
-
-        onConnectClick = {}
+            .padding(30.dp)
 
     )
 
