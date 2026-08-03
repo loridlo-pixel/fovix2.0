@@ -1,27 +1,42 @@
 package com.vpn.fovix.app.presentation.home.components
 
 
-import androidx.compose.animation.core.*
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 
-import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.draw.scale
+
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import com.vpn.fovix.app.presentation.home.UserMode
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
@@ -29,100 +44,89 @@ import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 @Composable
 fun VyryxCoreCard(
 
+    mode: UserMode,
 
-    status: ConnectionStatus = ConnectionStatus.DISCONNECTED,
+    status: ConnectionStatus,
 
-
-    server: String = "Auto",
-
-
-    connected: Boolean? = null,
-
+    server: String,
 
     onClick: () -> Unit
-
 
 ) {
 
 
-
-    val actualStatus =
-
-        if(connected == true)
-
-            ConnectionStatus.CONNECTED
-
-        else
-
-            status
+    val transition =
+        rememberInfiniteTransition(
+            label = "core"
+        )
 
 
+    val pulse = transition.animateFloat(
 
+        initialValue = 1f,
 
-
-    val transition = rememberInfiniteTransition(
-
-        label = "core_animation"
-
-    )
-
-
-
-    val shine by transition.animateFloat(
-
-        initialValue = -1f,
-
-        targetValue = 2f,
-
+        targetValue = 1.08f,
 
         animationSpec = infiniteRepeatable(
 
             animation = tween(
 
-                durationMillis = 1200,
+                900,
 
-                easing = LinearEasing
+                easing = FastOutSlowInEasing
 
-            )
+            ),
+
+            repeatMode = RepeatMode.Reverse
 
         ),
 
-
-        label = "shine"
+        label = "pulse"
 
     )
 
 
 
-
-
-    val buttonColor = when(actualStatus) {
+    val color = when(status) {
 
 
         ConnectionStatus.CONNECTED ->
-
             Color(0xFF22C55E)
 
 
-
-        ConnectionStatus.CONNECTING,
-
-        ConnectionStatus.DISCONNECTING ->
-
-            Color(0xFF6366F1)
-
+        ConnectionStatus.CONNECTING ->
+            Color(0xFFF59E0B)
 
 
         ConnectionStatus.ERROR ->
-
             Color(0xFFEF4444)
 
 
+        else ->
+            Color(0xFF38BDF8)
+
+    }
+
+
+
+
+    val buttonText = when(status) {
+
+
+        ConnectionStatus.CONNECTED ->
+            "PROTECTED"
+
+
+        ConnectionStatus.CONNECTING ->
+            "CONNECTING"
+
+
+        ConnectionStatus.ERROR ->
+            "RETRY"
+
 
         else ->
-
-            Color(0xFF6366F1)
-
+            "CONNECT"
 
     }
 
@@ -130,138 +134,138 @@ fun VyryxCoreCard(
 
 
 
-    Column(
+    Box(
 
         modifier = Modifier
 
             .fillMaxWidth()
 
+            .height(170.dp)
+
             .background(
 
                 Color.White,
 
-                RoundedCornerShape(28.dp)
+                RoundedCornerShape(24.dp)
 
             )
 
-            .padding(22.dp)
+            .padding(20.dp)
 
     ) {
 
 
 
-        Text(
+        Column(
 
-            text = "VYRYX CORE",
-
-            color = Color(0xFF111827),
-
-            fontSize = 18.sp
-
-        )
-
-
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(18.dp)
-
-        )
-
-
-
-
-
-        Box(
-
-            modifier = Modifier
-
-                .fillMaxWidth()
-
-                .height(92.dp)
-
-                .clip(
-
-                    RoundedCornerShape(24.dp)
-
-                )
-
-                .background(
-
-                    Brush.linearGradient(
-
-                        colors = listOf(
-
-                            buttonColor,
-
-                            buttonColor.copy(
-
-                                alpha = 0.75f
-
-                            )
-
-                        )
-
-                    )
-
-                )
-
-                .clickable {
-
-
-                    onClick()
-
-
-                },
-
-
-            contentAlignment = Alignment.Center
-
+            modifier = Modifier.fillMaxWidth()
 
         ) {
 
 
 
-            if(
+            Row(
 
-                actualStatus == ConnectionStatus.CONNECTING ||
+                modifier = Modifier.fillMaxWidth(),
 
-                actualStatus == ConnectionStatus.DISCONNECTING
+                horizontalArrangement = Arrangement.SpaceBetween,
+
+                verticalAlignment = Alignment.CenterVertically
 
             ) {
+
+
+
+                Column {
+
+
+                    Text(
+
+                        text = "Protection",
+
+                        color = Color(0xFF64748B),
+
+                        fontSize = 12.sp
+
+                    )
+
+
+                    Text(
+
+                        text =
+                        if(status == ConnectionStatus.CONNECTED)
+                            "Protected"
+                        else
+                            "Not protected",
+
+                        color = Color(0xFF111827),
+
+                        fontSize = 18.sp
+
+                    )
+
+
+                }
+
+
 
 
                 Box(
 
                     modifier = Modifier
 
-                        .fillMaxSize()
+                        .scale(
 
-                        .background(
+                            if(status == ConnectionStatus.CONNECTING)
 
-                            Brush.linearGradient(
+                                pulse.value
 
-                                colors = listOf(
+                            else
 
-                                    Color.Transparent,
-
-                                    Color.White.copy(
-
-                                        alpha = 0.35f
-
-                                    ),
-
-                                    Color.Transparent
-
-                                )
-
-                            )
+                                1f
 
                         )
 
-                )
+                        .background(
+
+                            color,
+
+                            RoundedCornerShape(18.dp)
+
+                        )
+
+                        .clickable {
+
+                            onClick()
+
+                        }
+
+                        .padding(
+
+                            horizontal = 22.dp,
+
+                            vertical = 11.dp
+
+                        ),
+
+                    contentAlignment = Alignment.Center
+
+                ) {
+
+
+
+                    Text(
+
+                        text = buttonText,
+
+                        color = Color.White,
+
+                        fontSize = 12.sp
+
+                    )
+
+
+                }
 
 
             }
@@ -270,100 +274,123 @@ fun VyryxCoreCard(
 
 
 
+            Spacer(
 
-            Text(
-
-                text = when(actualStatus) {
-
-
-                    ConnectionStatus.CONNECTED ->
-
-                        "CONNECTED"
-
-
-
-                    ConnectionStatus.CONNECTING ->
-
-                        "CONNECTING..."
-
-
-
-                    ConnectionStatus.DISCONNECTING ->
-
-                        "DISCONNECTING..."
-
-
-
-                    ConnectionStatus.ERROR ->
-
-                        "RETRY"
-
-
-
-                    else ->
-
-                        "CONNECT"
-
-
-                },
-
-
-                color = Color.White,
-
-
-                fontSize = 18.sp
-
-
-            )
-
-
-        }
-
-
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(16.dp)
-
-        )
-
-
-
-
-
-        Row(
-
-            modifier = Modifier.fillMaxWidth(),
-
-            horizontalArrangement = Arrangement.SpaceBetween
-
-        ) {
-
-
-
-            Text(
-
-                text = "Server",
-
-                color = Color(0xFF6B7280),
-
-                fontSize = 13.sp
+                modifier = Modifier.height(20.dp)
 
             )
 
 
 
-            Text(
 
-                text = server,
 
-                color = Color(0xFF111827),
+            Row(
 
-                fontSize = 13.sp
+                modifier = Modifier.fillMaxWidth(),
 
-            )
+                horizontalArrangement = Arrangement.SpaceBetween
+
+            ) {
+
+
+
+                Column {
+
+
+                    Text(
+
+                        text = "Server",
+
+                        color = Color(0xFF64748B),
+
+                        fontSize = 11.sp
+
+                    )
+
+
+                    Text(
+
+                        text = server,
+
+                        color = Color(0xFF111827),
+
+                        fontSize = 14.sp
+
+                    )
+
+
+                }
+
+
+
+
+
+                if(mode != UserMode.SIMPLE) {
+
+
+                    Column(
+
+                        horizontalAlignment = Alignment.End
+
+                    ) {
+
+
+                        Text(
+
+                            text = "Ping",
+
+                            color = Color(0xFF64748B),
+
+                            fontSize = 11.sp
+
+                        )
+
+
+                        Text(
+
+                            text = "42 ms",
+
+                            color = Color(0xFF111827),
+
+                            fontSize = 14.sp
+
+                        )
+
+
+                    }
+
+
+                }
+
+
+            }
+
+
+
+
+
+            if(mode == UserMode.EXPERT) {
+
+
+                Spacer(
+
+                    modifier = Modifier.height(10.dp)
+
+                )
+
+
+                Text(
+
+                    text = "DNS • Tunnel • Route",
+
+                    color = Color(0xFF64748B),
+
+                    fontSize = 11.sp
+
+                )
+
+
+            }
 
 
         }

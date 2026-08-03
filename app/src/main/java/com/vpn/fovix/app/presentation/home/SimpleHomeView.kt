@@ -1,16 +1,8 @@
 package com.vpn.fovix.app.presentation.home
 
 
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.sp
-
-
 import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
-import com.vpn.fovix.app.presentation.home.components.VyryxHeader
-import com.vpn.fovix.app.presentation.home.components.VyryxHomeLayout
-
 
 
 @Composable
@@ -27,63 +19,27 @@ fun SimpleHomeView(
 ) {
 
 
-    VyryxHomeLayout(
+    VyryxCoreCard(
 
+        mode = UserMode.SIMPLE,
 
-        header = {
+        status = state.status,
 
-            VyryxHeader()
+        server = state.server,
 
-        },
+        onClick = {
 
+            if(state.connected){
 
-        core = {
+                onDisconnect()
 
+            } else {
 
-            VyryxCoreCard(
+                onConnect()
 
-
-                connected = state.connected,
-
-
-                onClick = {
-
-
-                    if(state.connected){
-
-                        onDisconnect()
-
-                    } else {
-
-                        onConnect()
-
-                    }
-
-                }
-
-
-            )
-
-
-        },
-
-
-        content = {
-
-
-            Text(
-
-                text = "Personal Internet Security",
-
-                color = Color(0xFF6B7280),
-
-                fontSize = 14.sp
-
-            )
-
+            }
 
         }
-
 
     )
 

@@ -17,6 +17,8 @@ import androidx.compose.ui.unit.dp
 
 
 import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
+import com.vpn.fovix.app.presentation.home.components.ProtectionScenario
+import com.vpn.fovix.app.presentation.home.components.ProtectionScenarioCard
 import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
 import com.vpn.fovix.app.presentation.home.components.UserProfileCard
 import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
@@ -28,52 +30,40 @@ import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 @Composable
 fun HomeDashboard(
 
-
     status: ConnectionStatus,
-
 
     server: String,
 
-
     download: Int,
-
 
     upload: Int,
 
+    mode: UserMode,
+
+    scenario: ProtectionScenario = ProtectionScenario.EVERYDAY,
 
     onConnectClick: () -> Unit,
 
-
     onProfileClick: () -> Unit = {},
 
+    onModeClick: () -> Unit = {},
 
-    onModeClick: () -> Unit = {}
-
-
+    onScenarioClick: () -> Unit = {}
 
 ) {
 
 
-
     Surface(
 
-
         modifier = Modifier
-
             .fillMaxSize(),
 
-
         color = MaterialTheme.colorScheme.background
-
-
 
     ) {
 
 
-
         Column(
-
-
 
             modifier = Modifier
 
@@ -87,178 +77,115 @@ fun HomeDashboard(
 
                 )
 
-
-
         ) {
-
 
 
             UserProfileCard(
 
-
-
                 username = "Дмитрий",
-
-
 
                 subscription = "Premium until 02.08.2027",
 
-
-
-                mode = UserMode.SIMPLE,
-
-
+                mode = mode,
 
                 onProfileClick = {
 
-
-
                     onProfileClick()
-
-
 
                 },
 
-
-
                 onModeClick = {
-
-
 
                     onModeClick()
 
-
-
                 }
 
-
-
             )
-
-
-
-
 
 
 
             Spacer(
 
-
-
                 modifier = Modifier.height(18.dp)
 
-
-
             )
-
-
-
-
 
 
 
             VyryxCoreCard(
 
-
+                mode = mode,
 
                 status = status,
 
-
-
                 server = server,
-
-
 
                 onClick = {
 
-
-
                     onConnectClick()
-
-
 
                 }
 
-
-
             )
-
-
-
-
 
 
 
             Spacer(
 
-
-
                 modifier = Modifier.height(16.dp)
-
-
 
             )
 
 
 
+            ProtectionScenarioCard(
 
+                scenario = scenario,
+
+                onClick = {
+
+                    onScenarioClick()
+
+                }
+
+            )
+
+
+
+            Spacer(
+
+                modifier = Modifier.height(16.dp)
+
+            )
 
 
 
             ProtectionScoreCard(
 
-
-
                 score = 98
 
-
-
             )
-
-
-
-
 
 
 
             Spacer(
 
-
-
                 modifier = Modifier.height(16.dp)
 
-
-
             )
-
-
-
-
 
 
 
             NetworkHealthCard(
 
-
-
                 latency = 42,
-
-
 
                 speed = download
 
-
-
             )
-
-
 
         }
 
-
-
     }
-
-
 
 }

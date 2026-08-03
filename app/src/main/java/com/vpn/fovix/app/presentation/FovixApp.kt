@@ -40,10 +40,7 @@ fun FovixApp(
 ) {
 
 
-
     val vpnState by vpnRepository.state.collectAsState()
-
-
 
 
 
@@ -56,8 +53,6 @@ fun FovixApp(
         )
 
     }
-
-
 
 
 
@@ -74,58 +69,41 @@ fun FovixApp(
 
 
 
-
-
-
     Scaffold(
-
 
 
         bottomBar = {
 
 
-
             FovixBottomBar(
-
 
 
                 selected = currentTab,
 
 
-
                 connectionStatus = vpnState.status,
-
 
 
                 onTabSelected = {
 
 
-
                     currentTab = it
-
 
 
                 }
 
 
-
             )
 
 
-
         }
-
 
 
     ) { padding ->
 
 
 
-
-
         Box(
-
-
 
             modifier = Modifier
 
@@ -133,17 +111,11 @@ fun FovixApp(
 
                 .padding(padding)
 
-
-
         ) {
 
 
 
-
-
             when(currentTab) {
-
-
 
 
 
@@ -154,73 +126,70 @@ fun FovixApp(
                     HomeDashboard(
 
 
+                        mode = mode,
+
 
                         status = vpnState.status,
-
 
 
                         server = vpnState.server,
 
 
-
                         download = vpnState.download,
-
 
 
                         upload = vpnState.upload,
 
 
-
                         onConnectClick = {
-
 
 
                             vpnRepository.toggle()
 
 
-
                         },
-
-
-
 
 
                         onProfileClick = {
 
 
-
                             currentTab = FovixTab.PROFILE
-
 
 
                         },
 
 
-
-
-
                         onModeClick = {
 
 
+                            mode = when(mode) {
 
-                            // TODO открыть выбор режима
 
-                            // Simple / Advanced / Expert
+                                UserMode.SIMPLE ->
 
+                                    UserMode.ADVANCED
+
+
+                                UserMode.ADVANCED ->
+
+                                    UserMode.EXPERT
+
+
+                                UserMode.EXPERT ->
+
+                                    UserMode.SIMPLE
+
+
+                            }
 
 
                         }
 
 
-
                     )
 
 
-
                 }
-
-
-
 
 
 
@@ -234,43 +203,31 @@ fun FovixApp(
                     ServersScreen(
 
 
-
                         selectedServer = vpnState.server,
-
 
 
                         onServerSelected = {
 
 
-
                             vpnRepository.startVpn(it)
-
 
 
                         },
 
 
-
                         onBack = {
-
 
 
                             currentTab = FovixTab.HOME
 
 
-
                         }
-
 
 
                     )
 
 
-
                 }
-
-
-
 
 
 
@@ -284,9 +241,7 @@ fun FovixApp(
                     Text(
 
 
-
                         text = "Network Doctor",
-
 
 
                         modifier = Modifier
@@ -294,15 +249,10 @@ fun FovixApp(
                             .padding(30.dp)
 
 
-
                     )
 
 
-
                 }
-
-
-
 
 
 
@@ -316,43 +266,31 @@ fun FovixApp(
                     SettingsScreen(
 
 
-
                         mode = mode,
-
 
 
                         onModeChange = {
 
 
-
                             mode = it
-
 
 
                         },
 
 
-
                         onBack = {
-
 
 
                             currentTab = FovixTab.HOME
 
 
-
                         }
-
 
 
                     )
 
 
-
                 }
-
-
-
 
 
 
@@ -366,9 +304,7 @@ fun FovixApp(
                     Text(
 
 
-
                         text = "Profile",
-
 
 
                         modifier = Modifier
@@ -376,14 +312,10 @@ fun FovixApp(
                             .padding(30.dp)
 
 
-
                     )
 
 
-
                 }
-
-
 
 
 
