@@ -6,9 +6,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -16,9 +16,6 @@ import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-
-
-import androidx.compose.runtime.collectAsState
 
 
 import com.vpn.fovix.app.presentation.home.HomeDashboard
@@ -75,7 +72,6 @@ fun FovixApp(
     Scaffold(
 
 
-
         bottomBar = {
 
 
@@ -88,17 +84,15 @@ fun FovixApp(
 
                 onTabSelected = {
 
-
                     currentTab = it
 
-
                 }
+
 
             )
 
 
         }
-
 
 
     ) { padding ->
@@ -124,7 +118,6 @@ fun FovixApp(
                 FovixTab.HOME -> {
 
 
-
                     HomeDashboard(
 
 
@@ -140,6 +133,17 @@ fun FovixApp(
                         upload = vpnState.upload,
 
 
+                        mode = mode,
+
+
+                        onModeChange = {
+
+
+                            mode = it
+
+                        },
+
+
                         onConnectClick = {
 
 
@@ -153,6 +157,8 @@ fun FovixApp(
 
 
                 }
+
+
 
 
 
@@ -195,11 +201,13 @@ fun FovixApp(
 
 
 
+
+
                 FovixTab.DOCTOR -> {
 
 
 
-                    Text(
+                    androidx.compose.material3.Text(
 
                         text = "Network Doctor",
 
@@ -211,6 +219,8 @@ fun FovixApp(
 
 
                 }
+
+
 
 
 
@@ -253,13 +263,10 @@ fun FovixApp(
             }
 
 
-
         }
 
 
-
     }
-
 
 
 }

@@ -1,5 +1,6 @@
 package com.vpn.fovix.app.presentation.home
 
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,6 +22,8 @@ import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
 
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
+
+
 @Composable
 fun HomeDashboard(
 
@@ -32,40 +35,92 @@ fun HomeDashboard(
 
     upload: Int,
 
+    mode: UserMode,
+
+    onModeChange: (UserMode) -> Unit,
+
     onConnectClick: () -> Unit
 
 ) {
 
+
+
     Surface(
 
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxSize(),
 
         color = MaterialTheme.colorScheme.background
 
     ) {
 
+
+
         Column(
 
             modifier = Modifier
+
                 .fillMaxSize()
+
                 .padding(
 
                     horizontal = 20.dp,
+
                     vertical = 24.dp
 
                 )
 
         ) {
 
+
+
             UserProfileCard(
+
 
                 username = "Дмитрий",
 
+
                 subscription = "Premium until 02.08.2027",
 
-                plan = "PREMIUM"
+
+                mode = mode,
+
+
+                onModeClick = {
+
+
+                    val nextMode = when(mode) {
+
+
+                        UserMode.SIMPLE ->
+
+                            UserMode.ADVANCED
+
+
+
+                        UserMode.ADVANCED ->
+
+                            UserMode.EXPERT
+
+
+
+                        UserMode.EXPERT ->
+
+                            UserMode.SIMPLE
+
+                    }
+
+
+                    onModeChange(nextMode)
+
+                }
+
 
             )
+
+
+
+
 
             Spacer(
 
@@ -73,11 +128,18 @@ fun HomeDashboard(
 
             )
 
+
+
+
+
             VyryxCoreCard(
+
 
                 status = status,
 
+
                 server = server,
+
 
                 onClick = {
 
@@ -87,11 +149,19 @@ fun HomeDashboard(
 
             )
 
+
+
+
+
             Spacer(
 
                 modifier = Modifier.height(16.dp)
 
             )
+
+
+
+
 
             ProtectionScoreCard(
 
@@ -99,19 +169,31 @@ fun HomeDashboard(
 
             )
 
+
+
+
+
             Spacer(
 
                 modifier = Modifier.height(16.dp)
 
             )
 
+
+
+
+
             NetworkHealthCard(
+
 
                 latency = 42,
 
+
                 speed = download
 
+
             )
+
 
         }
 

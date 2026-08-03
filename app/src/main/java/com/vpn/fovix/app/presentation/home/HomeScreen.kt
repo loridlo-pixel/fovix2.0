@@ -1,26 +1,9 @@
 package com.vpn.fovix.app.presentation.home
 
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-
-import androidx.compose.material3.Text
-
 import androidx.compose.runtime.Composable
 
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
-
-
-import com.vpn.fovix.app.presentation.home.components.UserProfileCard
-import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
-import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
-import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
+import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
 
@@ -28,103 +11,23 @@ import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
 fun HomeScreen() {
 
 
-    Column(
+    HomeDashboard(
 
-        modifier = Modifier
+        status = ConnectionStatus.DISCONNECTED,
 
-            .fillMaxSize()
+        server = "Auto",
 
-            .padding(
+        download = 0,
 
-                horizontal = 20.dp,
+        upload = 0,
 
-                vertical = 24.dp
+        mode = UserMode.SIMPLE,
 
-            )
+        onModeChange = {},
 
-    ) {
+        onConnectClick = {}
 
+    )
 
-
-        UserProfileCard()
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(24.dp)
-
-        )
-
-
-
-        Text(
-
-            text = "FOVIX CORE",
-
-            color = Color.White,
-
-            fontSize = 24.sp
-
-        )
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(16.dp)
-
-        )
-
-
-
-        VyryxCoreCard(
-
-            connected = false,
-
-            onClick = {
-
-                // TODO start vpn
-
-            }
-
-        )
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(16.dp)
-
-        )
-
-
-
-        ProtectionScoreCard(
-
-            score = 98
-
-        )
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(16.dp)
-
-        )
-
-
-
-        NetworkHealthCard(
-
-            latency = 42,
-
-            speed = 186
-
-        )
-
-
-    }
 
 }
