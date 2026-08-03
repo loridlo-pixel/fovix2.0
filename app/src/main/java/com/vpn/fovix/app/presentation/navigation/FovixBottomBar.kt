@@ -1,10 +1,24 @@
 package com.vpn.fovix.app.presentation.navigation
 
 
-import androidx.compose.animation.core.*
-import androidx.compose.foundation.background
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.RepeatMode
+import androidx.compose.animation.core.animateFloat
+import androidx.compose.animation.core.infiniteRepeatable
+import androidx.compose.animation.core.rememberInfiniteTransition
+import androidx.compose.animation.core.tween
+
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material3.Text
@@ -14,8 +28,8 @@ import androidx.compose.runtime.getValue
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 
-import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.dp
@@ -28,22 +42,17 @@ import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 @Composable
 fun FovixBottomBar(
 
-
     selected: FovixTab,
-
 
     connectionStatus: ConnectionStatus,
 
-
     onTabSelected: (FovixTab) -> Unit
-
 
 ) {
 
 
-
     val transition = rememberInfiniteTransition(
-        label = "core_bottom"
+        label = "core_pulse"
     )
 
 
@@ -51,16 +60,13 @@ fun FovixBottomBar(
 
         initialValue = 1f,
 
-        targetValue = 1.08f,
+        targetValue = 1.12f,
 
         animationSpec = infiniteRepeatable(
 
             animation = tween(
-
-                900,
-
+                durationMillis = 900,
                 easing = FastOutSlowInEasing
-
             ),
 
             repeatMode = RepeatMode.Reverse
@@ -70,8 +76,6 @@ fun FovixBottomBar(
         label = "pulse"
 
     )
-
-
 
 
 
@@ -92,8 +96,7 @@ fun FovixBottomBar(
 
         else ->
 
-            Color(0xFF6366F1)
-
+            Color(0xFF2563EB)
 
     }
 
@@ -104,57 +107,26 @@ fun FovixBottomBar(
     Column(
 
         modifier = Modifier
-
             .fillMaxWidth()
-
-            .background(
-
-                Color.Black
-
+            .padding(
+                horizontal = 16.dp,
+                vertical = 12.dp
             )
 
     ) {
 
 
-
         Box(
 
             modifier = Modifier
-
                 .fillMaxWidth()
-
-                .padding(
-
-                    horizontal = 12.dp,
-
-                    vertical = 12.dp
-
+                .height(72.dp)
+                .clip(
+                    RoundedCornerShape(28.dp)
                 )
-
-                .height(74.dp)
-
-                .background(
-
-                    brush = Brush.linearGradient(
-
-                        colors = listOf(
-
-                            Color(0xFF111827),
-
-                            Color(0xFF1F2937)
-
-                        )
-
-                    ),
-
-                    shape = RoundedCornerShape(28.dp)
-
-                ),
-
-
+                .padding(horizontal = 8.dp),
 
             contentAlignment = Alignment.Center
-
 
         ) {
 
@@ -163,61 +135,40 @@ fun FovixBottomBar(
             Row(
 
                 modifier = Modifier
-
                     .fillMaxWidth(),
-
-
 
                 horizontalArrangement = Arrangement.SpaceAround,
 
                 verticalAlignment = Alignment.CenterVertically
-
 
             ) {
 
 
 
                 BottomItem(
-
                     text = "Home",
-
                     active = selected == FovixTab.HOME
-
                 ) {
 
-
                     onTabSelected(
-
                         FovixTab.HOME
-
                     )
 
-
                 }
-
 
 
 
 
                 BottomItem(
-
                     text = "Servers",
-
                     active = selected == FovixTab.SERVERS
-
                 ) {
 
-
                     onTabSelected(
-
                         FovixTab.SERVERS
-
                     )
 
-
                 }
-
-
 
 
 
@@ -228,55 +179,62 @@ fun FovixBottomBar(
 
                         .size(
 
-                            if(connectionStatus == ConnectionStatus.CONNECTING)
+                            if(
+                                connectionStatus ==
+                                ConnectionStatus.CONNECTING
+                            )
 
-                                (56 * pulse).dp
+                                (58 * pulse).dp
 
                             else
 
-                                56.dp
+                                58.dp
 
                         )
 
-                        .background(
-
-                            coreColor,
-
-                            RoundedCornerShape(20.dp)
-
+                        .clip(
+                            CircleShape
                         )
 
                         .clickable {
 
-
                             onTabSelected(
-
                                 FovixTab.HOME
-
                             )
-
 
                         },
 
                     contentAlignment = Alignment.Center
 
-
                 ) {
 
 
+                    Box(
 
-                    Text(
+                        modifier = Modifier
+                            .size(58.dp)
+                            .clip(CircleShape)
 
-                        text = "CORE",
-
-
-                        color = Color.White,
-
-
-                        fontSize = 13.sp
+                    ) {
 
 
-                    )
+                        Text(
+
+                            text = "CORE",
+
+                            color = Color.White,
+
+                            fontSize = 12.sp,
+
+                            modifier = Modifier
+                                .align(
+                                    Alignment.Center
+                                )
+
+                        )
+
+
+                    }
 
 
                 }
@@ -286,20 +244,13 @@ fun FovixBottomBar(
 
 
                 BottomItem(
-
                     text = "Doctor",
-
                     active = selected == FovixTab.DOCTOR
-
                 ) {
 
-
                     onTabSelected(
-
                         FovixTab.DOCTOR
-
                     )
-
 
                 }
 
@@ -307,22 +258,14 @@ fun FovixBottomBar(
 
 
 
-
                 BottomItem(
-
                     text = "Settings",
-
                     active = selected == FovixTab.SETTINGS
-
                 ) {
 
-
                     onTabSelected(
-
                         FovixTab.SETTINGS
-
                     )
-
 
                 }
 
@@ -331,9 +274,7 @@ fun FovixBottomBar(
             }
 
 
-
         }
-
 
 
     }
@@ -348,36 +289,26 @@ fun FovixBottomBar(
 @Composable
 private fun BottomItem(
 
-
     text: String,
-
 
     active: Boolean,
 
-
     onClick: () -> Unit
 
-
 ) {
-
 
 
     Text(
 
         text = text,
 
-
         color = if(active)
 
-            Color.White
+            Color(0xFF111827)
 
         else
 
-            Color.White.copy(
-
-                alpha = 0.55f
-
-            ),
+            Color(0xFF64748B),
 
 
         fontSize = 12.sp,
@@ -392,7 +323,6 @@ private fun BottomItem(
             }
 
             .padding(8.dp)
-
 
     )
 

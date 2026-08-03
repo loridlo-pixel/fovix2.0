@@ -1,99 +1,129 @@
 package com.vpn.fovix.app.presentation.home
 
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+
+import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
+
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 
+import com.vpn.fovix.app.presentation.home.components.UserProfileCard
 import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
 import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
 import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
-import com.vpn.fovix.app.presentation.home.components.UserProfileCard
+
 
 
 @Composable
 fun HomeScreen() {
 
 
-    val accent = Color(0xFF00E5FF)
-
-
-    Surface(
+    Column(
 
         modifier = Modifier
-            .fillMaxSize()
-            .background(accent),
 
-        color = accent
+            .fillMaxSize()
+
+            .padding(
+
+                horizontal = 20.dp,
+
+                vertical = 24.dp
+
+            )
 
     ) {
 
 
-        Column(
 
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(
-                    start = 20.dp,
-                    end = 20.dp,
-                    top = 24.dp
-                ),
-
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-
-        ) {
+        UserProfileCard()
 
 
 
-            UserProfileCard(
-                username = "FOVIX USER",
-                plan = "PREMIUM"
-            )
+        Spacer(
+
+            modifier = Modifier.height(24.dp)
+
+        )
 
 
 
+        Text(
 
-            VyryxCoreCard(
+            text = "FOVIX CORE",
 
-                connected = false,
+            color = Color.White,
 
-                onClick = {
+            fontSize = 24.sp
 
-                }
-
-            )
-
+        )
 
 
 
+        Spacer(
 
-            ProtectionScoreCard(
+            modifier = Modifier.height(16.dp)
 
-                score = 98
-
-            )
-
+        )
 
 
 
+        VyryxCoreCard(
 
-            NetworkHealthCard(
+            connected = false,
 
-                latency = 42,
+            onClick = {
 
-                speed = 186
+                // TODO start vpn
 
-            )
+            }
+
+        )
 
 
 
-        }
+        Spacer(
+
+            modifier = Modifier.height(16.dp)
+
+        )
+
+
+
+        ProtectionScoreCard(
+
+            score = 98
+
+        )
+
+
+
+        Spacer(
+
+            modifier = Modifier.height(16.dp)
+
+        )
+
+
+
+        NetworkHealthCard(
+
+            latency = 42,
+
+            speed = 186
+
+        )
+
 
     }
 
