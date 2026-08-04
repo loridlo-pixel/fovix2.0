@@ -21,6 +21,7 @@ import androidx.compose.ui.unit.dp
 
 import com.vpn.fovix.app.presentation.home.HomeDashboard
 import com.vpn.fovix.app.presentation.home.UserMode
+import com.vpn.fovix.app.presentation.home.components.ProtectionScenario
 
 import com.vpn.fovix.app.presentation.navigation.FovixBottomBar
 import com.vpn.fovix.app.presentation.navigation.FovixTab
@@ -65,6 +66,19 @@ fun FovixApp(
         )
 
     }
+
+
+
+    var scenario by remember {
+
+        mutableStateOf(
+
+            ProtectionScenario.EVERYDAY
+
+        )
+
+    }
+
 
 
 
@@ -129,6 +143,9 @@ fun FovixApp(
                         mode = mode,
 
 
+                        scenario = scenario,
+
+
                         status = vpnState.status,
 
 
@@ -181,6 +198,15 @@ fun FovixApp(
 
 
                             }
+
+
+                        },
+
+
+                        onScenarioSelected = {
+
+
+                            scenario = it
 
 
                         }

@@ -40,7 +40,7 @@ fun HomeDashboard(
 
     mode: UserMode,
 
-    scenario: ProtectionScenario = ProtectionScenario.EVERYDAY,
+    scenario: ProtectionScenario,
 
     onConnectClick: () -> Unit,
 
@@ -48,15 +48,14 @@ fun HomeDashboard(
 
     onModeClick: () -> Unit = {},
 
-    onScenarioClick: () -> Unit = {}
+    onScenarioSelected: (ProtectionScenario) -> Unit = {}
 
 ) {
 
 
     Surface(
 
-        modifier = Modifier
-            .fillMaxSize(),
+        modifier = Modifier.fillMaxSize(),
 
         color = MaterialTheme.colorScheme.background
 
@@ -132,7 +131,7 @@ fun HomeDashboard(
 
             Spacer(
 
-                modifier = Modifier.height(16.dp)
+                modifier = Modifier.height(14.dp)
 
             )
 
@@ -144,7 +143,7 @@ fun HomeDashboard(
 
                 onClick = {
 
-                    onScenarioClick()
+                    onScenarioSelected(it)
 
                 }
 

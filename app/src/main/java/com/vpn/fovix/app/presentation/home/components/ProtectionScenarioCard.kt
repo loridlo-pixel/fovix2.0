@@ -6,10 +6,10 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 
 import androidx.compose.foundation.shape.RoundedCornerShape
 
@@ -26,13 +26,20 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 
+
 enum class ProtectionScenario {
 
     EVERYDAY,
+
+    PUBLIC_WIFI,
+
     TRAVEL,
+
     STREAMING,
+
     GAMING,
-    MAX_SECURITY
+
+    EXPERT
 
 }
 
@@ -43,72 +50,50 @@ fun ProtectionScenarioCard(
 
     scenario: ProtectionScenario,
 
-    onClick: () -> Unit
+    onClick: (ProtectionScenario) -> Unit
 
 ) {
 
 
-    val title = when(scenario) {
+    val scenarios = listOf(
 
+        ScenarioItem(
+            ProtectionScenario.EVERYDAY,
+            "🏠",
+            "Home"
+        ),
 
-        ProtectionScenario.EVERYDAY ->
+        ScenarioItem(
+            ProtectionScenario.PUBLIC_WIFI,
+            "☕",
+            "WiFi"
+        ),
 
-            "🏠 Everyday"
+        ScenarioItem(
+            ProtectionScenario.TRAVEL,
+            "✈",
+            "Travel"
+        ),
 
+        ScenarioItem(
+            ProtectionScenario.STREAMING,
+            "▶",
+            "Stream"
+        ),
 
-        ProtectionScenario.TRAVEL ->
+        ScenarioItem(
+            ProtectionScenario.GAMING,
+            "🎮",
+            "Game"
+        ),
 
-            "🌎 Travel"
+        ScenarioItem(
+            ProtectionScenario.EXPERT,
+            "⚡",
+            "Expert"
+        )
 
-
-        ProtectionScenario.STREAMING ->
-
-            "🎬 Streaming"
-
-
-        ProtectionScenario.GAMING ->
-
-            "🎮 Gaming"
-
-
-        ProtectionScenario.MAX_SECURITY ->
-
-            "🔒 Maximum Security"
-
-
-    }
-
-
-
-    val description = when(scenario) {
-
-
-        ProtectionScenario.EVERYDAY ->
-
-            "Balanced protection"
-
-
-        ProtectionScenario.TRAVEL ->
-
-            "Public WiFi protection"
-
-
-        ProtectionScenario.STREAMING ->
-
-            "Optimized speed"
-
-
-        ProtectionScenario.GAMING ->
-
-            "Low latency mode"
-
-
-        ProtectionScenario.MAX_SECURITY ->
-
-            "Full protection"
-
-    }
-
+    )
 
 
 
@@ -118,26 +103,25 @@ fun ProtectionScenarioCard(
 
             .fillMaxWidth()
 
-            .height(150.dp)
+            .height(112.dp)
 
             .background(
 
                 Color.White,
 
-                RoundedCornerShape(26.dp)
+                RoundedCornerShape(24.dp)
 
             )
 
-            .clickable {
+            .padding(
 
-                onClick()
+                horizontal = 12.dp,
 
-            }
+                vertical = 10.dp
 
-            .padding(20.dp)
+            )
 
     ) {
-
 
 
         Text(
@@ -146,58 +130,9 @@ fun ProtectionScenarioCard(
 
             color = Color(0xFF64748B),
 
-            fontSize = 12.sp
+            fontSize = 11.sp
 
         )
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(12.dp)
-
-        )
-
-
-
-        Text(
-
-            text = title,
-
-            color = Color(0xFF111827),
-
-            fontSize = 22.sp
-
-        )
-
-
-
-        Spacer(
-
-            modifier = Modifier.height(6.dp)
-
-        )
-
-
-
-        Text(
-
-            text = description,
-
-            color = Color(0xFF64748B),
-
-            fontSize = 13.sp
-
-        )
-
-
-
-        Spacer(
-
-            modifier = Modifier.weight(1f)
-
-        )
-
 
 
 
@@ -205,30 +140,105 @@ fun ProtectionScenarioCard(
 
             modifier = Modifier.fillMaxWidth(),
 
-            horizontalArrangement = Arrangement.End,
+            horizontalArrangement = Arrangement.SpaceBetween,
 
             verticalAlignment = Alignment.CenterVertically
 
         ) {
 
 
+            scenarios.forEach { item ->
 
-            Text(
 
-                text = "Change scenario  →",
+                val selected = item.type == scenario
 
-                color = Color(0xFF0284C7),
 
-                fontSize = 13.sp
 
-            )
+                Column(
 
+                    modifier = Modifier
+
+                        .clickable {
+
+                            onClick(item.type)
+
+                        },
+
+                    horizontalAlignment = Alignment.CenterHorizontally
+
+                ) {
+
+
+                    Text(
+
+                        text = item.icon,
+
+                        fontSize = 18.sp
+
+                    )
+
+
+
+                    Text(
+
+                        text = item.name,
+
+                        fontSize = 9.sp,
+
+                        color = if(selected)
+
+                            Color(0xFF0284C7)
+
+                        else
+
+                            Color(0xFF94A3B8)
+
+                    )
+
+
+
+                    androidx.compose.foundation.layout.Box(
+
+                        modifier = Modifier
+
+                            .padding(top = 3.dp)
+
+                            .size(10.dp)
+
+                            .background(
+
+                                if(selected)
+
+                                    Color(0xFF38BDF8)
+
+                                else
+
+                                    Color(0xFFE2E8F0),
+
+                                RoundedCornerShape(50)
+
+                            )
+
+                    )
+
+                }
+
+            }
 
         }
 
-
-
     }
 
-
 }
+
+
+
+private data class ScenarioItem(
+
+    val type: ProtectionScenario,
+
+    val icon: String,
+
+    val name: String
+
+)
