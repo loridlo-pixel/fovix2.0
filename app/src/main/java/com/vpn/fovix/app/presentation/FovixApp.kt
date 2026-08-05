@@ -158,6 +158,7 @@ fun FovixApp(
                         upload = vpnState.upload,
 
 
+
                         onConnectClick = {
 
 
@@ -167,6 +168,17 @@ fun FovixApp(
                         },
 
 
+
+                        onScenarioClick = { selectedScenario ->
+
+
+                            scenario = selectedScenario
+
+
+                        },
+
+
+
                         onProfileClick = {
 
 
@@ -174,6 +186,7 @@ fun FovixApp(
 
 
                         },
+
 
 
                         onModeClick = {
@@ -187,9 +200,11 @@ fun FovixApp(
                                     UserMode.ADVANCED
 
 
+
                                 UserMode.ADVANCED ->
 
                                     UserMode.EXPERT
+
 
 
                                 UserMode.EXPERT ->
@@ -200,15 +215,6 @@ fun FovixApp(
                             }
 
 
-                        },
-
-
-                        onScenarioSelected = {
-
-
-                            scenario = it
-
-
                         }
 
 
@@ -216,6 +222,7 @@ fun FovixApp(
 
 
                 }
+
 
 
 
@@ -260,6 +267,7 @@ fun FovixApp(
 
 
 
+
                 FovixTab.DOCTOR -> {
 
 
@@ -279,6 +287,7 @@ fun FovixApp(
 
 
                 }
+
 
 
 
@@ -317,6 +326,7 @@ fun FovixApp(
 
 
                 }
+
 
 
 

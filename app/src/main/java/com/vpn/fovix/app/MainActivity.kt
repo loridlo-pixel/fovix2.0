@@ -1,11 +1,13 @@
 package com.vpn.fovix.app
 
+
 import android.os.Bundle
 
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 
 import androidx.compose.foundation.layout.fillMaxSize
+
 import androidx.compose.material3.Surface
 
 import androidx.compose.ui.Modifier
@@ -81,6 +83,7 @@ class MainActivity : ComponentActivity() {
 
 
 
+
     private fun enableEdgeToEdge() {
 
 
@@ -105,6 +108,7 @@ class MainActivity : ComponentActivity() {
 
 
 
+
         val controller =
 
             WindowInsetsControllerCompat(
@@ -117,10 +121,12 @@ class MainActivity : ComponentActivity() {
 
 
 
-        controller.isAppearanceLightStatusBars = false
+        // светлый фон приложения
+
+        controller.isAppearanceLightStatusBars = true
 
 
-        controller.isAppearanceLightNavigationBars = false
+        controller.isAppearanceLightNavigationBars = true
 
 
     }

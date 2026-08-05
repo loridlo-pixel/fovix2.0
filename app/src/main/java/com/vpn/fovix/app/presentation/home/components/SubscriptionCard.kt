@@ -1,6 +1,8 @@
 package com.vpn.fovix.app.presentation.home.components
 
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,15 +11,18 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material3.Text
 
 import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -41,113 +46,94 @@ fun SubscriptionCard(
 ) {
 
 
-    Card(
+
+    Column(
 
         modifier = Modifier
 
-            .fillMaxWidth(),
+            .fillMaxWidth()
 
+            .shadow(
 
-        colors = CardDefaults.cardColors(
+                elevation = 8.dp,
 
-            containerColor = Color.White
+                shape = RoundedCornerShape(24.dp),
 
-        ),
+                ambientColor = Color.Black.copy(alpha = 0.08f),
 
+                spotColor = Color.Black.copy(alpha = 0.10f)
 
-        elevation = CardDefaults.cardElevation(
+            )
 
-            defaultElevation = 3.dp
+            .background(
 
-        )
+                Color.White,
 
+                RoundedCornerShape(24.dp)
+
+            )
+
+            .border(
+
+                1.dp,
+
+                Color(0xFFE6EAF0),
+
+                RoundedCornerShape(24.dp)
+
+            )
+
+            .padding(20.dp)
 
     ) {
 
 
 
-        Column(
+        Row(
 
-            modifier = Modifier
+            modifier = Modifier.fillMaxWidth(),
 
-                .padding(20.dp)
+            horizontalArrangement = Arrangement.SpaceBetween,
+
+            verticalAlignment = Alignment.CenterVertically
 
         ) {
 
 
 
-            Row(
-
-                modifier = Modifier
-
-                    .fillMaxWidth(),
-
-
-                horizontalArrangement = Arrangement.SpaceBetween,
-
-
-                verticalAlignment = Alignment.CenterVertically
-
-            ) {
-
-
-
-                Column {
-
-
-                    Text(
-
-                        text = vpnName,
-
-
-                        fontSize = 18.sp,
-
-
-                        color = Color(0xFF111827)
-
-                    )
-
-
-
-                    Spacer(
-
-                        modifier = Modifier.height(4.dp)
-
-                    )
-
-
-
-                    Text(
-
-                        text = "Premium VPN Plan",
-
-
-                        fontSize = 13.sp,
-
-
-                        color = Color(0xFF6366F1)
-
-                    )
-
-
-                }
-
-
+            Column {
 
 
 
                 Text(
 
-                    text = "ACTIVE",
+                    text = vpnName,
 
+                    color = Color(0xFF111827),
 
-                    fontSize = 12.sp,
-
-
-                    color = Color(0xFF16A34A)
+                    fontSize = 18.sp
 
                 )
 
+
+
+                Spacer(
+
+                    modifier = Modifier.height(4.dp)
+
+                )
+
+
+
+                Text(
+
+                    text = "Premium Protection Plan",
+
+                    color = Color(0xFF0284C7),
+
+                    fontSize = 12.sp
+
+                )
 
             }
 
@@ -155,64 +141,53 @@ fun SubscriptionCard(
 
 
 
-            Spacer(
-
-                modifier = Modifier.height(16.dp)
-
-            )
-
-
-
-
-
             Text(
 
-                text = "🌐 $server",
+                text = "● ACTIVE",
 
+                color = Color(0xFF16A34A),
 
-                fontSize = 16.sp,
-
-
-                color = Color(0xFF111827)
+                fontSize = 11.sp
 
             )
 
-
-
-
-
-            Spacer(
-
-                modifier = Modifier.height(12.dp)
-
-            )
+        }
 
 
 
 
 
-            Row(
+        Spacer(
 
-                modifier = Modifier
+            modifier = Modifier.height(18.dp)
 
-                    .fillMaxWidth(),
+        )
 
 
-                horizontalArrangement = Arrangement.SpaceBetween
 
-            ) {
+
+
+        Row(
+
+            modifier = Modifier.fillMaxWidth(),
+
+            horizontalArrangement = Arrangement.SpaceBetween
+
+        ) {
+
+
+
+            Column {
 
 
 
                 Text(
 
-                    text = "$ping ms",
+                    text = "Server",
 
+                    color = Color(0xFF94A3B8),
 
-                    color = Color(0xFF6B7280),
-
-
-                    fontSize = 14.sp
+                    fontSize = 11.sp
 
                 )
 
@@ -220,13 +195,35 @@ fun SubscriptionCard(
 
                 Text(
 
-                    text = "$speed Mbps",
+                    text = server,
 
-
-                    color = Color(0xFF6B7280),
-
+                    color = Color(0xFF111827),
 
                     fontSize = 14.sp
+
+                )
+
+            }
+
+
+
+
+
+            Column(
+
+                horizontalAlignment = Alignment.End
+
+            ) {
+
+
+
+                Text(
+
+                    text = "Renewal",
+
+                    color = Color(0xFF94A3B8),
+
+                    fontSize = 11.sp
 
                 )
 
@@ -236,22 +233,76 @@ fun SubscriptionCard(
 
                     text = "$daysLeft days",
 
-
-                    color = Color(0xFF6B7280),
-
+                    color = Color(0xFF111827),
 
                     fontSize = 14.sp
 
                 )
 
-
             }
-
 
         }
 
 
-    }
 
+
+
+        Spacer(
+
+            modifier = Modifier.height(16.dp)
+
+        )
+
+
+
+
+
+        Row(
+
+            modifier = Modifier.fillMaxWidth(),
+
+            horizontalArrangement = Arrangement.SpaceBetween
+
+        ) {
+
+
+
+            Text(
+
+                text = "$ping ms",
+
+                color = Color(0xFF64748B),
+
+                fontSize = 13.sp
+
+            )
+
+
+
+            Text(
+
+                text = "$speed Mbps",
+
+                color = Color(0xFF64748B),
+
+                fontSize = 13.sp
+
+            )
+
+
+
+            Text(
+
+                text = "Manage →",
+
+                color = Color(0xFF0284C7),
+
+                fontSize = 13.sp
+
+            )
+
+        }
+
+    }
 
 }

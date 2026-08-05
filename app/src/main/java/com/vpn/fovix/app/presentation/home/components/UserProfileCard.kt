@@ -2,9 +2,11 @@ package com.vpn.fovix.app.presentation.home.components
 
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -22,7 +24,7 @@ import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 
 import androidx.compose.ui.graphics.Color
 
@@ -36,21 +38,15 @@ import com.vpn.fovix.app.presentation.home.UserMode
 @Composable
 fun UserProfileCard(
 
-
     username: String = "Дмитрий",
-
 
     subscription: String = "Premium until 02.08.2027",
 
-
     mode: UserMode = UserMode.SIMPLE,
-
 
     onModeClick: () -> Unit = {},
 
-
     onProfileClick: () -> Unit = {}
-
 
 ) {
 
@@ -58,22 +54,39 @@ fun UserProfileCard(
 
     Row(
 
-
         modifier = Modifier
 
             .fillMaxWidth()
 
-            .height(56.dp)
+            .height(62.dp)
 
-            .clip(
+            .shadow(
 
-                RoundedCornerShape(18.dp)
+                elevation = 8.dp,
+
+                shape = RoundedCornerShape(22.dp),
+
+                ambientColor = Color.Black.copy(alpha = 0.08f),
+
+                spotColor = Color.Black.copy(alpha = 0.10f)
 
             )
 
             .background(
 
-                Color.White
+                Color.White,
+
+                RoundedCornerShape(22.dp)
+
+            )
+
+            .border(
+
+                width = 1.dp,
+
+                color = Color(0xFFE6EAF0),
+
+                shape = RoundedCornerShape(22.dp)
 
             )
 
@@ -84,9 +97,7 @@ fun UserProfileCard(
             ),
 
 
-
         verticalAlignment = Alignment.CenterVertically
-
 
     ) {
 
@@ -94,16 +105,15 @@ fun UserProfileCard(
 
         Box(
 
-
             modifier = Modifier
 
-                .size(32.dp)
-
-                .clip(CircleShape)
+                .size(34.dp)
 
                 .background(
 
-                    Color(0xFF2563EB)
+                    Color(0xFF2563EB),
+
+                    CircleShape
 
                 )
 
@@ -116,28 +126,26 @@ fun UserProfileCard(
 
             contentAlignment = Alignment.Center
 
-
         ) {
 
 
 
             Text(
 
+                text = username
 
-                text = username.first().uppercase(),
+                    .first()
+
+                    .uppercase(),
 
 
                 color = Color.White,
 
-
                 fontSize = 14.sp
-
 
             )
 
-
         }
-
 
 
 
@@ -157,7 +165,6 @@ fun UserProfileCard(
 
         Row(
 
-
             modifier = Modifier
 
                 .weight(1f)
@@ -171,16 +178,13 @@ fun UserProfileCard(
 
             verticalAlignment = Alignment.CenterVertically
 
-
         ) {
 
 
 
-            androidx.compose.foundation.layout.Column(
-
+            Column(
 
                 verticalArrangement = Arrangement.Center
-
 
             ) {
 
@@ -188,18 +192,13 @@ fun UserProfileCard(
 
                 Text(
 
-
                     text = username,
-
 
                     color = Color(0xFF111827),
 
-
                     fontSize = 14.sp,
 
-
                     lineHeight = 16.sp
-
 
                 )
 
@@ -209,24 +208,17 @@ fun UserProfileCard(
 
                 Text(
 
-
                     text = subscription,
 
-
-                    color = Color(0xFF64748B),
-
+                    color = Color(0xFF94A3B8),
 
                     fontSize = 10.sp,
 
-
                     lineHeight = 12.sp
-
 
                 )
 
-
             }
-
 
         }
 
@@ -238,30 +230,30 @@ fun UserProfileCard(
 
         Box(
 
-
             modifier = Modifier
-
-                .clip(
-
-                    RoundedCornerShape(12.dp)
-
-                )
 
                 .background(
 
                     when(mode) {
 
 
-                        UserMode.SIMPLE -> Color(0xFFE0F2FE)
+                        UserMode.SIMPLE ->
+
+                            Color(0xFFE0F2FE)
 
 
-                        UserMode.ADVANCED -> Color(0xFFDCFCE7)
+                        UserMode.ADVANCED ->
+
+                            Color(0xFFDCFCE7)
 
 
-                        UserMode.EXPERT -> Color(0xFFF3E8FF)
+                        UserMode.EXPERT ->
 
+                            Color(0xFFF3E8FF)
 
-                    }
+                    },
+
+                    RoundedCornerShape(12.dp)
 
                 )
 
@@ -282,25 +274,28 @@ fun UserProfileCard(
 
             contentAlignment = Alignment.Center
 
-
         ) {
 
 
 
             Text(
 
-
                 text = when(mode) {
 
 
-                    UserMode.SIMPLE -> "SIMPLE"
+                    UserMode.SIMPLE ->
+
+                        "SIMPLE"
 
 
-                    UserMode.ADVANCED -> "ADVANCED"
+                    UserMode.ADVANCED ->
+
+                        "ADVANCED"
 
 
-                    UserMode.EXPERT -> "EXPERT"
+                    UserMode.EXPERT ->
 
+                        "EXPERT"
 
                 },
 
@@ -308,28 +303,29 @@ fun UserProfileCard(
                 color = when(mode) {
 
 
-                    UserMode.SIMPLE -> Color(0xFF0284C7)
+                    UserMode.SIMPLE ->
+
+                        Color(0xFF0284C7)
 
 
-                    UserMode.ADVANCED -> Color(0xFF16A34A)
+                    UserMode.ADVANCED ->
+
+                        Color(0xFF16A34A)
 
 
-                    UserMode.EXPERT -> Color(0xFF7C3AED)
+                    UserMode.EXPERT ->
 
+                        Color(0xFF7C3AED)
 
                 },
 
 
                 fontSize = 10.sp
 
-
             )
-
 
         }
 
-
     }
-
 
 }

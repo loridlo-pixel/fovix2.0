@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
 import androidx.compose.material3.Text
@@ -30,7 +31,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.unit.dp
@@ -61,74 +64,96 @@ fun VyryxCoreCard(
         )
 
 
-    val pulse = transition.animateFloat(
+    val pulse =
+        transition.animateFloat(
 
-        initialValue = 1f,
+            initialValue = 1f,
 
-        targetValue = 1.08f,
+            targetValue = 1.08f,
 
-        animationSpec = infiniteRepeatable(
+            animationSpec =
+                infiniteRepeatable(
 
-            animation = tween(
+                    animation =
+                        tween(
+                            1000,
+                            easing = FastOutSlowInEasing
+                        ),
 
-                900,
+                    repeatMode =
+                        RepeatMode.Reverse
 
-                easing = FastOutSlowInEasing
+                ),
 
-            ),
+            label = "pulse"
 
-            repeatMode = RepeatMode.Reverse
-
-        ),
-
-        label = "pulse"
-
-    )
-
-
-
-    val color = when(status) {
-
-
-        ConnectionStatus.CONNECTED ->
-            Color(0xFF22C55E)
-
-
-        ConnectionStatus.CONNECTING ->
-            Color(0xFFF59E0B)
-
-
-        ConnectionStatus.ERROR ->
-            Color(0xFFEF4444)
-
-
-        else ->
-            Color(0xFF38BDF8)
-
-    }
+        )
 
 
 
+    val stateText =
+        when(status) {
 
-    val buttonText = when(status) {
-
-
-        ConnectionStatus.CONNECTED ->
-            "PROTECTED"
-
-
-        ConnectionStatus.CONNECTING ->
-            "CONNECTING"
+            ConnectionStatus.CONNECTED ->
+                "Protected"
 
 
-        ConnectionStatus.ERROR ->
-            "RETRY"
+            ConnectionStatus.CONNECTING ->
+                "Connecting..."
 
 
-        else ->
-            "CONNECT"
+            ConnectionStatus.ERROR ->
+                "Attention"
 
-    }
+
+            else ->
+                "Ready"
+
+        }
+
+
+
+    val subtitle =
+        when(status) {
+
+            ConnectionStatus.CONNECTED ->
+                "Secure connection active"
+
+
+            ConnectionStatus.CONNECTING ->
+                "Building secure tunnel"
+
+
+            ConnectionStatus.ERROR ->
+                "Connection failed"
+
+
+            else ->
+                "Tap to protect your network"
+
+        }
+
+
+
+    val powerColor =
+        when(status) {
+
+            ConnectionStatus.CONNECTED ->
+                Color(0xFF22C55E)
+
+
+            ConnectionStatus.CONNECTING ->
+                Color(0xFFFBBF24)
+
+
+            ConnectionStatus.ERROR ->
+                Color(0xFFEF4444)
+
+
+            else ->
+                Color.White
+
+        }
 
 
 
@@ -136,21 +161,53 @@ fun VyryxCoreCard(
 
     Box(
 
-        modifier = Modifier
+        modifier =
+            Modifier
 
-            .fillMaxWidth()
+                .fillMaxWidth()
 
-            .height(170.dp)
+                .height(180.dp)
 
-            .background(
+                .shadow(
 
-                Color.White,
+                    elevation = 12.dp,
 
-                RoundedCornerShape(24.dp)
+                    shape = RoundedCornerShape(28.dp),
 
-            )
+                    ambientColor = Color(0x33000000),
 
-            .padding(20.dp)
+                    spotColor = Color(0x33000000)
+
+                )
+
+                .background(
+
+                    brush =
+                        Brush.linearGradient(
+
+                            colors =
+                                listOf(
+
+                                    Color(0xFF38BDF8),
+
+                                    Color(0xFF0284C7)
+
+                                )
+
+                        ),
+
+                    shape =
+                        RoundedCornerShape(28.dp)
+
+                )
+
+                .clickable {
+
+                    onClick()
+
+                }
+
+                .padding(22.dp)
 
     ) {
 
@@ -158,7 +215,8 @@ fun VyryxCoreCard(
 
         Column(
 
-            modifier = Modifier.fillMaxWidth()
+            modifier =
+                Modifier.fillMaxWidth()
 
         ) {
 
@@ -166,11 +224,14 @@ fun VyryxCoreCard(
 
             Row(
 
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier.fillMaxWidth(),
 
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement =
+                    Arrangement.SpaceBetween,
 
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment =
+                    Alignment.CenterVertically
 
             ) {
 
@@ -181,91 +242,86 @@ fun VyryxCoreCard(
 
                     Text(
 
-                        text = "Protection",
+                        text = "VYRYX CORE",
 
-                        color = Color(0xFF64748B),
+                        color = Color.White.copy(alpha = 0.75f),
 
                         fontSize = 12.sp
 
                     )
 
 
+                    Spacer(
+
+                        modifier =
+                            Modifier.height(5.dp)
+
+                    )
+
+
                     Text(
 
-                        text =
-                        if(status == ConnectionStatus.CONNECTED)
-                            "Protected"
-                        else
-                            "Not protected",
+                        text = stateText,
 
-                        color = Color(0xFF111827),
+                        color = Color.White,
 
-                        fontSize = 18.sp
+                        fontSize = 24.sp
 
                     )
 
 
                 }
+
 
 
 
 
                 Box(
 
-                    modifier = Modifier
+                    modifier =
+                        Modifier
 
-                        .scale(
+                            .size(54.dp)
 
-                            if(status == ConnectionStatus.CONNECTING)
+                            .scale(
 
-                                pulse.value
+                                if(status == ConnectionStatus.CONNECTING)
 
-                            else
+                                    pulse.value
 
-                                1f
+                                else
 
-                        )
+                                    1f
 
-                        .background(
+                            )
 
-                            color,
+                            .background(
 
-                            RoundedCornerShape(18.dp)
+                                Color.White.copy(alpha = 0.18f),
 
-                        )
+                                CircleShape
 
-                        .clickable {
+                            ),
 
-                            onClick()
-
-                        }
-
-                        .padding(
-
-                            horizontal = 22.dp,
-
-                            vertical = 11.dp
-
-                        ),
-
-                    contentAlignment = Alignment.Center
+                    contentAlignment =
+                        Alignment.Center
 
                 ) {
 
 
-
                     Text(
 
-                        text = buttonText,
+                        text = "⏻",
 
-                        color = Color.White,
+                        color = powerColor,
 
-                        fontSize = 12.sp
+                        fontSize = 30.sp
 
                     )
 
 
                 }
+
 
 
             }
@@ -274,9 +330,12 @@ fun VyryxCoreCard(
 
 
 
+
+
             Spacer(
 
-                modifier = Modifier.height(20.dp)
+                modifier =
+                    Modifier.height(18.dp)
 
             )
 
@@ -284,11 +343,43 @@ fun VyryxCoreCard(
 
 
 
+            Text(
+
+                text = subtitle,
+
+                color =
+                    Color.White.copy(alpha = 0.85f),
+
+                fontSize = 13.sp
+
+            )
+
+
+
+
+
+
+
+            Spacer(
+
+                modifier =
+                    Modifier.weight(1f)
+
+            )
+
+
+
+
+
+
+
             Row(
 
-                modifier = Modifier.fillMaxWidth(),
+                modifier =
+                    Modifier.fillMaxWidth(),
 
-                horizontalArrangement = Arrangement.SpaceBetween
+                horizontalArrangement =
+                    Arrangement.SpaceBetween
 
             ) {
 
@@ -299,11 +390,12 @@ fun VyryxCoreCard(
 
                     Text(
 
-                        text = "Server",
+                        text = "SERVER",
 
-                        color = Color(0xFF64748B),
+                        color =
+                            Color.White.copy(alpha = 0.65f),
 
-                        fontSize = 11.sp
+                        fontSize = 10.sp
 
                     )
 
@@ -312,7 +404,7 @@ fun VyryxCoreCard(
 
                         text = server,
 
-                        color = Color(0xFF111827),
+                        color = Color.White,
 
                         fontSize = 14.sp
 
@@ -325,23 +417,26 @@ fun VyryxCoreCard(
 
 
 
+
                 if(mode != UserMode.SIMPLE) {
 
 
                     Column(
 
-                        horizontalAlignment = Alignment.End
+                        horizontalAlignment =
+                            Alignment.End
 
                     ) {
 
 
                         Text(
 
-                            text = "Ping",
+                            text = "PING",
 
-                            color = Color(0xFF64748B),
+                            color =
+                                Color.White.copy(alpha = 0.65f),
 
-                            fontSize = 11.sp
+                            fontSize = 10.sp
 
                         )
 
@@ -350,7 +445,7 @@ fun VyryxCoreCard(
 
                             text = "42 ms",
 
-                            color = Color(0xFF111827),
+                            color = Color.White,
 
                             fontSize = 14.sp
 
@@ -363,34 +458,9 @@ fun VyryxCoreCard(
                 }
 
 
-            }
-
-
-
-
-
-            if(mode == UserMode.EXPERT) {
-
-
-                Spacer(
-
-                    modifier = Modifier.height(10.dp)
-
-                )
-
-
-                Text(
-
-                    text = "DNS • Tunnel • Route",
-
-                    color = Color(0xFF64748B),
-
-                    fontSize = 11.sp
-
-                )
-
 
             }
+
 
 
         }

@@ -7,12 +7,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 
 import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 
 
@@ -20,6 +20,7 @@ import com.vpn.fovix.app.presentation.home.components.NetworkHealthCard
 import com.vpn.fovix.app.presentation.home.components.ProtectionScenario
 import com.vpn.fovix.app.presentation.home.components.ProtectionScenarioCard
 import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
+import com.vpn.fovix.app.presentation.home.components.SubscriptionCard
 import com.vpn.fovix.app.presentation.home.components.UserProfileCard
 import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
 
@@ -40,7 +41,7 @@ fun HomeDashboard(
 
     mode: UserMode,
 
-    scenario: ProtectionScenario,
+    scenario: ProtectionScenario = ProtectionScenario.EVERYDAY,
 
     onConnectClick: () -> Unit,
 
@@ -48,18 +49,22 @@ fun HomeDashboard(
 
     onModeClick: () -> Unit = {},
 
-    onScenarioSelected: (ProtectionScenario) -> Unit = {}
+    onScenarioClick: (ProtectionScenario) -> Unit = {}
 
 ) {
 
 
+
     Surface(
 
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
 
-        color = MaterialTheme.colorScheme.background
+            .fillMaxSize(),
+
+        color = Color(0xFFF5F7FA)
 
     ) {
+
 
 
         Column(
@@ -70,13 +75,14 @@ fun HomeDashboard(
 
                 .padding(
 
-                    horizontal = 20.dp,
+                    horizontal = 18.dp,
 
-                    vertical = 24.dp
+                    vertical = 20.dp
 
                 )
 
         ) {
+
 
 
             UserProfileCard(
@@ -103,11 +109,15 @@ fun HomeDashboard(
 
 
 
+
+
             Spacer(
 
-                modifier = Modifier.height(18.dp)
+                modifier = Modifier.height(16.dp)
 
             )
+
+
 
 
 
@@ -129,11 +139,15 @@ fun HomeDashboard(
 
 
 
+
+
             Spacer(
 
                 modifier = Modifier.height(14.dp)
 
             )
+
+
 
 
 
@@ -143,7 +157,7 @@ fun HomeDashboard(
 
                 onClick = {
 
-                    onScenarioSelected(it)
+                    onScenarioClick(it)
 
                 }
 
@@ -151,11 +165,43 @@ fun HomeDashboard(
 
 
 
+
+
             Spacer(
 
-                modifier = Modifier.height(16.dp)
+                modifier = Modifier.height(14.dp)
 
             )
+
+
+
+
+
+            SubscriptionCard(
+
+                vpnName = "VYRYX Premium",
+
+                server = server,
+
+                ping = 42,
+
+                speed = download,
+
+                daysLeft = 29
+
+            )
+
+
+
+
+
+            Spacer(
+
+                modifier = Modifier.height(14.dp)
+
+            )
+
+
 
 
 
@@ -167,11 +213,15 @@ fun HomeDashboard(
 
 
 
+
+
             Spacer(
 
-                modifier = Modifier.height(16.dp)
+                modifier = Modifier.height(14.dp)
 
             )
+
+
 
 
 
