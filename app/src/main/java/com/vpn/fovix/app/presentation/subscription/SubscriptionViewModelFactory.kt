@@ -3,16 +3,17 @@ package com.vpn.fovix.app.presentation.subscription
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+
 import com.vpn.fovix.data.importer.SubscriptionImportEngine
-import com.vpn.fovix.data.repository.ServerRepository
+import com.vpn.fovix.data.subscription.SubscriptionRepository
 
 
 
 class SubscriptionViewModelFactory(
 
-    private val importEngine: SubscriptionImportEngine,
+    private val repository: SubscriptionRepository,
 
-    private val serverRepository: ServerRepository
+    private val importEngine: SubscriptionImportEngine
 
 ) : ViewModelProvider.Factory {
 
@@ -37,12 +38,11 @@ class SubscriptionViewModelFactory(
 
             return SubscriptionViewModel(
 
-                importEngine,
+                repository,
 
-                serverRepository
+                importEngine
 
             ) as T
-
 
         }
 

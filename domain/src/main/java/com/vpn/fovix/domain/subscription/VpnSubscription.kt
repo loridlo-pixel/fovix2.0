@@ -1,6 +1,5 @@
 package com.vpn.fovix.domain.subscription
 
-
 import com.vpn.fovix.domain.server.ServerProfile
 
 
@@ -16,4 +15,9 @@ data class VpnSubscription(
 
     val isActive: Boolean = true
 
-)
+) {
+
+    val serversCount: Int
+        get() = servers.size
+
+}

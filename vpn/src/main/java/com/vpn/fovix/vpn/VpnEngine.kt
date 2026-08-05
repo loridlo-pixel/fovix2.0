@@ -28,48 +28,63 @@ class VpnEngine(
     companion object {
 
 
-        private const val TAG = "FOVIX_ENGINE"
+        private const val TAG =
+            "FOVIX_ENGINE"
 
 
 
-        private var stateListener:
+        private var stateCallback:
                 ((VPNState) -> Unit)? = null
 
 
 
 
+
         fun registerStateListener(
-            listener: (VPNState) -> Unit
+
+            callback: (VPNState) -> Unit
+
         ) {
 
-            stateListener = listener
+
+            stateCallback = callback
+
 
         }
 
 
 
 
+
         fun notifyConnected(
+
             serverName: String
+
         ) {
 
 
-            val state = VPNState(
 
-                status = ConnectionStatus.CONNECTED,
+            stateCallback?.invoke(
 
-                server = serverName
+                VPNState(
+
+                    status =
+                        ConnectionStatus.CONNECTED,
+
+                    server =
+                        serverName
+
+                )
 
             )
 
-
-            stateListener?.invoke(state)
 
 
             Log.i(
                 TAG,
-                "STATE CONNECTED $serverName"
+                "CONNECTED $serverName"
             )
+
 
         }
 
@@ -78,28 +93,36 @@ class VpnEngine(
 
 
         fun notifyError(
+
             message: String
+
         ) {
 
 
-            val state = VPNState(
+            stateCallback?.invoke(
 
-                status = ConnectionStatus.ERROR,
+                VPNState(
 
-                server = message
+                    status =
+                        ConnectionStatus.ERROR,
+
+                    server =
+                        message
+
+                )
 
             )
 
-
-            stateListener?.invoke(state)
 
 
             Log.e(
                 TAG,
-                "STATE ERROR=$message"
+                "ERROR $message"
             )
 
+
         }
+
 
 
     }
@@ -109,23 +132,32 @@ class VpnEngine(
 
 
 
-    private val _state = MutableStateFlow(
 
-        VPNState(
 
-            status = ConnectionStatus.DISCONNECTED,
 
-            server = "None"
+    private val _state =
+
+        MutableStateFlow(
+
+            VPNState(
+
+                status =
+                    ConnectionStatus.DISCONNECTED,
+
+                server =
+                    "No server"
+
+            )
 
         )
 
-    )
 
 
 
 
+    override val state:
 
-    override val state: StateFlow<VPNState>
+            StateFlow<VPNState>
 
         get() = _state
 
@@ -144,7 +176,8 @@ class VpnEngine(
                 newState ->
 
 
-            _state.value = newState
+            _state.value =
+                newState
 
 
         }
@@ -167,21 +200,32 @@ class VpnEngine(
     ) {
 
 
+
         Log.i(
+
             TAG,
-            "START VPN ${profile.name}"
-        )
 
-
-
-
-        _state.value = VPNState(
-
-            status = ConnectionStatus.CONNECTING,
-
-            server = profile.name
+            "START ${profile.name} ${profile.server}:${profile.port}"
 
         )
+
+
+
+
+
+        _state.value =
+
+            VPNState(
+
+                status =
+                    ConnectionStatus.CONNECTING,
+
+                server =
+                    profile.name
+
+            )
+
+
 
 
 
@@ -190,11 +234,35 @@ class VpnEngine(
         try {
 
 
-            val intent = Intent(
 
-                context,
+            val intent =
 
-                FovixVpnService::class.java
+                Intent(
+
+                    context,
+
+                    FovixVpnService::class.java
+
+                )
+
+
+
+
+
+
+
+            /*
+             * В Intent передаем только данные.
+             * Domain объекты через Intent не передаем.
+             */
+
+
+
+            intent.putExtra(
+
+                "SERVER_NAME",
+
+                profile.name
 
             )
 
@@ -202,29 +270,84 @@ class VpnEngine(
 
             intent.putExtra(
 
-                "VPN_PROFILE",
+                "SERVER_HOST",
 
-                profile
+                profile.server
 
             )
 
 
 
-            context.startService(intent)
+            intent.putExtra(
+
+                "SERVER_PORT",
+
+                profile.port
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_UUID",
+
+                profile.uuid
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_SNI",
+
+                profile.sni
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_FP",
+
+                profile.fingerprint
+
+            )
+
+
+
+
+
+
+
+            context.startService(
+
+                intent
+
+            )
+
+
 
 
 
 
 
             Log.i(
+
                 TAG,
-                "SERVICE STARTED WITH PROFILE ${profile.server}"
+
+                "SERVICE STARTED"
+
             )
 
 
 
         }
+
         catch(e: Exception) {
+
 
 
             Log.e(
@@ -239,11 +362,11 @@ class VpnEngine(
 
 
 
-            _state.value = VPNState(
 
-                status = ConnectionStatus.ERROR,
+            notifyError(
 
-                server = profile.name
+                e.message
+                    ?: "START ERROR"
 
             )
 
@@ -252,7 +375,6 @@ class VpnEngine(
 
 
     }
-
 
 
 
@@ -270,18 +392,7 @@ class VpnEngine(
 
             TAG,
 
-            "STOP VPN"
-
-        )
-
-
-
-
-        _state.value = VPNState(
-
-            status = ConnectionStatus.DISCONNECTING,
-
-            server = "None"
+            "STOP"
 
         )
 
@@ -292,33 +403,38 @@ class VpnEngine(
         try {
 
 
+
             SingBoxNative.stop()
 
 
 
-            val intent = Intent(
 
-                context,
 
-                FovixVpnService::class.java
+            context.stopService(
+
+                Intent(
+
+                    context,
+
+                    FovixVpnService::class.java
+
+                )
 
             )
 
 
 
-            context.stopService(intent)
-
-
-
         }
+
         catch(e: Exception) {
+
 
 
             Log.e(
 
                 TAG,
 
-                "STOP ERROR",
+                "STOP FAILED",
 
                 e
 
@@ -331,13 +447,19 @@ class VpnEngine(
 
 
 
-        _state.value = VPNState(
 
-            status = ConnectionStatus.DISCONNECTED,
 
-            server = "None"
+        _state.value =
 
-        )
+            VPNState(
+
+                status =
+                    ConnectionStatus.DISCONNECTED,
+
+                server =
+                    "No server"
+
+            )
 
 
     }
@@ -346,7 +468,13 @@ class VpnEngine(
 
 
 
-    fun isRunning(): Boolean {
+
+
+
+
+    fun isRunning():
+
+            Boolean {
 
 
         return try {
@@ -356,6 +484,7 @@ class VpnEngine(
 
 
         }
+
         catch(e: Exception) {
 
 
@@ -366,6 +495,7 @@ class VpnEngine(
 
 
     }
+
 
 
 

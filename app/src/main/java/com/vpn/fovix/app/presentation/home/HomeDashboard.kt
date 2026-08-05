@@ -24,6 +24,7 @@ import com.vpn.fovix.app.presentation.home.components.SubscriptionCard
 import com.vpn.fovix.app.presentation.home.components.UserProfileCard
 import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
 
+import com.vpn.fovix.domain.subscription.VpnSubscription
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
@@ -31,25 +32,43 @@ import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 @Composable
 fun HomeDashboard(
 
+
     status: ConnectionStatus,
+
 
     server: String,
 
+
     download: Int,
+
 
     upload: Int,
 
+
     mode: UserMode,
+
+
+    vpnSubscription: VpnSubscription? = null,
+
 
     scenario: ProtectionScenario = ProtectionScenario.EVERYDAY,
 
+
     onConnectClick: () -> Unit,
+
 
     onProfileClick: () -> Unit = {},
 
+
     onModeClick: () -> Unit = {},
 
-    onScenarioClick: (ProtectionScenario) -> Unit = {}
+
+    onScenarioClick: (ProtectionScenario) -> Unit = {},
+
+
+    onAddSubscriptionClick: () -> Unit = {}
+
+
 
 ) {
 
@@ -57,17 +76,21 @@ fun HomeDashboard(
 
     Surface(
 
+
         modifier = Modifier
 
             .fillMaxSize(),
 
+
         color = Color(0xFFF5F7FA)
+
 
     ) {
 
 
 
         Column(
+
 
             modifier = Modifier
 
@@ -85,13 +108,23 @@ fun HomeDashboard(
 
 
 
+            /*
+             * FOVIX subscription
+             * Это подписка приложения:
+             * Free / Expert / Premium
+             */
+
             UserProfileCard(
+
 
                 username = "Дмитрий",
 
+
                 subscription = "Premium until 02.08.2027",
 
+
                 mode = mode,
+
 
                 onProfileClick = {
 
@@ -99,11 +132,13 @@ fun HomeDashboard(
 
                 },
 
+
                 onModeClick = {
 
                     onModeClick()
 
                 }
+
 
             )
 
@@ -121,19 +156,29 @@ fun HomeDashboard(
 
 
 
+            /*
+             * VYRYX Core
+             * Главное состояние защиты
+             */
+
             VyryxCoreCard(
+
 
                 mode = mode,
 
+
                 status = status,
 
+
                 server = server,
+
 
                 onClick = {
 
                     onConnectClick()
 
                 }
+
 
             )
 
@@ -153,13 +198,16 @@ fun HomeDashboard(
 
             ProtectionScenarioCard(
 
+
                 scenario = scenario,
+
 
                 onClick = {
 
                     onScenarioClick(it)
 
                 }
+
 
             )
 
@@ -177,17 +225,28 @@ fun HomeDashboard(
 
 
 
+            /*
+             * VPN Provider subscription
+             *
+             * Это НЕ подписка VYRYX.
+             * Это внешний VPN источник:
+             * VLESS / VMess / Trojan provider
+             */
+
             SubscriptionCard(
 
-                vpnName = "VYRYX Premium",
 
-                server = server,
+                subscription = vpnSubscription,
 
-                ping = 42,
 
-                speed = download,
+                onAddClick = {
 
-                daysLeft = 29
+
+                    onAddSubscriptionClick()
+
+
+                }
+
 
             )
 
@@ -207,7 +266,9 @@ fun HomeDashboard(
 
             ProtectionScoreCard(
 
+
                 score = 98
+
 
             )
 
@@ -227,11 +288,15 @@ fun HomeDashboard(
 
             NetworkHealthCard(
 
+
                 latency = 42,
+
 
                 speed = download
 
+
             )
+
 
         }
 

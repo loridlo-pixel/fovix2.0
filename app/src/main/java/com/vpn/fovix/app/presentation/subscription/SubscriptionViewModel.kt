@@ -5,54 +5,59 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
 import com.vpn.fovix.data.importer.SubscriptionImportEngine
-import com.vpn.fovix.data.repository.ServerRepository
+import com.vpn.fovix.data.subscription.SubscriptionRepository
+import com.vpn.fovix.domain.subscription.VpnSubscription
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+import java.util.UUID
+
 
 
 class SubscriptionViewModel(
 
-    private val importEngine: SubscriptionImportEngine,
+    private val repository: SubscriptionRepository,
 
-    private val serverRepository: ServerRepository
+    private val importEngine: SubscriptionImportEngine
 
 ) : ViewModel() {
 
 
 
     private val _state =
-
         MutableStateFlow(
-
             SubscriptionUiState()
-
         )
 
 
-
-    val state: StateFlow<SubscriptionUiState> =
-
-        _state
+    val state: StateFlow<SubscriptionUiState>
+        get() = _state
 
 
 
 
 
-    fun updateInput(
+    init {
 
-        value: String
+        loadSubscriptions()
 
-    ) {
+    }
+
+
+
+
+
+
+    private fun loadSubscriptions() {
 
 
         _state.value =
-
             _state.value.copy(
 
-                input = value
+                subscriptions =
+                    repository.getSubscriptions()
 
             )
 
@@ -63,64 +68,27 @@ class SubscriptionViewModel(
 
 
 
-    fun importSubscription() {
 
 
+    fun importFromUrl(
 
-        val source =
+        url: String
 
-            _state.value.input.trim()
-
-
-
-        if(source.isEmpty()) {
-
-
-            _state.value =
-
-                _state.value.copy(
-
-                    message =
-                        "Введите ссылку или конфиг"
-
-                )
-
-
-            return
-
-        }
-
-
-
+    ) {
 
 
         viewModelScope.launch {
 
 
-
             try {
 
 
-
                 _state.value =
-
                     _state.value.copy(
 
-                        loading = true,
+                        isLoading = true,
 
-                        message = ""
-
-                    )
-
-
-
-
-
-                val imported =
-
-                    importEngine.import(
-
-                        source
+                        error = null
 
                     )
 
@@ -128,65 +96,140 @@ class SubscriptionViewModel(
 
 
 
-                imported.forEach {
+                val servers =
 
+                    importEngine.importFromUrl(
 
-
-                    serverRepository.addServer(
-
-                        it
+                        url
 
                     )
 
 
-                }
+
+
+
+
+                val subscription =
+
+                    VpnSubscription(
+
+                        id =
+                            UUID.randomUUID()
+                                .toString(),
+
+
+                        name =
+                            "Imported VPN",
+
+
+                        url = url,
+
+
+                        isActive = true
+
+                    )
+
+
+
+
+
+                repository.addSubscription(
+
+                    subscription
+
+                )
 
 
 
 
 
                 _state.value =
-
                     _state.value.copy(
 
-                        loading = false,
+                        isLoading = false,
 
-                        servers = imported,
-
-                        message =
-                            "Импортировано: ${imported.size}"
+                        subscriptions =
+                            repository.getSubscriptions()
 
                     )
+
 
 
 
             }
-
             catch(e: Exception) {
 
 
-
                 _state.value =
-
                     _state.value.copy(
 
-                        loading = false,
+                        isLoading = false,
 
-                        message =
+                        error =
                             e.message
-                                ?: "Ошибка импорта"
+                                ?: "Import error"
 
                     )
 
-
             }
-
 
 
         }
 
 
     }
+
+
+
+
+
+
+
+
+    fun removeSubscription(
+
+        id: String
+
+    ) {
+
+
+        repository.removeSubscription(
+
+            id
+
+        )
+
+
+        loadSubscriptions()
+
+
+    }
+
+
+
+
+
+
+    fun selectSubscription(
+
+        subscription: VpnSubscription
+
+    ) {
+
+
+        _state.value =
+
+            _state.value.copy(
+
+                selected =
+                    subscription
+
+            )
+
+
+    }
+
+
 
 
 
