@@ -10,6 +10,7 @@ import com.vpn.fovix.domain.subscription.VpnSubscription
 
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+
 import kotlinx.coroutines.launch
 
 import java.util.UUID
@@ -50,7 +51,6 @@ class SubscriptionViewModel(
 
 
 
-
     private fun loadSubscriptions() {
 
 
@@ -71,9 +71,7 @@ class SubscriptionViewModel(
 
 
 
-
-
-    fun updateInput(
+    fun updateUrl(
 
         value: String
 
@@ -83,13 +81,12 @@ class SubscriptionViewModel(
         _state.value =
             _state.value.copy(
 
-                inputUrl = value
+                url = value
 
             )
 
+
     }
-
-
 
 
 
@@ -101,13 +98,15 @@ class SubscriptionViewModel(
 
 
         val url =
-            _state.value.inputUrl
+            _state.value.url
 
 
-        if(url.isBlank())
+
+        if(url.isBlank()) {
+
             return
 
-
+        }
 
 
 
@@ -142,48 +141,29 @@ class SubscriptionViewModel(
 
 
 
-
-
                 val subscription =
 
                     VpnSubscription(
 
-
                         id =
-
                             UUID.randomUUID()
                                 .toString(),
 
 
-
                         name =
-
-                            extractProviderName(
-
-                                url
-
-                            ),
+                            "VPN Provider",
 
 
-
-                        url =
-
-                            url,
-
+                        url = url,
 
 
                         servers =
-
                             servers,
-
 
 
                         isActive = true
 
-
                     )
-
-
 
 
 
@@ -200,14 +180,18 @@ class SubscriptionViewModel(
 
 
 
-
                 _state.value =
                     _state.value.copy(
 
-                        inputUrl = "",
+                        isLoading = false,
+
 
                         subscriptions =
-                            repository.getSubscriptions()
+                            repository.getSubscriptions(),
+
+
+                        selected =
+                            subscription
 
                     )
 
@@ -218,26 +202,15 @@ class SubscriptionViewModel(
             catch(e: Exception) {
 
 
-
                 _state.value =
                     _state.value.copy(
+
+                        isLoading = false,
+
 
                         error =
-
                             e.message
-                                ?: "Import error"
-
-                    )
-
-
-            }
-            finally {
-
-
-                _state.value =
-                    _state.value.copy(
-
-                        isLoading = false
+                                ?: "Import failed"
 
                     )
 
@@ -256,14 +229,11 @@ class SubscriptionViewModel(
 
 
 
-
-
     fun removeSubscription(
 
         id: String
 
     ) {
-
 
 
         repository.removeSubscription(
@@ -277,8 +247,6 @@ class SubscriptionViewModel(
 
 
     }
-
-
 
 
 
@@ -301,56 +269,6 @@ class SubscriptionViewModel(
                     subscription
 
             )
-
-
-    }
-
-
-
-
-
-
-
-
-
-    private fun extractProviderName(
-
-        url: String
-
-    ): String {
-
-
-        return try {
-
-
-            val host =
-
-                java.net.URI(
-
-                    url
-
-                )
-                    .host
-
-
-
-            host
-                ?.removePrefix("www.")
-                ?: "VPN Provider"
-
-
-        }
-        catch(
-
-            e: Exception
-
-        ) {
-
-
-            "VPN Provider"
-
-
-        }
 
 
     }

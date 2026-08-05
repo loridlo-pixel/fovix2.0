@@ -1,32 +1,21 @@
 package com.vpn.fovix.app.presentation.home.components
 
+
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Add
-
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
-
 import androidx.compose.runtime.Composable
-
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontWeight
-
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -43,26 +32,79 @@ fun SubscriptionCard(
 
 ) {
 
+
+    val hasSubscription =
+        subscription != null
+
+
+
+    val background =
+
+        if (hasSubscription)
+
+            Brush.linearGradient(
+
+                colors = listOf(
+
+                    Color(0xFF38BDF8),
+
+                    Color(0xFF0284C7)
+
+                )
+
+            )
+
+        else
+
+            Brush.linearGradient(
+
+                colors = listOf(
+
+                    Color(0xFFE5E7EB),
+
+                    Color(0xFFD1D5DB)
+
+                )
+
+            )
+
+
+
+
+
     Column(
 
         modifier = Modifier
+
             .fillMaxWidth()
+
             .shadow(
-                elevation = 8.dp,
-                shape = RoundedCornerShape(24.dp)
+
+                elevation = 10.dp,
+
+                shape = RoundedCornerShape(26.dp)
+
             )
+
             .background(
-                Color.White,
-                RoundedCornerShape(24.dp)
+
+                brush = background,
+
+                shape = RoundedCornerShape(26.dp)
+
             )
-            .border(
-                1.dp,
-                Color(0xFFE7ECF2),
-                RoundedCornerShape(24.dp)
-            )
-            .padding(20.dp)
+
+            .clickable {
+
+                onAddClick()
+
+            }
+
+            .padding(22.dp)
 
     ) {
+
+
 
         Row(
 
@@ -74,35 +116,86 @@ fun SubscriptionCard(
 
         ) {
 
+
+
             Column {
 
+
+
                 Text(
 
-                    text = "VPN Provider",
+                    text =
 
-                    fontSize = 12.sp,
+                        subscription?.name
 
-                    color = Color(0xFF94A3B8)
+                            ?: "VPN Provider",
+
+
+                    color =
+
+                        if (hasSubscription)
+
+                            Color.White
+
+                        else
+
+                            Color(0xFF334155),
+
+
+                    fontSize = 20.sp
 
                 )
+
+
+
+
 
                 Spacer(
+
                     modifier = Modifier.height(6.dp)
+
                 )
+
+
+
+
 
                 Text(
 
-                    text = subscription?.name ?: "No subscription",
+                    text =
 
-                    fontSize = 20.sp,
+                        if (hasSubscription)
 
-                    fontWeight = FontWeight.SemiBold,
+                            "${subscription?.servers?.size ?: 0} servers available"
 
-                    color = Color(0xFF111827)
+                        else
+
+                            "Add subscription to activate protection",
+
+
+                    color =
+
+                        if (hasSubscription)
+
+                            Color.White.copy(alpha = 0.85f)
+
+                        else
+
+                            Color(0xFF64748B),
+
+
+                    fontSize = 14.sp
 
                 )
 
+
             }
+
+
+
+
+
+
 
             IconButton(
 
@@ -110,29 +203,54 @@ fun SubscriptionCard(
 
             ) {
 
+
+
                 Icon(
 
-                    imageVector = Icons.Rounded.Add,
+                    imageVector = Icons.Default.Add,
 
                     contentDescription = "Add subscription",
 
-                    tint = Color(0xFF0284C7)
+                    tint =
+
+                        if (hasSubscription)
+
+                            Color.White
+
+                        else
+
+                            Color(0xFF475569)
 
                 )
 
+
             }
+
 
         }
 
+
+
+
+
         Spacer(
-            modifier = Modifier.height(20.dp)
+
+            modifier = Modifier.height(18.dp)
+
         )
+
+
+
+
+
 
         if (subscription == null) {
 
+
+
             Text(
 
-                text = "Import a VPN provider subscription to start using servers.",
+                text = "No VPN subscription added",
 
                 color = Color(0xFF64748B),
 
@@ -140,92 +258,131 @@ fun SubscriptionCard(
 
             )
 
+
+
         } else {
 
-            Row(
 
-                modifier = Modifier.fillMaxWidth(),
 
-                horizontalArrangement = Arrangement.SpaceBetween
+            subscription.servers
 
-            ) {
+                .take(5)
 
-                Column {
+                .forEach { server ->
 
-                    Text(
 
-                        text = "Servers",
 
-                        color = Color(0xFF94A3B8),
+                    Row(
 
-                        fontSize = 11.sp
+                        modifier = Modifier
 
-                    )
+                            .fillMaxWidth()
 
-                    Spacer(
-                        modifier = Modifier.height(4.dp)
-                    )
+                            .padding(
 
-                    Text(
+                                vertical = 6.dp
 
-                        text = subscription.servers.size.toString(),
+                            ),
 
-                        fontSize = 15.sp,
 
-                        fontWeight = FontWeight.Medium,
+                        horizontalArrangement =
 
-                        color = Color(0xFF111827)
+                            Arrangement.SpaceBetween,
 
-                    )
 
-                }
+                        verticalAlignment =
 
-                Column(
+                            Alignment.CenterVertically
 
-                    horizontalAlignment = Alignment.End
+                    ) {
 
-                ) {
 
-                    Text(
 
-                        text = "Status",
+                        Text(
 
-                        color = Color(0xFF94A3B8),
+                            text = server.name,
 
-                        fontSize = 11.sp
+                            color = Color.White,
 
-                    )
+                            fontSize = 14.sp
 
-                    Spacer(
-                        modifier = Modifier.height(4.dp)
-                    )
+                        )
 
-                    Text(
 
-                        text =
-                        if (subscription.isActive)
-                            "ACTIVE"
-                        else
-                            "DISABLED",
 
-                        fontSize = 15.sp,
 
-                        fontWeight = FontWeight.Medium,
 
-                        color =
-                        if (subscription.isActive)
-                            Color(0xFF16A34A)
-                        else
-                            Color(0xFFDC2626)
+                        Text(
 
-                    )
+                            text = "Available",
+
+                            color = Color.White.copy(
+
+                                alpha = 0.85f
+
+                            ),
+
+                            fontSize = 13.sp
+
+                        )
+
+
+
+                    }
+
+
 
                 }
+
+
+
+
+
+
+
+            if ((subscription.servers.size) > 5) {
+
+
+
+                Spacer(
+
+                    modifier = Modifier.height(8.dp)
+
+                )
+
+
+
+
+
+                Text(
+
+                    text =
+
+                        "+${subscription.servers.size - 5} more servers",
+
+
+                    color = Color.White.copy(
+
+                        alpha = 0.8f
+
+                    ),
+
+                    fontSize = 13.sp
+
+                )
+
+
 
             }
 
+
+
         }
 
+
+
     }
+
+
 
 }

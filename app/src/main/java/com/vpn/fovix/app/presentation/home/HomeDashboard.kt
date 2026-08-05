@@ -4,8 +4,9 @@ package com.vpn.fovix.app.presentation.home
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 import androidx.compose.material3.Surface
 
@@ -66,35 +67,32 @@ fun HomeDashboard(
     onScenarioClick: (ProtectionScenario) -> Unit = {},
 
 
-    onAddSubscriptionClick: () -> Unit = {}
-
+    onOpenSubscriptions: () -> Unit = {}
 
 
 ) {
 
 
-
     Surface(
 
-
-        modifier = Modifier
-
-            .fillMaxSize(),
-
+        modifier = Modifier.fillMaxSize(),
 
         color = Color(0xFFF5F7FA)
-
 
     ) {
 
 
-
         Column(
-
 
             modifier = Modifier
 
                 .fillMaxSize()
+
+                .verticalScroll(
+
+                    rememberScrollState()
+
+                )
 
                 .padding(
 
@@ -108,19 +106,19 @@ fun HomeDashboard(
 
 
 
-            /*
-             * FOVIX subscription
-             * Это подписка приложения:
-             * Free / Expert / Premium
-             */
-
             UserProfileCard(
-
 
                 username = "Дмитрий",
 
+                subscription =
 
-                subscription = "Premium until 02.08.2027",
+                    if (vpnSubscription != null)
+
+                        "Premium"
+
+                    else
+
+                        "No subscription",
 
 
                 mode = mode,
@@ -139,7 +137,6 @@ fun HomeDashboard(
 
                 }
 
-
             )
 
 
@@ -148,7 +145,11 @@ fun HomeDashboard(
 
             Spacer(
 
-                modifier = Modifier.height(16.dp)
+                modifier = Modifier.padding(
+
+                    top = 16.dp
+
+                )
 
             )
 
@@ -156,22 +157,15 @@ fun HomeDashboard(
 
 
 
-            /*
-             * VYRYX Core
-             * Главное состояние защиты
-             */
-
             VyryxCoreCard(
-
 
                 mode = mode,
 
-
                 status = status,
-
 
                 server = server,
 
+                subscription = vpnSubscription,
 
                 onClick = {
 
@@ -179,7 +173,6 @@ fun HomeDashboard(
 
                 }
 
-
             )
 
 
@@ -188,7 +181,11 @@ fun HomeDashboard(
 
             Spacer(
 
-                modifier = Modifier.height(14.dp)
+                modifier = Modifier.padding(
+
+                    top = 14.dp
+
+                )
 
             )
 
@@ -198,9 +195,7 @@ fun HomeDashboard(
 
             ProtectionScenarioCard(
 
-
                 scenario = scenario,
-
 
                 onClick = {
 
@@ -208,7 +203,6 @@ fun HomeDashboard(
 
                 }
 
-
             )
 
 
@@ -217,36 +211,27 @@ fun HomeDashboard(
 
             Spacer(
 
-                modifier = Modifier.height(14.dp)
+                modifier = Modifier.padding(
+
+                    top = 14.dp
+
+                )
 
             )
 
 
 
 
-
-            /*
-             * VPN Provider subscription
-             *
-             * Это НЕ подписка VYRYX.
-             * Это внешний VPN источник:
-             * VLESS / VMess / Trojan provider
-             */
 
             SubscriptionCard(
 
-
                 subscription = vpnSubscription,
-
 
                 onAddClick = {
 
-
-                    onAddSubscriptionClick()
-
+                    onOpenSubscriptions()
 
                 }
-
 
             )
 
@@ -256,7 +241,11 @@ fun HomeDashboard(
 
             Spacer(
 
-                modifier = Modifier.height(14.dp)
+                modifier = Modifier.padding(
+
+                    top = 14.dp
+
+                )
 
             )
 
@@ -266,9 +255,7 @@ fun HomeDashboard(
 
             ProtectionScoreCard(
 
-
                 score = 98
-
 
             )
 
@@ -278,7 +265,11 @@ fun HomeDashboard(
 
             Spacer(
 
-                modifier = Modifier.height(14.dp)
+                modifier = Modifier.padding(
+
+                    top = 14.dp
+
+                )
 
             )
 
@@ -288,15 +279,25 @@ fun HomeDashboard(
 
             NetworkHealthCard(
 
-
                 latency = 42,
-
 
                 speed = download
 
-
             )
 
+
+
+
+
+            Spacer(
+
+                modifier = Modifier.padding(
+
+                    bottom = 30.dp
+
+                )
+
+            )
 
         }
 

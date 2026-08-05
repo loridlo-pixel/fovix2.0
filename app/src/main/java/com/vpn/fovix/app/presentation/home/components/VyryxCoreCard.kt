@@ -10,16 +10,7 @@ import androidx.compose.animation.core.tween
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 
@@ -29,7 +20,6 @@ import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.draw.shadow
 
@@ -40,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 import com.vpn.fovix.app.presentation.home.UserMode
+import com.vpn.fovix.domain.subscription.VpnSubscription
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
@@ -53,9 +44,16 @@ fun VyryxCoreCard(
 
     server: String,
 
+    subscription: VpnSubscription?,
+
     onClick: () -> Unit
 
 ) {
+
+
+    val hasSubscription =
+        subscription != null
+
 
 
     val transition =
@@ -82,7 +80,6 @@ fun VyryxCoreCard(
 
                     repeatMode =
                         RepeatMode.Reverse
-
                 ),
 
             label = "pulse"
@@ -92,68 +89,147 @@ fun VyryxCoreCard(
 
 
     val stateText =
-        when(status) {
 
-            ConnectionStatus.CONNECTED ->
-                "Protected"
+        if (!hasSubscription) {
 
+            "Setup required"
 
-            ConnectionStatus.CONNECTING ->
-                "Connecting..."
+        } else {
 
+            when(status) {
 
-            ConnectionStatus.ERROR ->
-                "Attention"
+                ConnectionStatus.CONNECTED ->
+                    "Protected"
 
+                ConnectionStatus.CONNECTING ->
+                    "Connecting..."
 
-            else ->
-                "Ready"
+                ConnectionStatus.ERROR ->
+                    "Attention"
+
+                else ->
+                    "Ready"
+
+            }
 
         }
+
 
 
 
     val subtitle =
-        when(status) {
 
-            ConnectionStatus.CONNECTED ->
-                "Secure connection active"
+        if (!hasSubscription) {
 
+            "Add VPN provider subscription"
 
-            ConnectionStatus.CONNECTING ->
-                "Building secure tunnel"
+        } else {
 
+            when(status) {
 
-            ConnectionStatus.ERROR ->
-                "Connection failed"
+                ConnectionStatus.CONNECTED ->
+                    "Secure connection active"
 
+                ConnectionStatus.CONNECTING ->
+                    "Building secure tunnel"
 
-            else ->
-                "Tap to protect your network"
+                ConnectionStatus.ERROR ->
+                    "Connection failed"
+
+                else ->
+                    "Tap to protect your network"
+
+            }
 
         }
+
+
+
+
+
+    val cardBrush =
+
+        if(hasSubscription)
+
+            Brush.linearGradient(
+
+                colors = listOf(
+
+                    Color(0xFF38BDF8),
+
+                    Color(0xFF0284C7)
+
+                )
+
+            )
+
+        else
+
+            Brush.linearGradient(
+
+                colors = listOf(
+
+                    Color(0xFFE5E7EB),
+
+                    Color(0xFFD1D5DB)
+
+                )
+
+            )
+
+
+
+
+
+    val primaryText =
+
+        if(hasSubscription)
+
+            Color.White
+
+        else
+
+            Color(0xFF334155)
+
+
+
+    val secondaryText =
+
+        if(hasSubscription)
+
+            Color.White.copy(alpha = 0.75f)
+
+        else
+
+            Color(0xFF64748B)
+
+
 
 
 
     val powerColor =
-        when(status) {
 
-            ConnectionStatus.CONNECTED ->
-                Color(0xFF22C55E)
+        if(!hasSubscription)
 
+            Color(0xFF94A3B8)
 
-            ConnectionStatus.CONNECTING ->
-                Color(0xFFFBBF24)
+        else
 
+            when(status) {
 
-            ConnectionStatus.ERROR ->
-                Color(0xFFEF4444)
+                ConnectionStatus.CONNECTED ->
+                    Color(0xFF22C55E)
 
+                ConnectionStatus.CONNECTING ->
+                    Color(0xFFFBBF24)
 
-            else ->
-                Color.White
+                ConnectionStatus.ERROR ->
+                    Color(0xFFEF4444)
 
-        }
+                else ->
+                    Color.White
+
+            }
 
 
 
@@ -172,32 +248,15 @@ fun VyryxCoreCard(
 
                     elevation = 12.dp,
 
-                    shape = RoundedCornerShape(28.dp),
-
-                    ambientColor = Color(0x33000000),
-
-                    spotColor = Color(0x33000000)
+                    shape = RoundedCornerShape(28.dp)
 
                 )
 
                 .background(
 
-                    brush =
-                        Brush.linearGradient(
+                    brush = cardBrush,
 
-                            colors =
-                                listOf(
-
-                                    Color(0xFF38BDF8),
-
-                                    Color(0xFF0284C7)
-
-                                )
-
-                        ),
-
-                    shape =
-                        RoundedCornerShape(28.dp)
+                    shape = RoundedCornerShape(28.dp)
 
                 )
 
@@ -210,7 +269,6 @@ fun VyryxCoreCard(
                 .padding(22.dp)
 
     ) {
-
 
 
         Column(
@@ -244,7 +302,7 @@ fun VyryxCoreCard(
 
                         text = "VYRYX CORE",
 
-                        color = Color.White.copy(alpha = 0.75f),
+                        color = secondaryText,
 
                         fontSize = 12.sp
 
@@ -252,10 +310,7 @@ fun VyryxCoreCard(
 
 
                     Spacer(
-
-                        modifier =
-                            Modifier.height(5.dp)
-
+                        Modifier.height(5.dp)
                     )
 
 
@@ -263,7 +318,7 @@ fun VyryxCoreCard(
 
                         text = stateText,
 
-                        color = Color.White,
+                        color = primaryText,
 
                         fontSize = 24.sp
 
@@ -271,7 +326,6 @@ fun VyryxCoreCard(
 
 
                 }
-
 
 
 
@@ -285,7 +339,10 @@ fun VyryxCoreCard(
 
                             .scale(
 
-                                if(status == ConnectionStatus.CONNECTING)
+                                if(
+                                    status ==
+                                    ConnectionStatus.CONNECTING
+                                )
 
                                     pulse.value
 
@@ -297,7 +354,17 @@ fun VyryxCoreCard(
 
                             .background(
 
-                                Color.White.copy(alpha = 0.18f),
+                                if(hasSubscription)
+
+                                    Color.White.copy(
+                                        alpha = 0.18f
+                                    )
+
+                                else
+
+                                    Color.White.copy(
+                                        alpha = 0.55f
+                                    ),
 
                                 CircleShape
 
@@ -319,9 +386,7 @@ fun VyryxCoreCard(
 
                     )
 
-
                 }
-
 
 
             }
@@ -329,16 +394,11 @@ fun VyryxCoreCard(
 
 
 
-
-
-
             Spacer(
 
-                modifier =
-                    Modifier.height(18.dp)
+                Modifier.height(18.dp)
 
             )
-
 
 
 
@@ -347,8 +407,7 @@ fun VyryxCoreCard(
 
                 text = subtitle,
 
-                color =
-                    Color.White.copy(alpha = 0.85f),
+                color = secondaryText,
 
                 fontSize = 13.sp
 
@@ -358,16 +417,11 @@ fun VyryxCoreCard(
 
 
 
-
-
             Spacer(
 
-                modifier =
-                    Modifier.weight(1f)
+                Modifier.weight(1f)
 
             )
-
-
 
 
 
@@ -392,8 +446,7 @@ fun VyryxCoreCard(
 
                         text = "SERVER",
 
-                        color =
-                            Color.White.copy(alpha = 0.65f),
+                        color = secondaryText,
 
                         fontSize = 10.sp
 
@@ -402,17 +455,23 @@ fun VyryxCoreCard(
 
                     Text(
 
-                        text = server,
+                        text =
 
-                        color = Color.White,
+                            if(hasSubscription)
+
+                                server
+
+                            else
+
+                                "No server",
+
+                        color = primaryText,
 
                         fontSize = 14.sp
 
                     )
 
-
                 }
-
 
 
 
@@ -433,8 +492,7 @@ fun VyryxCoreCard(
 
                             text = "PING",
 
-                            color =
-                                Color.White.copy(alpha = 0.65f),
+                            color = secondaryText,
 
                             fontSize = 10.sp
 
@@ -443,9 +501,17 @@ fun VyryxCoreCard(
 
                         Text(
 
-                            text = "42 ms",
+                            text =
 
-                            color = Color.White,
+                                if(hasSubscription)
+
+                                    "42 ms"
+
+                                else
+
+                                    "--",
+
+                            color = primaryText,
 
                             fontSize = 14.sp
 
@@ -454,13 +520,10 @@ fun VyryxCoreCard(
 
                     }
 
-
                 }
 
 
-
             }
-
 
 
         }

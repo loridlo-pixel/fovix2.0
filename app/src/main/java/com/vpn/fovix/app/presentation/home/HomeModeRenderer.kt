@@ -3,123 +3,71 @@ package com.vpn.fovix.app.presentation.home
 
 import androidx.compose.runtime.Composable
 
+import com.vpn.fovix.domain.subscription.VpnSubscription
+import com.vpn.fovix.domain.vpnstate.ConnectionStatus
+
 
 
 @Composable
 fun HomeModeRenderer(
 
 
-    state: HomeUiState,
+    mode: UserMode,
 
 
-    onConnect: () -> Unit,
+    status: ConnectionStatus,
 
 
-    onDisconnect: () -> Unit,
+    server: String,
 
 
-    onOpenSubscriptions: () -> Unit,
+    download: Int,
 
 
-    onOpenServers: () -> Unit
+    upload: Int,
+
+
+    subscription: VpnSubscription?,
+
+
+    onConnectClick: () -> Unit,
+
+
+    onOpenSubscriptions: () -> Unit
 
 
 ) {
 
 
 
-    when(state.userMode) {
+    HomeDashboard(
 
 
+        mode = mode,
 
-        UserMode.SIMPLE -> {
 
+        status = status,
 
 
-            SimpleHomeView(
+        server = server,
 
 
-                state = state,
+        download = download,
 
 
-                onConnect = onConnect,
+        upload = upload,
 
 
-                onDisconnect = onDisconnect,
+        vpnSubscription = subscription,
 
 
-                onOpenSubscriptions = onOpenSubscriptions
+        onConnectClick = onConnectClick,
 
 
-            )
+        onOpenSubscriptions = onOpenSubscriptions
 
-        }
 
-
-
-
-
-
-        UserMode.ADVANCED -> {
-
-
-
-            AdvancedHomeView(
-
-
-                state = state,
-
-
-                onConnect = onConnect,
-
-
-                onDisconnect = onDisconnect,
-
-
-                onOpenSubscriptions = onOpenSubscriptions,
-
-
-                onOpenServers = onOpenServers
-
-
-            )
-
-        }
-
-
-
-
-
-
-        UserMode.EXPERT -> {
-
-
-
-            ExpertHomeView(
-
-
-                state = state,
-
-
-                onConnect = onConnect,
-
-
-                onDisconnect = onDisconnect,
-
-
-                onOpenSubscriptions = onOpenSubscriptions,
-
-
-                onOpenServers = onOpenServers
-
-
-            )
-
-        }
-
-
-    }
-
+    )
 
 
 }

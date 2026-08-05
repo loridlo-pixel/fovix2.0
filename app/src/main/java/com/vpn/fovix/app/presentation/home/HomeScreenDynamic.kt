@@ -1,16 +1,10 @@
 package com.vpn.fovix.app.presentation.home
 
 
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-
 import androidx.compose.runtime.Composable
 
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-
-import androidx.compose.ui.unit.dp
+import com.vpn.fovix.domain.subscription.VpnSubscription
+import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 
 
 
@@ -18,67 +12,96 @@ import androidx.compose.ui.unit.dp
 fun HomeScreenDynamic(
 
 
-    state: HomeUiState,
+    mode: UserMode,
 
 
-    onConnect: () -> Unit,
+    status: ConnectionStatus,
 
 
-    onDisconnect: () -> Unit,
+    server: String,
+
+
+    download: Int,
+
+
+    upload: Int,
+
+
+    subscription: VpnSubscription?,
+
+
+    onConnectClick: () -> Unit,
 
 
     onOpenSubscriptions: () -> Unit,
 
 
-    onOpenServers: () -> Unit
+    onProfileClick: () -> Unit = {},
+
+
+    onModeClick: () -> Unit = {}
+
 
 
 ) {
 
 
 
-    Box(
+    HomeDashboard(
 
 
-        modifier = Modifier
-
-            .fillMaxSize()
-
-            .padding(24.dp),
+        mode = mode,
 
 
-
-        contentAlignment = Alignment.Center
-
-
-    ) {
+        status = status,
 
 
-
-        HomeModeRenderer(
-
-
-            state = state,
+        server = server,
 
 
-            onConnect = onConnect,
+        download = download,
 
 
-            onDisconnect = onDisconnect,
+        upload = upload,
 
 
-            onOpenSubscriptions = onOpenSubscriptions,
+        vpnSubscription = subscription,
 
 
-            onOpenServers = onOpenServers
+        onConnectClick = {
 
 
-        )
+            onConnectClick()
+
+        },
+
+
+        onOpenSubscriptions = {
+
+
+            onOpenSubscriptions()
+
+        },
+
+
+        onProfileClick = {
+
+
+            onProfileClick()
+
+        },
+
+
+        onModeClick = {
+
+
+            onModeClick()
+
+        }
 
 
 
-    }
-
+    )
 
 
 }
