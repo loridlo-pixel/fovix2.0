@@ -40,7 +40,7 @@ class VpnEngine(
 
         fun registerStateListener(
             listener: (VPNState) -> Unit
-        ){
+        ) {
 
             stateListener = listener
 
@@ -49,10 +49,9 @@ class VpnEngine(
 
 
 
-
         fun notifyConnected(
             serverName: String
-        ){
+        ) {
 
 
             val state = VPNState(
@@ -64,9 +63,7 @@ class VpnEngine(
             )
 
 
-            stateListener?.invoke(
-                state
-            )
+            stateListener?.invoke(state)
 
 
             Log.i(
@@ -80,10 +77,9 @@ class VpnEngine(
 
 
 
-
         fun notifyError(
             message: String
-        ){
+        ) {
 
 
             val state = VPNState(
@@ -95,9 +91,7 @@ class VpnEngine(
             )
 
 
-            stateListener?.invoke(
-                state
-            )
+            stateListener?.invoke(state)
 
 
             Log.e(
@@ -105,14 +99,10 @@ class VpnEngine(
                 "STATE ERROR=$message"
             )
 
-
         }
 
 
-
     }
-
-
 
 
 
@@ -125,11 +115,12 @@ class VpnEngine(
 
             status = ConnectionStatus.DISCONNECTED,
 
-            server = "Auto"
+            server = "None"
 
         )
 
     )
+
 
 
 
@@ -148,6 +139,7 @@ class VpnEngine(
 
 
         registerStateListener {
+
 
                 newState ->
 
@@ -172,13 +164,14 @@ class VpnEngine(
 
         profile: VpnProfile
 
-    ){
+    ) {
 
 
         Log.i(
             TAG,
-            "START REQUEST ${profile.name}"
+            "START VPN ${profile.name}"
         )
+
 
 
 
@@ -194,9 +187,7 @@ class VpnEngine(
 
 
 
-
         try {
-
 
 
             val intent = Intent(
@@ -209,105 +200,38 @@ class VpnEngine(
 
 
 
-
-
             intent.putExtra(
 
-                "SERVER_NAME",
+                "VPN_PROFILE",
 
-                profile.name
-
-            )
-
-
-
-            intent.putExtra(
-
-                "SERVER_COUNTRY",
-
-                profile.country
+                profile
 
             )
 
 
 
-            intent.putExtra(
-
-                "SERVER_HOST",
-
-                profile.server
-
-            )
+            context.startService(intent)
 
 
-
-            intent.putExtra(
-
-                "SERVER_PORT",
-
-                profile.port
-
-            )
-
-
-
-            intent.putExtra(
-
-                "SERVER_UUID",
-
-                profile.uuid
-
-            )
-
-
-
-            intent.putExtra(
-
-                "SERVER_SNI",
-
-                profile.sni
-
-            )
-
-
-
-            intent.putExtra(
-
-                "SERVER_FP",
-
-                profile.fingerprint
-
-            )
-
-
-
-
-
-            context.startService(
-
-                intent
-
-            )
 
 
 
             Log.i(
                 TAG,
-                "VPN SERVICE STARTED ${profile.server}"
+                "SERVICE STARTED WITH PROFILE ${profile.server}"
             )
 
 
 
         }
-        catch(e: Exception){
-
+        catch(e: Exception) {
 
 
             Log.e(
 
                 TAG,
 
-                "VPN START FAILED",
+                "START FAILED",
 
                 e
 
@@ -319,13 +243,12 @@ class VpnEngine(
 
                 status = ConnectionStatus.ERROR,
 
-                server = "Error"
+                server = profile.name
 
             )
 
 
         }
-
 
 
     }
@@ -338,7 +261,8 @@ class VpnEngine(
 
 
 
-    override fun stop(){
+
+    override fun stop() {
 
 
 
@@ -346,9 +270,10 @@ class VpnEngine(
 
             TAG,
 
-            "STOP REQUEST"
+            "STOP VPN"
 
         )
+
 
 
 
@@ -356,14 +281,15 @@ class VpnEngine(
 
             status = ConnectionStatus.DISCONNECTING,
 
-            server = "Auto"
+            server = "None"
 
         )
 
 
 
-        try {
 
+
+        try {
 
 
             SingBoxNative.stop()
@@ -379,16 +305,13 @@ class VpnEngine(
             )
 
 
-            context.stopService(
 
-                intent
+            context.stopService(intent)
 
-            )
 
 
         }
-        catch(e: Exception){
-
+        catch(e: Exception) {
 
 
             Log.e(
@@ -408,12 +331,11 @@ class VpnEngine(
 
 
 
-
         _state.value = VPNState(
 
             status = ConnectionStatus.DISCONNECTED,
 
-            server = "Auto"
+            server = "None"
 
         )
 
@@ -434,7 +356,7 @@ class VpnEngine(
 
 
         }
-        catch(e: Exception){
+        catch(e: Exception) {
 
 
             false

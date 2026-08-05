@@ -1,18 +1,17 @@
 package com.vpn.fovix.app.presentation.subscription
 
 
-import com.vpn.fovix.domain.server.ServerProfile
-
+import com.vpn.fovix.domain.subscription.VpnSubscription
 
 
 data class SubscriptionUiState(
 
-    val input: String = "",
+    val subscriptions: List<VpnSubscription> = emptyList(),
 
-    val loading: Boolean = false,
+    val selected: VpnSubscription? = null,
 
-    val message: String = "",
+    val isLoading: Boolean = false,
 
-    val servers: List<ServerProfile> = emptyList()
+    val error: String? = null
 
 )

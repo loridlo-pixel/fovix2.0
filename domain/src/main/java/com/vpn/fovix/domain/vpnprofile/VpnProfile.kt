@@ -1,6 +1,12 @@
 package com.vpn.fovix.domain.vpnprofile
 
 
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+
+
+@Parcelize
 data class VpnProfile(
 
     val name: String,
@@ -17,4 +23,4 @@ data class VpnProfile(
 
     val fingerprint: String = "chrome"
 
-)
+) : Parcelable
