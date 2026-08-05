@@ -1,8 +1,11 @@
 package com.vpn.fovix.data.repository
 
 
+import com.vpn.fovix.domain.vpnprofile.VpnProfile
+import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 import com.vpn.fovix.domain.vpnstate.VPNState
 import com.vpn.fovix.domain.vpnstate.VpnController
+
 import kotlinx.coroutines.flow.StateFlow
 
 
@@ -23,25 +26,21 @@ class VpnRepository(
 
 
 
-
     fun startVpn(
 
-        server: Any? = null
+        profile: VpnProfile
 
     ) {
 
 
         vpnController.start(
 
-            server
+            profile
 
         )
 
 
     }
-
-
-
 
 
 
@@ -59,24 +58,21 @@ class VpnRepository(
 
 
 
+    fun toggle(
 
+        profile: VpnProfile
 
-
-    fun toggle(){
-
-
-        val currentState = state.value
-
+    ){
 
 
         when(
 
-            currentState.status
+            state.value.status
 
         ){
 
 
-            com.vpn.fovix.domain.vpnstate.ConnectionStatus.CONNECTED -> {
+            ConnectionStatus.CONNECTED -> {
 
 
                 disconnect()
@@ -89,7 +85,11 @@ class VpnRepository(
             else -> {
 
 
-                startVpn(null)
+                startVpn(
+
+                    profile
+
+                )
 
 
             }

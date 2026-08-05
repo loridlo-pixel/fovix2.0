@@ -3,12 +3,13 @@ package com.vpn.fovix.app.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+
 import com.vpn.fovix.data.repository.VpnRepository
-import com.vpn.fovix.domain.vpnstate.ConnectionStatus
+import com.vpn.fovix.domain.vpnprofile.VpnProfile
 import com.vpn.fovix.domain.vpnstate.VPNAction
-import com.vpn.fovix.domain.vpnstate.VPNState
-import kotlinx.coroutines.flow.StateFlow
+
 import kotlinx.coroutines.launch
+
 
 
 
@@ -20,9 +21,26 @@ class VPNViewModel(
 
 
 
-    val state: StateFlow<VPNState> =
+    private var currentProfile: VpnProfile? = null
 
-        repository.state
+
+
+
+
+    fun setProfile(
+
+        profile: VpnProfile
+
+    ) {
+
+
+        currentProfile = profile
+
+
+    }
+
+
+
 
 
 
@@ -40,7 +58,9 @@ class VPNViewModel(
 
             VPNAction.Connect -> {
 
-                startVpn()
+
+                connect()
+
 
             }
 
@@ -48,7 +68,9 @@ class VPNViewModel(
 
             VPNAction.Disconnect -> {
 
+
                 disconnect()
+
 
             }
 
@@ -62,13 +84,28 @@ class VPNViewModel(
 
 
 
-    private fun startVpn() {
 
 
-        viewModelScope.launch {
+
+    private fun connect() {
 
 
-            repository.startVpn()
+        currentProfile?.let { profile ->
+
+
+
+            viewModelScope.launch {
+
+
+                repository.startVpn(
+
+                    profile
+
+                )
+
+
+            }
+
 
 
         }
@@ -80,7 +117,11 @@ class VPNViewModel(
 
 
 
+
+
+
     private fun disconnect() {
+
 
 
         viewModelScope.launch {
@@ -93,6 +134,7 @@ class VPNViewModel(
 
 
     }
+
 
 
 }

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.util.Log
 
 
+import com.vpn.fovix.domain.vpnprofile.VpnProfile
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
 import com.vpn.fovix.domain.vpnstate.VPNState
 import com.vpn.fovix.domain.vpnstate.VpnController
@@ -36,9 +37,10 @@ class VpnEngine(
 
 
 
+
         fun registerStateListener(
             listener: (VPNState) -> Unit
-        ) {
+        ){
 
             stateListener = listener
 
@@ -46,33 +48,42 @@ class VpnEngine(
 
 
 
-        fun notifyConnected() {
+
+
+        fun notifyConnected(
+            serverName: String
+        ){
 
 
             val state = VPNState(
 
                 status = ConnectionStatus.CONNECTED,
 
-                server = "Auto"
+                server = serverName
 
             )
 
 
-            stateListener?.invoke(state)
+            stateListener?.invoke(
+                state
+            )
 
 
             Log.i(
                 TAG,
-                "STATE CONNECTED"
+                "STATE CONNECTED $serverName"
             )
 
         }
 
 
 
+
+
+
         fun notifyError(
             message: String
-        ) {
+        ){
 
 
             val state = VPNState(
@@ -84,7 +95,9 @@ class VpnEngine(
             )
 
 
-            stateListener?.invoke(state)
+            stateListener?.invoke(
+                state
+            )
 
 
             Log.e(
@@ -92,10 +105,13 @@ class VpnEngine(
                 "STATE ERROR=$message"
             )
 
+
         }
 
 
+
     }
+
 
 
 
@@ -117,6 +133,7 @@ class VpnEngine(
 
 
 
+
     override val state: StateFlow<VPNState>
 
         get() = _state
@@ -132,7 +149,7 @@ class VpnEngine(
 
         registerStateListener {
 
-            newState ->
+                newState ->
 
 
             _state.value = newState
@@ -150,24 +167,18 @@ class VpnEngine(
 
 
 
+
     override fun start(
 
-        server: Any?
+        profile: VpnProfile
 
-    ) {
+    ){
 
 
         Log.i(
             TAG,
-            "START REQUEST"
+            "START REQUEST ${profile.name}"
         )
-
-
-
-        val serverName =
-            server?.toString()
-                ?: "Auto"
-
 
 
 
@@ -175,7 +186,7 @@ class VpnEngine(
 
             status = ConnectionStatus.CONNECTING,
 
-            server = serverName
+            server = profile.name
 
         )
 
@@ -183,7 +194,9 @@ class VpnEngine(
 
 
 
+
         try {
+
 
 
             val intent = Intent(
@@ -196,25 +209,110 @@ class VpnEngine(
 
 
 
-            context.startService(intent)
+
+
+            intent.putExtra(
+
+                "SERVER_NAME",
+
+                profile.name
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_COUNTRY",
+
+                profile.country
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_HOST",
+
+                profile.server
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_PORT",
+
+                profile.port
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_UUID",
+
+                profile.uuid
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_SNI",
+
+                profile.sni
+
+            )
+
+
+
+            intent.putExtra(
+
+                "SERVER_FP",
+
+                profile.fingerprint
+
+            )
+
+
+
+
+
+            context.startService(
+
+                intent
+
+            )
 
 
 
             Log.i(
                 TAG,
-                "VPN SERVICE STARTED"
+                "VPN SERVICE STARTED ${profile.server}"
             )
+
 
 
         }
-        catch(e: Exception) {
+        catch(e: Exception){
+
 
 
             Log.e(
+
                 TAG,
+
                 "VPN START FAILED",
+
                 e
+
             )
+
 
 
             _state.value = VPNState(
@@ -225,7 +323,9 @@ class VpnEngine(
 
             )
 
+
         }
+
 
 
     }
@@ -237,13 +337,17 @@ class VpnEngine(
 
 
 
-    override fun stop() {
+
+    override fun stop(){
 
 
 
         Log.i(
+
             TAG,
+
             "STOP REQUEST"
+
         )
 
 
@@ -261,6 +365,7 @@ class VpnEngine(
         try {
 
 
+
             SingBoxNative.stop()
 
 
@@ -274,23 +379,32 @@ class VpnEngine(
             )
 
 
+            context.stopService(
 
-            context.stopService(intent)
+                intent
 
+            )
 
 
         }
-        catch(e: Exception) {
+        catch(e: Exception){
+
 
 
             Log.e(
+
                 TAG,
+
                 "STOP ERROR",
+
                 e
 
             )
 
+
         }
+
+
 
 
 
@@ -310,9 +424,6 @@ class VpnEngine(
 
 
 
-
-
-
     fun isRunning(): Boolean {
 
 
@@ -323,7 +434,7 @@ class VpnEngine(
 
 
         }
-        catch(e: Exception) {
+        catch(e: Exception){
 
 
             false

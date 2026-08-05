@@ -4,20 +4,14 @@ package com.vpn.fovix.app.presentation.home
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 
-import com.vpn.fovix.app.data.UserPreferences
-
 import com.vpn.fovix.data.repository.VpnRepository
+
 
 
 
 class HomeViewModelFactory(
 
-
-    private val repository: VpnRepository,
-
-
-    private val userPreferences: UserPreferences
-
+    private val repository: VpnRepository
 
 ) : ViewModelProvider.Factory {
 
@@ -25,38 +19,21 @@ class HomeViewModelFactory(
 
     override fun <T : ViewModel> create(
 
-
         modelClass: Class<T>
-
 
     ): T {
 
 
 
-        if(
+        if(modelClass.isAssignableFrom(HomeViewModel::class.java)) {
 
 
-            modelClass.isAssignableFrom(
 
-
-                HomeViewModel::class.java
-
-
-            )
-
-
-        ) {
-
-
+            @Suppress("UNCHECKED_CAST")
 
             return HomeViewModel(
 
-
-                repository,
-
-
-                userPreferences
-
+                repository
 
             ) as T
 
@@ -65,10 +42,9 @@ class HomeViewModelFactory(
 
 
 
-
         throw IllegalArgumentException(
 
-            "Unknown ViewModel"
+            "Unknown ViewModel class"
 
         )
 

@@ -6,7 +6,7 @@ import android.net.VpnService
 import android.os.ParcelFileDescriptor
 import android.util.Log
 
-
+import com.vpn.fovix.domain.vpnprofile.VpnProfile
 import com.vpn.fovix.diagnostics.FovixDiagnostics
 import com.vpn.fovix.diagnostics.FovixEvent
 import com.vpn.fovix.vpn.config.FovixVpnConfigProvider
@@ -88,6 +88,10 @@ class FovixVpnService : VpnService() {
 
 
 
+    private var vpnIntent: Intent? = null
+
+
+
 
 
     private val serviceScope =
@@ -95,7 +99,6 @@ class FovixVpnService : VpnService() {
             SupervisorJob() +
                     Dispatchers.IO
         )
-
 
 
 
@@ -142,6 +145,10 @@ class FovixVpnService : VpnService() {
         startId: Int
 
     ): Int {
+
+
+
+        vpnIntent = intent
 
 
 
@@ -304,10 +311,15 @@ class FovixVpnService : VpnService() {
 
 
 
+            val profile =
+                getVpnProfile()
+
 
 
             val config =
-                FovixVpnConfigProvider.build()
+                FovixVpnConfigProvider.build(
+                    profile
+                )
 
 
 
@@ -317,8 +329,6 @@ class FovixVpnService : VpnService() {
                 TAG,
                 "CONFIG SIZE=${config.length}"
             )
-
-
 
 
 
@@ -392,6 +402,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
                     Log.e(
                         TAG,
                         "ENGINE STARTED"
@@ -443,6 +454,7 @@ class FovixVpnService : VpnService() {
 
 
 
+
         }
         catch(e: Exception) {
 
@@ -475,6 +487,9 @@ class FovixVpnService : VpnService() {
 
 
     }
+
+
+
 
 
 
@@ -521,7 +536,9 @@ class FovixVpnService : VpnService() {
                         "CONNECTED" -> {
 
 
-                            VpnEngine.notifyConnected()
+                            VpnEngine.notifyConnected(
+                                getVpnProfile().name
+                            )
 
 
                         }
@@ -585,6 +602,9 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
+
     override fun onDestroy() {
 
 
@@ -618,6 +638,8 @@ class FovixVpnService : VpnService() {
 
 
 
+
+
         try {
 
 
@@ -635,7 +657,9 @@ class FovixVpnService : VpnService() {
 
 
 
+
         tunInterface = null
+
 
 
 
@@ -654,6 +678,109 @@ class FovixVpnService : VpnService() {
     }
 
 
+
+
+
+
+
+
+
+
+
+
+    private fun getVpnProfile(): VpnProfile {
+
+
+        val intent =
+            vpnIntent
+                ?: throw IllegalStateException(
+                    "VPN intent missing"
+                )
+
+
+
+        return VpnProfile(
+
+
+
+            name =
+                intent.getStringExtra(
+                    "SERVER_NAME"
+                )
+                    ?: "Unknown",
+
+
+
+
+
+            country =
+                intent.getStringExtra(
+                    "SERVER_COUNTRY"
+                )
+                    ?: "Unknown",
+
+
+
+
+
+            server =
+                intent.getStringExtra(
+                    "SERVER_HOST"
+                )
+                    ?: throw IllegalStateException(
+                        "Server missing"
+                    ),
+
+
+
+
+
+            port =
+                intent.getIntExtra(
+                    "SERVER_PORT",
+                    443
+                ),
+
+
+
+
+
+            uuid =
+                intent.getStringExtra(
+                    "SERVER_UUID"
+                )
+                    ?: throw IllegalStateException(
+                        "UUID missing"
+                    ),
+
+
+
+
+
+            sni =
+                intent.getStringExtra(
+                    "SERVER_SNI"
+                )
+                    ?: throw IllegalStateException(
+                        "SNI missing"
+                    ),
+
+
+
+
+
+            fingerprint =
+                intent.getStringExtra(
+                    "SERVER_FP"
+                )
+                    ?: "chrome"
+
+
+
+        )
+
+
+    }
 
 
 

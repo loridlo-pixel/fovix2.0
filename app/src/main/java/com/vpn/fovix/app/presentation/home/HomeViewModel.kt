@@ -6,127 +6,32 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 
-import com.vpn.fovix.app.data.UserPreferences
 import com.vpn.fovix.data.repository.VpnRepository
+import com.vpn.fovix.domain.vpnprofile.VpnProfile
 
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 
 
 
 class HomeViewModel(
 
-
-    private val repository: VpnRepository,
-
-
-    preferences: UserPreferences
-
+    private val repository: VpnRepository
 
 ) : ViewModel() {
 
 
 
-    private val selectedServer =
+    private var currentProfile: VpnProfile? = null
 
-        MutableStateFlow(
 
-            "Auto"
 
-        )
 
 
+    fun setProfile(
+        profile: VpnProfile
+    ){
 
-
-
-    val state: StateFlow<HomeUiState> =
-
-
-
-        combine(
-
-
-            repository.state,
-
-
-            preferences.userMode,
-
-
-            selectedServer
-
-
-
-        ) { vpnState, mode, server ->
-
-
-
-            HomeUiState(
-
-
-                status = vpnState.status,
-
-
-                connected =
-
-                    vpnState.status.name == "CONNECTED",
-
-
-
-                server = server,
-
-
-
-                userMode = mode,
-
-
-
-                showServer = server != "Auto"
-
-
-
-            )
-
-
-        }
-
-
-
-        .stateIn(
-
-
-            viewModelScope,
-
-
-            SharingStarted.WhileSubscribed(5000),
-
-
-            HomeUiState()
-
-
-        )
-
-
-
-
-
-
-
-
-    fun selectServer(
-
-
-        server: String
-
-
-    ) {
-
-
-        selectedServer.value = server
-
+        currentProfile = profile
 
     }
 
@@ -135,26 +40,30 @@ class HomeViewModel(
 
 
 
-
-
-    fun toggleConnection() {
-
+    fun toggleConnection(){
 
 
         Log.d(
 
-
             "FOVIX",
 
-
             "Button pressed"
-
 
         )
 
 
 
-        repository.toggle()
+        currentProfile?.let {
+
+
+            repository.toggle(
+
+                it
+
+            )
+
+
+        }
 
 
 

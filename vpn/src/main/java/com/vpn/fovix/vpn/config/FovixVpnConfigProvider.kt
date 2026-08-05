@@ -3,30 +3,44 @@ package com.vpn.fovix.vpn.config
 
 import com.vpn.fovix.config.builder.SingBoxConfigBuilder
 import com.vpn.fovix.config.factory.FovixProtocolFactory
+import com.vpn.fovix.domain.vpnprofile.VpnProfile
 
 
 
 object FovixVpnConfigProvider {
 
 
-    fun build(): String {
+
+    fun build(
+
+        profile: VpnProfile
+
+    ): String {
+
 
 
         val config =
 
             FovixProtocolFactory.createVless(
 
-                server = "ai.noooo.win",
 
-                port = 443,
+                server = profile.server,
 
-                uuid = "c5c1c20f-691d-4850-988c-ee463f4799ad",
 
-                sni = "cdn-v1-6a51ff3b.noooo.win",
+                port = profile.port,
 
-                fingerprint = "chrome"
+
+                uuid = profile.uuid,
+
+
+                sni = profile.sni,
+
+
+                fingerprint = profile.fingerprint
+
 
             )
+
 
 
 
@@ -35,6 +49,7 @@ object FovixVpnConfigProvider {
             config
 
         )
+
 
     }
 
