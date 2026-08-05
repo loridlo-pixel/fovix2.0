@@ -50,6 +50,7 @@ class SubscriptionViewModel(
 
 
 
+
     private fun loadSubscriptions() {
 
 
@@ -70,11 +71,44 @@ class SubscriptionViewModel(
 
 
 
-    fun importFromUrl(
 
-        url: String
+
+    fun updateInput(
+
+        value: String
 
     ) {
+
+
+        _state.value =
+            _state.value.copy(
+
+                inputUrl = value
+
+            )
+
+    }
+
+
+
+
+
+
+
+
+
+    fun importSubscription() {
+
+
+        val url =
+            _state.value.inputUrl
+
+
+        if(url.isBlank())
+            return
+
+
+
 
 
         viewModelScope.launch {
@@ -109,25 +143,47 @@ class SubscriptionViewModel(
 
 
 
+
                 val subscription =
 
                     VpnSubscription(
 
+
                         id =
+
                             UUID.randomUUID()
                                 .toString(),
 
 
+
                         name =
-                            "Imported VPN",
+
+                            extractProviderName(
+
+                                url
+
+                            ),
 
 
-                        url = url,
+
+                        url =
+
+                            url,
+
+
+
+                        servers =
+
+                            servers,
+
 
 
                         isActive = true
 
+
                     )
+
+
 
 
 
@@ -143,10 +199,12 @@ class SubscriptionViewModel(
 
 
 
+
+
                 _state.value =
                     _state.value.copy(
 
-                        isLoading = false,
+                        inputUrl = "",
 
                         subscriptions =
                             repository.getSubscriptions()
@@ -160,16 +218,29 @@ class SubscriptionViewModel(
             catch(e: Exception) {
 
 
+
                 _state.value =
                     _state.value.copy(
 
-                        isLoading = false,
-
                         error =
+
                             e.message
                                 ?: "Import error"
 
                     )
+
+
+            }
+            finally {
+
+
+                _state.value =
+                    _state.value.copy(
+
+                        isLoading = false
+
+                    )
+
 
             }
 
@@ -186,11 +257,13 @@ class SubscriptionViewModel(
 
 
 
+
     fun removeSubscription(
 
         id: String
 
     ) {
+
 
 
         repository.removeSubscription(
@@ -204,6 +277,9 @@ class SubscriptionViewModel(
 
 
     }
+
+
+
 
 
 
@@ -230,6 +306,54 @@ class SubscriptionViewModel(
     }
 
 
+
+
+
+
+
+
+
+    private fun extractProviderName(
+
+        url: String
+
+    ): String {
+
+
+        return try {
+
+
+            val host =
+
+                java.net.URI(
+
+                    url
+
+                )
+                    .host
+
+
+
+            host
+                ?.removePrefix("www.")
+                ?: "VPN Provider"
+
+
+        }
+        catch(
+
+            e: Exception
+
+        ) {
+
+
+            "VPN Provider"
+
+
+        }
+
+
+    }
 
 
 
