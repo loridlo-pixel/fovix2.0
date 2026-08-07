@@ -1,6 +1,5 @@
 package com.vpn.fovix.app.presentation
 
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -16,150 +15,125 @@ import androidx.compose.runtime.setValue
 
 import androidx.compose.ui.Modifier
 
+import androidx.lifecycle.viewmodel.compose.viewModel
 
 import com.vpn.fovix.app.presentation.home.HomeDashboard
 import com.vpn.fovix.app.presentation.home.UserMode
 import com.vpn.fovix.app.presentation.home.components.ProtectionScenario
+import com.vpn.fovix.app.presentation.home.components.SubscriptionActionSheet
 
 import com.vpn.fovix.app.presentation.navigation.FovixBottomBar
 import com.vpn.fovix.app.presentation.navigation.FovixTab
 
-import com.vpn.fovix.app.presentation.servers.ServersScreen
-import com.vpn.fovix.app.presentation.settings.SettingsScreen
+import com.vpn.fovix.app.presentation.subscription.SubscriptionViewModel
+import com.vpn.fovix.app.presentation.subscription.SubscriptionViewModelFactory
 
+import com.vpn.fovix.data.importer.SubscriptionImportEngine
 import com.vpn.fovix.data.repository.VpnRepository
-
-import com.vpn.fovix.domain.vpnprofile.VpnProfile
-
-
+import com.vpn.fovix.data.subscription.SubscriptionRepository
 
 
 @Composable
 fun FovixApp(
 
-    vpnRepository: VpnRepository
+    vpnRepository: VpnRepository,
+
+    subscriptionRepository: SubscriptionRepository,
+
+    subscriptionImportEngine: SubscriptionImportEngine
 
 ) {
-
 
 
     val vpnState by vpnRepository.state.collectAsState()
 
 
 
-    var currentTab by remember {
+    val subscriptionViewModel: SubscriptionViewModel =
+        viewModel(
 
+            factory =
+                SubscriptionViewModelFactory(
 
-        mutableStateOf(
+                    subscriptionRepository,
 
-            FovixTab.HOME
+                    subscriptionImportEngine
+
+                )
 
         )
 
+
+
+    val subscriptionState by
+        subscriptionViewModel.state.collectAsState()
+
+
+
+    var currentTab by remember {
+        mutableStateOf(
+            FovixTab.HOME
+        )
     }
-
-
 
 
 
     var mode by remember {
-
-
         mutableStateOf(
-
             UserMode.SIMPLE
-
         )
-
     }
-
-
 
 
 
     var scenario by remember {
-
-
         mutableStateOf(
-
             ProtectionScenario.EVERYDAY
-
         )
-
     }
 
 
 
-
-
-
-    var selectedProfile by remember {
-
-
-        mutableStateOf<VpnProfile?>(null)
-
-
+    var showSubscriptionSheet by remember {
+        mutableStateOf(false)
     }
-
-
-
-
-
 
 
 
 
     Scaffold(
 
-
-
         bottomBar = {
-
-
 
             FovixBottomBar(
 
-
                 selected = currentTab,
-
 
                 connectionStatus = vpnState.status,
 
-
-
                 onTabSelected = {
-
 
                     currentTab = it
 
-
                 }
 
-
             )
-
-
 
         }
 
 
-
-    ) { paddingValues ->
-
-
+    ) { padding ->
 
 
 
         Box(
 
+            modifier =
+                Modifier
 
-            modifier = Modifier
+                    .fillMaxSize()
 
-                .fillMaxSize()
-
-                .padding(paddingValues)
-
-
+                    .padding(padding)
 
         ) {
 
@@ -179,19 +153,31 @@ fun FovixApp(
                         mode = mode,
 
 
-                        scenario = scenario,
+                        status =
+                            vpnState.status,
 
 
-                        status = vpnState.status,
+                        server =
+                            vpnState.server,
 
 
-                        server = vpnState.server,
+                        download =
+                            vpnState.download,
 
 
-                        download = vpnState.download,
+                        upload =
+                            vpnState.upload,
 
 
-                        upload = vpnState.upload,
+                        scenario =
+                            scenario,
+
+
+                        vpnSubscription =
+
+                            subscriptionState.selected
+
+                                ?: subscriptionState.subscriptions.firstOrNull(),
 
 
 
@@ -199,85 +185,49 @@ fun FovixApp(
 
 
 
-                            selectedProfile?.let {
-
-
-                                vpnRepository.toggle(
-
-                                    it
-
-                                )
-
-
-                            }
-
-
-
                         },
 
+
+
+                        onOpenSubscriptions = {
+
+                            showSubscriptionSheet = true
+
+                        },
 
 
 
                         onScenarioClick = {
 
-
                             scenario = it
 
-
                         },
-
-
-
-
-
-                        onProfileClick = {
-
-
-                            currentTab = FovixTab.PROFILE
-
-
-                        },
-
-
 
 
 
                         onModeClick = {
 
 
-
                             mode = when(mode) {
 
 
-
                                 UserMode.SIMPLE ->
-
                                     UserMode.ADVANCED
 
 
-
                                 UserMode.ADVANCED ->
-
                                     UserMode.EXPERT
 
 
-
                                 UserMode.EXPERT ->
-
                                     UserMode.SIMPLE
-
-
 
                             }
 
-
-
                         }
 
 
-
                     )
-
 
 
                 }
@@ -285,222 +235,94 @@ fun FovixApp(
 
 
 
-
-
-
-
-
-                FovixTab.SERVERS -> {
-
-
-
-                    ServersScreen(
-
-
-
-                        selectedServer = vpnState.server,
-
-
-
-                        onServerSelected = { serverName ->
-
-
-
-
-
-                            val profile = VpnProfile(
-
-
-
-                                name = serverName,
-
-
-
-                                country = "Unknown",
-
-
-
-                                server = serverName,
-
-
-
-                                port = 443,
-
-
-
-                                uuid = "",
-
-
-
-                                sni = serverName,
-
-
-
-                                fingerprint = "chrome"
-
-
-
-                            )
-
-
-
-
-
-                            selectedProfile = profile
-
-
-
-
-
-                            vpnRepository.startVpn(
-
-                                profile
-
-                            )
-
-
-
-
-
-                        },
-
-
-
-
-
-                        onBack = {
-
-
-
-                            currentTab = FovixTab.HOME
-
-
-
-                        }
-
-
-
-                    )
-
-
-
-                }
-
-
-
-
-
-
-
-
-
-                FovixTab.SETTINGS -> {
-
-
-
-                    SettingsScreen(
-
-
-
-                        mode = mode,
-
-
-
-                        onModeChange = {
-
-
-
-                            mode = it
-
-
-
-                        },
-
-
-
-                        onBack = {
-
-
-
-                            currentTab = FovixTab.HOME
-
-
-
-                        }
-
-
-
-                    )
-
-
-
-                }
-
-
-
-
-
-
-
-
-
-                FovixTab.PROFILE -> {
-
+                else -> {
 
 
                     Box(
+                        modifier =
+                            Modifier.fillMaxSize()
+                    )
+
+
+                }
+
+
+            }
 
 
 
-                        modifier = Modifier
-
-                            .fillMaxSize()
 
 
+            if(showSubscriptionSheet) {
 
-                    ) {
 
+
+                SubscriptionActionSheet(
+
+
+
+                    onDismiss = {
+
+                        showSubscriptionSheet = false
+
+                    },
+
+
+
+                    url = subscriptionState.url,
+
+
+
+                    onUrlChange = {
+
+                        subscriptionViewModel.updateUrl(it)
+
+                    },
+
+
+
+                    loading =
+                        subscriptionState.isLoading,
+
+
+
+                    error =
+                        subscriptionState.error,
+
+
+
+                    onImport = {
+
+
+                        subscriptionViewModel.importSubscription()
+
+
+                    },
+
+
+
+                    onPaste = {
+
+
+                        // временно пусто
+                        // сюда подключим ClipboardManager следующим шагом
+
+
+                    },
+
+
+
+                    onQr = {
+
+
+                        // позже QR scanner
 
 
                     }
 
 
 
-                }
-
-
-
-
-
-
-
-
-
-                FovixTab.DOCTOR -> {
-
-
-
-                    Box(
-
-
-
-                        modifier = Modifier
-
-                            .fillMaxSize()
-
-
-
-                    ) {
-
-
-
-                    }
-
-
-
-                }
-
-
+                )
 
             }
 
@@ -509,9 +331,7 @@ fun FovixApp(
         }
 
 
-
     }
-
 
 
 }

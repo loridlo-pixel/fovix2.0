@@ -4,6 +4,7 @@ package com.vpn.fovix.app.presentation.home
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -24,6 +25,7 @@ import com.vpn.fovix.app.presentation.home.components.ProtectionScoreCard
 import com.vpn.fovix.app.presentation.home.components.SubscriptionCard
 import com.vpn.fovix.app.presentation.home.components.UserProfileCard
 import com.vpn.fovix.app.presentation.home.components.VyryxCoreCard
+
 
 import com.vpn.fovix.domain.subscription.VpnSubscription
 import com.vpn.fovix.domain.vpnstate.ConnectionStatus
@@ -69,8 +71,8 @@ fun HomeDashboard(
 
     onOpenSubscriptions: () -> Unit = {}
 
-
 ) {
+
 
 
     Surface(
@@ -80,6 +82,7 @@ fun HomeDashboard(
         color = Color(0xFFF5F7FA)
 
     ) {
+
 
 
         Column(
@@ -108,7 +111,9 @@ fun HomeDashboard(
 
             UserProfileCard(
 
+
                 username = "Дмитрий",
+
 
                 subscription =
 
@@ -142,30 +147,29 @@ fun HomeDashboard(
 
 
 
-
             Spacer(
 
-                modifier = Modifier.padding(
-
-                    top = 16.dp
-
-                )
+                modifier = Modifier.height(16.dp)
 
             )
 
 
 
 
-
             VyryxCoreCard(
+
 
                 mode = mode,
 
+
                 status = status,
+
 
                 server = server,
 
+
                 subscription = vpnSubscription,
+
 
                 onClick = {
 
@@ -178,24 +182,20 @@ fun HomeDashboard(
 
 
 
-
             Spacer(
 
-                modifier = Modifier.padding(
-
-                    top = 14.dp
-
-                )
+                modifier = Modifier.height(14.dp)
 
             )
 
 
 
 
-
             ProtectionScenarioCard(
 
+
                 scenario = scenario,
+
 
                 onClick = {
 
@@ -208,28 +208,26 @@ fun HomeDashboard(
 
 
 
-
             Spacer(
 
-                modifier = Modifier.padding(
-
-                    top = 14.dp
-
-                )
+                modifier = Modifier.height(14.dp)
 
             )
 
 
 
 
-
             SubscriptionCard(
+
 
                 subscription = vpnSubscription,
 
+
                 onAddClick = {
 
+
                     onOpenSubscriptions()
+
 
                 }
 
@@ -238,22 +236,17 @@ fun HomeDashboard(
 
 
 
-
             Spacer(
 
-                modifier = Modifier.padding(
-
-                    top = 14.dp
-
-                )
+                modifier = Modifier.height(14.dp)
 
             )
 
 
 
 
-
             ProtectionScoreCard(
+
 
                 score = 98
 
@@ -262,24 +255,20 @@ fun HomeDashboard(
 
 
 
-
             Spacer(
 
-                modifier = Modifier.padding(
-
-                    top = 14.dp
-
-                )
+                modifier = Modifier.height(14.dp)
 
             )
 
 
 
 
-
             NetworkHealthCard(
 
+
                 latency = 42,
+
 
                 speed = download
 
@@ -288,14 +277,9 @@ fun HomeDashboard(
 
 
 
-
             Spacer(
 
-                modifier = Modifier.padding(
-
-                    bottom = 30.dp
-
-                )
+                modifier = Modifier.height(30.dp)
 
             )
 

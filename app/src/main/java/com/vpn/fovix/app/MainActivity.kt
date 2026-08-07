@@ -53,10 +53,11 @@ class MainActivity : ComponentActivity() {
 
                 Surface(
 
-                    modifier = Modifier
-                        .fillMaxSize(),
+                    modifier =
+                        Modifier.fillMaxSize(),
 
-                    color = Color.Transparent
+                    color =
+                        Color.Transparent
 
                 ) {
 
@@ -64,7 +65,15 @@ class MainActivity : ComponentActivity() {
                     FovixApp(
 
                         vpnRepository =
-                            appContainer.vpnRepository
+                            appContainer.vpnRepository,
+
+
+                        subscriptionRepository =
+                            appContainer.subscriptionRepository,
+
+
+                        subscriptionImportEngine =
+                            appContainer.subscriptionImportEngine
 
                     )
 
@@ -96,16 +105,12 @@ class MainActivity : ComponentActivity() {
         )
 
 
-
         window.statusBarColor =
             android.graphics.Color.TRANSPARENT
 
 
-
         window.navigationBarColor =
             android.graphics.Color.TRANSPARENT
-
-
 
 
 
@@ -120,11 +125,7 @@ class MainActivity : ComponentActivity() {
             )
 
 
-
-        // светлый фон приложения
-
         controller.isAppearanceLightStatusBars = true
-
 
         controller.isAppearanceLightNavigationBars = true
 

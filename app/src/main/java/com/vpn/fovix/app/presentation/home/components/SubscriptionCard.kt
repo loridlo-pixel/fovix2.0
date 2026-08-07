@@ -4,18 +4,25 @@ package com.vpn.fovix.app.presentation.home.components
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreVert
+
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
+
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -28,7 +35,9 @@ fun SubscriptionCard(
 
     subscription: VpnSubscription?,
 
-    onAddClick: () -> Unit
+    onAddClick: () -> Unit,
+
+    onMenuClick: () -> Unit = {}
 
 ) {
 
@@ -60,9 +69,9 @@ fun SubscriptionCard(
 
                 colors = listOf(
 
-                    Color(0xFFE5E7EB),
+                    Color(0xFFE9EEF3),
 
-                    Color(0xFFD1D5DB)
+                    Color(0xFFDDE3EA)
 
                 )
 
@@ -94,12 +103,6 @@ fun SubscriptionCard(
 
             )
 
-            .clickable {
-
-                onAddClick()
-
-            }
-
             .padding(22.dp)
 
     ) {
@@ -108,7 +111,20 @@ fun SubscriptionCard(
 
         Row(
 
-            modifier = Modifier.fillMaxWidth(),
+            modifier = Modifier
+
+                .fillMaxWidth()
+
+                .clickable {
+
+                    if (!hasSubscription) {
+
+                        onAddClick()
+
+                    }
+
+                },
+
 
             horizontalArrangement = Arrangement.SpaceBetween,
 
@@ -118,7 +134,11 @@ fun SubscriptionCard(
 
 
 
-            Column {
+            Column(
+
+                modifier = Modifier.weight(1f)
+
+            ) {
 
 
 
@@ -126,9 +146,13 @@ fun SubscriptionCard(
 
                     text =
 
-                        subscription?.name
+                        if (hasSubscription)
 
-                            ?: "VPN Provider",
+                            subscription!!.name
+
+                        else
+
+                            "Добавьте вашу подписку",
 
 
                     color =
@@ -142,7 +166,7 @@ fun SubscriptionCard(
                             Color(0xFF334155),
 
 
-                    fontSize = 20.sp
+                    fontSize = 22.sp
 
                 )
 
@@ -166,11 +190,11 @@ fun SubscriptionCard(
 
                         if (hasSubscription)
 
-                            "${subscription?.servers?.size ?: 0} servers available"
+                            "${subscription!!.servers.size} серверов доступно"
 
                         else
 
-                            "Add subscription to activate protection",
+                            "Подключите VPN-сервис или импортируйте ссылку",
 
 
                     color =
@@ -195,36 +219,71 @@ fun SubscriptionCard(
 
 
 
+            if (hasSubscription) {
 
 
-            IconButton(
+                IconButton(
 
-                onClick = onAddClick
+                    onClick = onMenuClick
 
-            ) {
+                ) {
+
+
+                    Icon(
+
+                        imageVector = Icons.Default.MoreVert,
+
+                        contentDescription = "Menu",
+
+                        tint = Color.White,
+
+                        modifier = Modifier.size(30.dp)
+
+                    )
+
+                }
 
 
 
-                Icon(
+            } else {
 
-                    imageVector = Icons.Default.Add,
 
-                    contentDescription = "Add subscription",
 
-                    tint =
+                IconButton(
 
-                        if (hasSubscription)
+                    onClick = onAddClick,
 
-                            Color.White
+                    modifier = Modifier
 
-                        else
+                        .size(48.dp)
 
-                            Color(0xFF475569)
+                        .background(
 
-                )
+                            Color.White.copy(alpha = 0.75f),
+
+                            CircleShape
+
+                        )
+
+                ) {
+
+
+                    Text(
+
+                        text = "+",
+
+                        color = Color(0xFF334155),
+
+                        fontSize = 30.sp
+
+                    )
+
+
+                }
 
 
             }
+
 
 
         }
@@ -233,38 +292,21 @@ fun SubscriptionCard(
 
 
 
-        Spacer(
-
-            modifier = Modifier.height(18.dp)
-
-        )
+        if (hasSubscription) {
 
 
 
+            Spacer(
 
-
-
-        if (subscription == null) {
-
-
-
-            Text(
-
-                text = "No VPN subscription added",
-
-                color = Color(0xFF64748B),
-
-                fontSize = 14.sp
+                modifier = Modifier.height(18.dp)
 
             )
 
 
 
-        } else {
 
 
-
-            subscription.servers
+            subscription!!.servers
 
                 .take(5)
 
@@ -278,21 +320,10 @@ fun SubscriptionCard(
 
                             .fillMaxWidth()
 
-                            .padding(
-
-                                vertical = 6.dp
-
-                            ),
+                            .padding(vertical = 6.dp),
 
 
-                        horizontalArrangement =
-
-                            Arrangement.SpaceBetween,
-
-
-                        verticalAlignment =
-
-                            Alignment.CenterVertically
+                        horizontalArrangement = Arrangement.SpaceBetween
 
                     ) {
 
@@ -314,22 +345,16 @@ fun SubscriptionCard(
 
                         Text(
 
-                            text = "Available",
+                            text = "— ms",
 
-                            color = Color.White.copy(
-
-                                alpha = 0.85f
-
-                            ),
+                            color = Color.White.copy(alpha = 0.8f),
 
                             fontSize = 13.sp
 
                         )
 
 
-
                     }
-
 
 
                 }
@@ -338,10 +363,7 @@ fun SubscriptionCard(
 
 
 
-
-
-            if ((subscription.servers.size) > 5) {
-
+            if (subscription!!.servers.size > 5) {
 
 
                 Spacer(
@@ -356,33 +378,22 @@ fun SubscriptionCard(
 
                 Text(
 
-                    text =
+                    text = "+${subscription!!.servers.size - 5} ещё",
 
-                        "+${subscription.servers.size - 5} more servers",
-
-
-                    color = Color.White.copy(
-
-                        alpha = 0.8f
-
-                    ),
+                    color = Color.White.copy(alpha = 0.8f),
 
                     fontSize = 13.sp
 
                 )
 
 
-
             }
-
 
 
         }
 
 
-
     }
-
 
 
 }

@@ -9,15 +9,16 @@ import com.vpn.fovix.data.importer.SubscriptionImportEngine
 import com.vpn.fovix.data.repository.ServerRepository
 import com.vpn.fovix.data.repository.VpnRepository
 
+import com.vpn.fovix.data.subscription.SubscriptionRepository
+import com.vpn.fovix.data.subscription.SubscriptionRepositoryImpl
+
 import com.vpn.fovix.vpn.VpnEngine
 
 
 
 class AppContainer(
 
-
     private val context: Context
-
 
 ) {
 
@@ -34,7 +35,6 @@ class AppContainer(
 
 
     }
-
 
 
 
@@ -58,7 +58,6 @@ class AppContainer(
 
 
 
-
     val serverRepository: ServerRepository by lazy {
 
 
@@ -66,7 +65,6 @@ class AppContainer(
 
 
     }
-
 
 
 
@@ -81,6 +79,22 @@ class AppContainer(
 
     }
 
+
+
+
+
+
+    val subscriptionRepository: SubscriptionRepository by lazy {
+
+
+        SubscriptionRepositoryImpl(
+
+            context
+
+        )
+
+
+    }
 
 
 

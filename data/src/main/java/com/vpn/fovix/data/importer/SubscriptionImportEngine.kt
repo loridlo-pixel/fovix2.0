@@ -2,8 +2,10 @@ package com.vpn.fovix.data.importer
 
 
 import com.vpn.fovix.data.subscription.Base64SubscriptionDecoder
+import com.vpn.fovix.data.subscription.HappSubscriptionDecoder
 import com.vpn.fovix.data.subscription.SubscriptionDecoder
 import com.vpn.fovix.data.subscription.SubscriptionDownloader
+
 import com.vpn.fovix.domain.server.ServerProfile
 
 
@@ -20,9 +22,16 @@ class SubscriptionImportEngine(
     private val decoders:
             List<SubscriptionDecoder> = listOf(
 
+
+        HappSubscriptionDecoder(),
+
+
         Base64SubscriptionDecoder()
 
+
     )
+
+
 
 
 
@@ -58,6 +67,9 @@ class SubscriptionImportEngine(
 
 
 
+
+
+
     fun import(
 
         source: String
@@ -65,7 +77,9 @@ class SubscriptionImportEngine(
     ): List<ServerProfile> {
 
 
+
         for(decoder in decoders) {
+
 
 
             if(
@@ -79,16 +93,21 @@ class SubscriptionImportEngine(
             ) {
 
 
+
                 return decoder.decode(
 
                     source
 
                 )
 
+
             }
 
 
         }
+
+
+
 
 
 
@@ -100,6 +119,7 @@ class SubscriptionImportEngine(
 
 
     }
+
 
 
 

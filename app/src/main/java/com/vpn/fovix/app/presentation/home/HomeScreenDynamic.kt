@@ -30,10 +30,12 @@ fun HomeScreenDynamic(
     subscription: VpnSubscription?,
 
 
+
     onConnectClick: () -> Unit,
 
 
     onOpenSubscriptions: () -> Unit,
+
 
 
     onProfileClick: () -> Unit = {},
@@ -48,6 +50,7 @@ fun HomeScreenDynamic(
 
 
     HomeDashboard(
+
 
 
         mode = mode,
@@ -65,7 +68,9 @@ fun HomeScreenDynamic(
         upload = upload,
 
 
+
         vpnSubscription = subscription,
+
 
 
         onConnectClick = {
@@ -73,7 +78,9 @@ fun HomeScreenDynamic(
 
             onConnectClick()
 
+
         },
+
 
 
         onOpenSubscriptions = {
@@ -81,7 +88,9 @@ fun HomeScreenDynamic(
 
             onOpenSubscriptions()
 
+
         },
+
 
 
         onProfileClick = {
@@ -89,7 +98,9 @@ fun HomeScreenDynamic(
 
             onProfileClick()
 
+
         },
+
 
 
         onModeClick = {
@@ -97,11 +108,13 @@ fun HomeScreenDynamic(
 
             onModeClick()
 
+
         }
 
 
 
     )
+
 
 
 }
